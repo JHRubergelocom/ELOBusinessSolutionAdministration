@@ -1,0 +1,69 @@
+{
+  "profiles": [
+    {
+      "name": "common",
+      "ixUrl": "http://ruberg-common.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\common.git"
+    },
+    {
+      "name": "contract",
+      "package": "contract",
+      "ixUrl": "http://ruberg-contract.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\contract.git"
+    },
+    {
+      "name": "hr",
+      "ixUrl": "http://ruberg-hr.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\hr.git"
+    },
+    {
+      "name": "invoice",
+      "ixUrl": "http://ruberg-invoice.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\invoice.git"
+    },
+    {
+      "name": "knowledge",
+      "package": "knowledge",
+      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\knowledge.git"
+    },
+    {
+      "name": "learning",
+      "package": "learning",
+      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\learning.git"
+    },
+    {
+      "name": "playground",
+      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\playground.git"
+    },
+    {
+      "name": "productivity",
+      "ixUrl": "http://ruberg-productivity.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\productivity.git"
+    },
+    {
+      "name": "pubsec",
+      "ixUrl": "http://ruberg-pubsec.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\pubsec.git"
+    },
+    {
+      "name": "recruiting",
+      "package": "recruiting",
+      "ixUrl": "http://ruberg-recruiting.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\hr_recruiting.git"
+    },
+    {
+      "name": "visitor",
+      "package": "visitor",
+      "ixUrl": "http://ruberg-visitor.dev.elo/ix-Solutions/ix",
+      "psWorkingDir": "E:\\Git\\solutions\\visitor.git"
+    }
+  ],
+  "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
+  "powershell": {"ps1": ["gitPullUnittest", "gitPullPackage", "eloPrepare"] },
+  "command": {"cmd": "gitPullAll", "workingDir": "E:\\Git\\solutions"},
+  "user": "Administrator",
+  "pwd": "elo"
+}

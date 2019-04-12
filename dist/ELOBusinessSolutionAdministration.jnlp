@@ -8,7 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ELOBusinessSolutionAdministration.jar" size="2947" download="eager" />
+    <jar href="ELOBusinessSolutionAdministration.jar" size="4144" download="eager" />
+    <jar href="lib\json-20180813.jar" size="64597" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="ELOBusinessSolutionAdministration" >
     <param name="requiredFXVersion" value="8.0+"/>
