@@ -8,8 +8,13 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ELOBusinessSolutionAdministration.jar" size="4144" download="eager" />
+    <jar href="ELOBusinessSolutionAdministration.jar" size="12778" download="eager" />
+    <jar href="lib\EloixClient.jar" size="4076166" download="eager" />
+    <jar href="lib\commons-codec-1.10.jar" size="284184" download="eager" />
+    <jar href="lib\commons-logging-1.2.jar" size="61829" download="eager" />
     <jar href="lib\json-20180813.jar" size="64597" download="eager" />
+    <jar href="lib\log4j-1.2.17.jar" size="489884" download="eager" />
+    <jar href="lib\slf4j-api-1.7.25.jar" size="41203" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="ELOBusinessSolutionAdministration" >
     <param name="requiredFXVersion" value="8.0+"/>
