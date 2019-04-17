@@ -6,6 +6,9 @@
 package elobusinesssolutionadministration;
 
 import byps.RemoteException;
+import de.elo.ix.client.DocVersion;
+import de.elo.ix.client.EditInfo;
+import de.elo.ix.client.EditInfoC;
 import de.elo.ix.client.FindByIndex;
 import de.elo.ix.client.FindByType;
 import de.elo.ix.client.FindChildren;
@@ -17,6 +20,11 @@ import de.elo.ix.client.ObjKey;
 import de.elo.ix.client.Sord;
 import de.elo.ix.client.SordC;
 import de.elo.ix.client.SordZ;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,4 +82,54 @@ class RepoUtils {
         return children;
     }
     
+    static String DownloadDocumentToString (Sord s, IXConnection ixConn) {
+        String docText = "";
+        try {
+            String objId = s.getId() + "";   
+            String line;            
+            BufferedReader in = null;
+            String bom = "\uFEFF"; // ByteOrderMark (BOM);
+            EditInfo editInfo = ixConn.ix().checkoutDoc(objId, null, EditInfoC.mbSordDoc, LockC.NO);
+            if (editInfo.getDocument().getDocs().length > 0) {
+                DocVersion dv = editInfo.getDocument().getDocs()[0];
+                String url = dv.getUrl();                    
+                InputStream inputStream = ixConn.download(url, 0, -1);
+                try {
+                    in = new BufferedReader(new InputStreamReader(inputStream ));
+                    while ((line = in.readLine()) != null) {
+                        System.out.println("Gelesene Zeile: " + line);
+                        docText = docText.concat(line);
+                    }                       
+                } catch (FileNotFoundException ex) {    
+                    ex.printStackTrace();
+                } catch (IOException ex) {            
+                    ex.printStackTrace();
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+                docText = docText.replaceAll(bom, "");
+            }            
+        } catch (RemoteException ex) {
+            ex.printStackTrace();            
+        }
+        return docText;
+    }
+
+    static List<String> LoadTextDocs(String parentId, IXConnection ixConn) {
+        List<Sord> sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        List<String> docTexts = new ArrayList<>();
+        
+        for (Sord s : sordRFInfo) {
+            String docText = DownloadDocumentToString (s, ixConn);                
+            docTexts.add(docText);
+        }
+        return docTexts;
+        
+    }
 }

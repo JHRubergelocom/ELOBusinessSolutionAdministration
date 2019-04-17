@@ -32,6 +32,15 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @FXML
+    private void handlebtnMatchUnittest(ActionEvent event) {
+        
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();    
+        Unittests.ShowReportMatchUnittest(profiles[index]);
+    }
+    
+    
+    @FXML
     private ComboBox<String> cmbProfile;
     
     

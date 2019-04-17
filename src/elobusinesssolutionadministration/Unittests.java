@@ -14,13 +14,22 @@ import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.LockC;
 import de.elo.ix.client.Sord;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
@@ -35,61 +44,27 @@ class Unittests {
         List<Sord> sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
         String configApp = "";
         String configId = "";
-        BufferedReader in = null;
-        String line;
         String jsonString = "";
-        String bom = "\uFEFF"; // ByteOrderMark (BOM);
         
         Map<String, String> dicApp = new HashMap<>();
-        try {
-            for (Sord s : sordELOappsClientInfo) {
-                String objId = s.getId() + "";
-                EditInfo editInfo = ixConn.ix().checkoutDoc(objId, null, EditInfoC.mbSordDoc, LockC.NO);
-                DocVersion dv = editInfo.getDocument().getDocs()[0];
-                String url = dv.getUrl();
-                InputStream inputStream = ixConn.download(url, 0, -1);
-                
-                try {
-                    jsonString = "";
-                    in = new BufferedReader(new InputStreamReader(inputStream ));
-                    while ((line = in.readLine()) != null) {
-                        System.out.println("Gelesene Zeile: " + line);
-                        jsonString = jsonString.concat(line);
-                    }                       
-                } catch (FileNotFoundException ex) {    
-                    ex.printStackTrace();
-                } catch (IOException ex) {            
-                    ex.printStackTrace();
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-                jsonString = jsonString.replaceAll("namespace", "namespace1");
-                jsonString = jsonString.replaceAll(bom, "");
-
-                JSONObject config = new JSONObject(jsonString);                 
-                JSONObject web = config.getJSONObject("web");                 
-                String webId = web.getString("id");
-                if (webId != null)
+        for (Sord s : sordELOappsClientInfo) {
+            jsonString = RepoUtils.DownloadDocumentToString(s, ixConn);
+            jsonString = jsonString.replaceAll("namespace", "namespace1");
+            JSONObject config = new JSONObject(jsonString);                 
+            JSONObject web = config.getJSONObject("web");                 
+            String webId = web.getString("id");
+            if (webId != null)
+            {
+                if (webId.contains("UnitTests"))
                 {
-                    if (webId.contains("UnitTests"))
-                    {
-                        configApp = web.getString("namespace1") + "." + web.getString("id");
-                        configId = config.getString("id");
-                    }
+                    configApp = web.getString("namespace1") + "." + web.getString("id");
+                    configId = config.getString("id");
                 }
-             }
-             dicApp.put("configApp", configApp);
-             dicApp.put("configId", configId);
+            }
+         }
+         dicApp.put("configApp", configApp);
+         dicApp.put("configId", configId);
             
-        } catch (RemoteException ex) {    
-            ex.printStackTrace();
-        }
         return dicApp;
     }    
 
@@ -123,6 +98,72 @@ class Unittests {
         appUrl = appUrl + "&ticket=" + ticket;
         appUrl = appUrl + "&timezone=Europe%2FBerlin";
         Http.OpenUrl(appUrl);  
+    }
+
+    static void ShowReportMatchUnittest(Profile profile) {
+        
+        IXConnection ixConn;
+        IXConnFactory connFact;   
+        try {
+            connFact = new IXConnFactory(profile.ixUrl, "Show Report Match Unittest", "1.0");            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("IllegalStateException message: " +  ex.getMessage());            
+            return;
+        }
+        try {
+            ixConn = connFact.create(profile.user, profile.pwd, null, null);
+        } catch (RemoteException ex) {
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.user + "\n IxUrl: " + profile.ixUrl, "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("RemoteException message: " + ex.getMessage());            
+            return;
+        }
+        
+        List<String> jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
+        SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profile.eloPackage);        
+        SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profile.eloPackage);
+        SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profile.eloPackage);
+        String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
+
+        File dir = new File("E:\\Temp");         
+        String reportPath = "E:\\Temp\\Report.html";
+        File reportFile = new File(reportPath); 
+        URI uri = reportFile.toURI();
+        try {
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            if (!reportFile.exists()) {
+                reportFile.createNewFile();
+            }  
+            FileWriter fw = new FileWriter(reportFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(htmlDoc);
+            bw.close();                        
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            URL url = uri.toURL();
+            Http.OpenUrl(url.toString());            
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
+        
+    }
+
+    static boolean Match(IXConnection ixConn, String uName, String eloPackage, List<String> jsTexts) {
+        for (String jsText : jsTexts) {
+            String[] jsLines = jsText.split("\n");
+            for (String line : jsLines) {
+                if (line.contains(eloPackage)) {
+                    if (line.contains(uName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;        
     }
     
 }
