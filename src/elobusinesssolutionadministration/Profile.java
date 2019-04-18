@@ -20,7 +20,7 @@ public class Profile {
     public String psWorkingDir;
     public String arcPath;
     public String powershell;
-    public String command;
+    public Command command;
     public String user;
     public String pwd;
 
@@ -31,7 +31,7 @@ public class Profile {
         psWorkingDir = "";
         arcPath = "";
         powershell = "";
-        command = "";
+        command = null;
         user = "";
         pwd = "";
         try {
@@ -59,7 +59,8 @@ public class Profile {
         } catch (JSONException ex) {            
         }
         try {
-            command = jobj.getString("command");            
+            JSONObject jcommand = jobj.getJSONObject("command");
+            command = new Command(jcommand);
         } catch (JSONException ex) {            
         }
         try {

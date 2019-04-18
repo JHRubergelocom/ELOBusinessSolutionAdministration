@@ -24,7 +24,7 @@ public class FXMLDocumentController implements Initializable {
     private Profile[] profiles = null;
     
     @FXML
-    private void handlebtnShowUnittest(ActionEvent event) {
+    private void handleBtnShowUnittest(ActionEvent event) {
         
         int index;        
         index = cmbProfile.getSelectionModel().getSelectedIndex();    
@@ -32,13 +32,21 @@ public class FXMLDocumentController implements Initializable {
     }
     
     @FXML
-    private void handlebtnMatchUnittest(ActionEvent event) {
+    private void handleBtnMatchUnittest(ActionEvent event) {
         
         int index;        
         index = cmbProfile.getSelectionModel().getSelectedIndex();    
         Unittests.ShowReportMatchUnittest(profiles[index]);
     }
     
+    
+    @FXML
+    private void handleBtnGitPullAll(ActionEvent event) {
+        
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();
+        Command.Execute(profiles[index].command);
+    }
     
     @FXML
     private ComboBox<String> cmbProfile;

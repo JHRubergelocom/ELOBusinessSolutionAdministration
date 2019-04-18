@@ -124,32 +124,7 @@ class Unittests {
         SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profile.eloPackage);
         SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profile.eloPackage);
         String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
-
-        File dir = new File("E:\\Temp");         
-        String reportPath = "E:\\Temp\\Report.html";
-        File reportFile = new File(reportPath); 
-        URI uri = reportFile.toURI();
-        try {
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            if (!reportFile.exists()) {
-                reportFile.createNewFile();
-            }  
-            FileWriter fw = new FileWriter(reportFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(htmlDoc);
-            bw.close();                        
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            URL url = uri.toURL();
-            Http.OpenUrl(url.toString());            
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
-        
+        Http.ShowReport(htmlDoc);
     }
 
     static boolean Match(IXConnection ixConn, String uName, String eloPackage, List<String> jsTexts) {

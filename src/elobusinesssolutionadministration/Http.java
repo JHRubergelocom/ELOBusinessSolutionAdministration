@@ -5,8 +5,14 @@
  */
 package elobusinesssolutionadministration;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +43,14 @@ class Http {
       }         
     }
 
-    private static String CreateHtmlHead(String title) {
+    static String CreateHtmlHead(String title) {
         String htmlHead = "  <head>\n";
         htmlHead += "    <title>" + title + "</title>\n";
         htmlHead += "  </head>\n";
         return htmlHead;
     }
 
-    private static String CreateHtmlStyle() {
+    static String CreateHtmlStyle() {
         String htmlStyle = "  <style>\n";
 
         htmlStyle += "body {\n";
@@ -272,5 +278,31 @@ class Http {
         
     }
 
+    static void ShowReport (String htmlDoc) {
+        File dir = new File("E:\\Temp");         
+        String reportPath = "E:\\Temp\\Report.html";
+        File reportFile = new File(reportPath); 
+        URI uri = reportFile.toURI();
+        try {
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            if (!reportFile.exists()) {
+                reportFile.createNewFile();
+            }  
+            FileWriter fw = new FileWriter(reportFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(htmlDoc);
+            bw.close();                        
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            URL url = uri.toURL();
+            Http.OpenUrl(url.toString());            
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
 
+    }
 }
