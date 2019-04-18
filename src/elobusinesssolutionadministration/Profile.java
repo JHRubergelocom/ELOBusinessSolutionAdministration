@@ -1,5 +1,6 @@
 package elobusinesssolutionadministration;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,7 +20,7 @@ public class Profile {
     public String ixUrl;
     public String psWorkingDir;
     public String arcPath;
-    public String powershell;
+    public PowerShell powerShell;
     public Command command;
     public String user;
     public String pwd;
@@ -30,7 +31,7 @@ public class Profile {
         ixUrl = "";
         psWorkingDir = "";
         arcPath = "";
-        powershell = "";
+        powerShell = null;
         command = null;
         user = "";
         pwd = "";
@@ -55,7 +56,8 @@ public class Profile {
         } catch (JSONException ex) {            
         }
         try {
-            powershell = jobj.getString("powershell");                        
+            JSONObject jps1 = jobj.getJSONObject("powershell");               
+            powerShell = new PowerShell(jps1);                      
         } catch (JSONException ex) {            
         }
         try {

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,37 +19,34 @@ import org.json.JSONObject;
  *
  * @author ruberg
  */
-class Command {
+class PowerShell {
 
-    public String cmd;
-    public String workingDir; 
+    public String[] ps1;
     
-    Command(JSONObject jcommand) {
-        cmd = "";
-        workingDir = "";
+    PowerShell(JSONObject jps1) {
+        JSONArray jarr = jps1.getJSONArray("ps1");
+        ps1 = new String[jarr.length()];
         try {
-            cmd = jcommand.getString("cmd");            
-        } catch (JSONException ex) {            
-        }
-        try {
-            workingDir = jcommand.getString("workingDir");      
+            for (int i = 0; i < jarr.length(); i++) {
+                ps1[i] = jarr.getString(i);
+            }             
         } catch (JSONException ex) {            
         }
     }
-
-    static void Execute(Command command) {
+    
+     static void Execute(String psCommand, String psWorkingDir) {
         try {
-            String cmdPath = command.workingDir + "\\" + command.cmd + ".cmd";
-            if (!new File (cmdPath).canExecute()) {
-                JOptionPane.showMessageDialog(null, cmdPath + " kann nicht ausgef\u00FChrt werden!", 
+            String ps1Path = psWorkingDir + "\\" + psCommand + ".ps1";
+            if (!new File (ps1Path).canExecute()) {
+                JOptionPane.showMessageDialog(null, ps1Path + " kann nicht ausgef\u00FChrt werden!", 
                            "canExecute", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println(cmdPath + " kann nicht ausgef\u00FChrt werden!");
+                System.out.println(ps1Path + " kann nicht ausgef\u00FChrt werden!");
                 return;                 
             }
             
             try {
-                ProcessBuilder pb = new ProcessBuilder(cmdPath);
-                pb.directory(new File (command.workingDir));
+                ProcessBuilder pb = new ProcessBuilder("powershell.exe", ps1Path);
+                pb.directory(new File (psWorkingDir));
                 Process p = null; 
                 p = pb.start();            
                 int status = p.waitFor();
@@ -59,11 +57,11 @@ class Command {
                 BufferedReader br = new BufferedReader(isr);
                 String line;
                 String htmlDoc = "<html>\n";
-                String htmlHead = Http.CreateHtmlHead(cmdPath);
+                String htmlHead = Http.CreateHtmlHead(ps1Path);
                 String htmlStyle = Http.CreateHtmlStyle();
                 String htmlBody = "<body>\n";
                 
-                htmlBody += "<h1>"+ cmdPath + "</h1>";
+                htmlBody += "<h1>"+ ps1Path + "</h1>";
                 
                 while ((line = br.readLine()) != null) {
                     htmlBody += "<h4>"+ line + "</h4>";
@@ -77,7 +75,7 @@ class Command {
                 
                 Http.ShowReport(htmlDoc);
 
-                JOptionPane.showMessageDialog(null, cmdPath + " ausgeführt", 
+                JOptionPane.showMessageDialog(null, ps1Path + " ausgeführt", 
                            "Execute", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println("Programmende"); 
                 
@@ -92,6 +90,9 @@ class Command {
                 JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
                            "IOException", JOptionPane.INFORMATION_MESSAGE);
         }
+         
     }
+
+   
     
 }

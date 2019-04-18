@@ -62,7 +62,7 @@
     }
   ],
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
-  "powershell": {"ps1": ["gitPullUnittest", "gitPullPackage", "eloPrepare"] },
+  "powershell": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
   "command": {"cmd": "gitPullAll", "workingDir": "E:\\Git\\solutions"},
   "user": "Administrator",
   "pwd": "elo"

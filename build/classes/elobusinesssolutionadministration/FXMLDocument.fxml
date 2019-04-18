@@ -13,5 +13,7 @@
       <Label layoutX="18.0" layoutY="36.0" text="Profile" />
       <Button fx:id="btnMatchUnittest" layoutX="151.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnMatchUnittest" prefHeight="25.0" prefWidth="150.0" text="Abgleich Unittests" />
       <Button fx:id="btnGitPullAll" layoutX="18.0" layoutY="116.0" mnemonicParsing="false" onAction="#handleBtnGitPullAll" prefHeight="25.0" prefWidth="128.0" text="GitPullAll" />
+      <Button fx:id="btnEloPullUnittest" layoutX="150.0" layoutY="116.0" mnemonicParsing="false" onAction="#handleEloPullUnittest" prefHeight="25.0" prefWidth="150.0" text="EloPullUnittest" />
+      <Button fx:id="btnEloPrepare" layoutX="18.0" layoutY="151.0" mnemonicParsing="false" onAction="#handleEloPrepare" prefHeight="25.0" prefWidth="128.0" text="EloPrepare" />
     </children>
 </AnchorPane>

@@ -37,8 +37,7 @@ public class FXMLDocumentController implements Initializable {
         int index;        
         index = cmbProfile.getSelectionModel().getSelectedIndex();    
         Unittests.ShowReportMatchUnittest(profiles[index]);
-    }
-    
+    }    
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
@@ -46,6 +45,22 @@ public class FXMLDocumentController implements Initializable {
         int index;        
         index = cmbProfile.getSelectionModel().getSelectedIndex();
         Command.Execute(profiles[index].command);
+    }
+
+    @FXML
+    private void handleEloPullUnittest(ActionEvent event) {
+        
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();
+        PowerShell.Execute(profiles[index].powerShell.ps1[0], profiles[index].psWorkingDir);
+    }
+    
+    @FXML
+    private void handleEloPrepare(ActionEvent event) {
+        
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();
+        PowerShell.Execute(profiles[index].powerShell.ps1[2], profiles[index].psWorkingDir);
     }
     
     @FXML
