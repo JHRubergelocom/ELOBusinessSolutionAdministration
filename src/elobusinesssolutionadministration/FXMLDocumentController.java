@@ -7,10 +7,14 @@ package elobusinesssolutionadministration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import org.json.JSONObject;
 
 
@@ -27,7 +31,7 @@ public class FXMLDocumentController implements Initializable {
     private void handleBtnShowUnittest(ActionEvent event) {
         
         int index;        
-        index = cmbProfile.getSelectionModel().getSelectedIndex();    
+        index = cmbProfile.getSelectionModel().getSelectedIndex();  
         Unittests.ShowUnittestsApp(profiles[index]);
     }
     
@@ -42,30 +46,60 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
         
-        int index;        
+        int index;  
+        disableControls();
         index = cmbProfile.getSelectionModel().getSelectedIndex();
-        Command.Execute(profiles[index].command);
+        Command.Execute(profiles[index].command, txtOutput);
+        enableControls();
     }
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
         
         int index;        
+        disableControls();
         index = cmbProfile.getSelectionModel().getSelectedIndex();
-        PowerShell.Execute(profiles[index].powerShell.ps1[0], profiles[index].psWorkingDir);
+        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PULL_UNITTEST], profiles[index].psWorkingDir, txtOutput);
+        enableControls();
+    }
+    
+    @FXML
+    private void handleEloPullPackage(ActionEvent event) {
+        
+        int index;        
+        disableControls();
+        index = cmbProfile.getSelectionModel().getSelectedIndex();
+        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PULL_PACKAGE], profiles[index].psWorkingDir, txtOutput);
+        enableControls();
     }
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
         
         int index;        
+        disableControls();
         index = cmbProfile.getSelectionModel().getSelectedIndex();
-        PowerShell.Execute(profiles[index].powerShell.ps1[2], profiles[index].psWorkingDir);
+        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PREPARE], profiles[index].psWorkingDir, txtOutput);
+        enableControls();
     }
     
     @FXML
     private ComboBox<String> cmbProfile;
     
+    @FXML
+    private Button btnGitPullAll;
+    
+    @FXML
+    private Button btnEloPullUnittest;
+    
+    @FXML
+    private Button btnEloPrepare;
+    
+    @FXML
+    private Button btnEloPullPackage;
+
+    @FXML
+    private TextArea txtOutput;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -80,6 +114,20 @@ public class FXMLDocumentController implements Initializable {
             profiles[i] = p;
         } 
         cmbProfile.getSelectionModel().select(0);        
-    }   
+    }  
+    
+    public void enableControls() {
+        btnGitPullAll.setDisable(false);
+        btnEloPullUnittest.setDisable(false);
+        btnEloPrepare.setDisable(false);
+        btnEloPullPackage.setDisable(false);          
+    }
+    
+    public void disableControls() {
+        btnGitPullAll.setDisable(true);        
+        btnEloPullUnittest.setDisable(true);
+        btnEloPrepare.setDisable(true);
+        btnEloPullPackage.setDisable(true);  
+    }
     
 }

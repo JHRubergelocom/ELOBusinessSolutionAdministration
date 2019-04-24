@@ -204,7 +204,7 @@ class Http {
             htmlTable += "        <tr>\n";
             
             for (String cell : row) {
-                if(cell.equals("False")) {
+                if(cell.equals("false")) {
                     td += "r";
                 }
             }    

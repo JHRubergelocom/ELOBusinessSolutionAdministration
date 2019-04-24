@@ -6,10 +6,15 @@
 package elobusinesssolutionadministration;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+import javafx.scene.control.TextArea;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,57 +39,75 @@ class PowerShell {
         }
     }
     
-     static void Execute(String psCommand, String psWorkingDir) {
+     static void Execute(String psCommand, String psWorkingDir, TextArea txtOutput) {
         try {
+            txtOutput.setText("");
             String ps1Path = psWorkingDir + "\\" + psCommand + ".ps1";
             if (!new File (ps1Path).canExecute()) {
                 JOptionPane.showMessageDialog(null, ps1Path + " kann nicht ausgef\u00FChrt werden!", 
                            "canExecute", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println(ps1Path + " kann nicht ausgef\u00FChrt werden!");
+                txtOutput.appendText(ps1Path + " kann nicht ausgef\u00FChrt werden!" + "\n");                
                 return;                 
             }
             
-            try {
-                ProcessBuilder pb = new ProcessBuilder("powershell.exe", ps1Path);
-                pb.directory(new File (psWorkingDir));
-                Process p = null; 
-                p = pb.start();            
-                int status = p.waitFor();
-                System.out.println("Exit status: " + status); 
-                
-                InputStream is = p.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String line;
-                String htmlDoc = "<html>\n";
-                String htmlHead = Http.CreateHtmlHead(ps1Path);
-                String htmlStyle = Http.CreateHtmlStyle();
-                String htmlBody = "<body>\n";
-                
-                htmlBody += "<h1>"+ ps1Path + "</h1>";
-                
-                while ((line = br.readLine()) != null) {
-                    htmlBody += "<h4>"+ line + "</h4>";
-                    System.out.println(line);
-                }
-                htmlBody += "</body>\n";
-                htmlDoc += htmlHead;
-                htmlDoc += htmlStyle;
-                htmlDoc += htmlBody;
-                htmlDoc += "</html>\n";
-                
-                Http.ShowReport(htmlDoc);
+            ProcessBuilder pb = new ProcessBuilder("powershell.exe", ps1Path);
+            pb.directory(new File (psWorkingDir));
+            Process p; 
+            p = pb.start();            
 
-                JOptionPane.showMessageDialog(null, ps1Path + " ausgeführt", 
-                           "Execute", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println("Programmende"); 
-                
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "System.InterruptedException message: " + ex.getMessage(), 
-                           "InterruptedException", JOptionPane.INFORMATION_MESSAGE);
+            InputStream is = p.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+                                    
+            String line;
+            String htmlDoc = "<html>\n";
+            String htmlHead = Http.CreateHtmlHead(ps1Path);
+            String htmlStyle = Http.CreateHtmlStyle();
+            String htmlBody = "<body>\n";
+
+            htmlBody += "<h1>"+ ps1Path + "</h1>";
+
+            while ((line = br.readLine()) != null) {
+                htmlBody += "<h4>"+ line + "</h4>";
+                System.out.println(line);                  
+                txtOutput.appendText(line + "\n");                
+                if (line.contains("already exists")) {
+                    break;
+                }
                 
             }
+            
+            if (line != null) {
+                if (line.contains("already exists")) {
+                    OutputStream os = p.getOutputStream();
+                    OutputStreamWriter osr = new OutputStreamWriter(os);
+                    BufferedWriter bw = new BufferedWriter(osr);
+
+                    Scanner sc = new Scanner("n");
+                    String input = sc.nextLine();
+                    input += "\n";
+                    bw.write(input);
+                    bw.flush();    
+
+                    br.close();
+                }                
+            }
+            
+            
+            
+            htmlBody += "</body>\n";
+            htmlDoc += htmlHead;
+            htmlDoc += htmlStyle;
+            htmlDoc += htmlBody;
+            htmlDoc += "</html>\n";
+
+            Http.ShowReport(htmlDoc);
+
+            JOptionPane.showMessageDialog(null, ps1Path + " ausgeführt", 
+                       "Execute", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Programmende"); 
+            txtOutput.appendText("Programmende" + "\n");                
         } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 

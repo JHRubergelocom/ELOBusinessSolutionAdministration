@@ -15,6 +15,10 @@ import org.json.JSONObject;
  * @author ruberg
  */
 public class Profile {
+    static final int ELO_PULL_UNITTEST = 0;
+    static final int ELO_PULL_PACKAGE = 1;
+    static final int ELO_PREPARE = 2;
+    
     public String name;
     public String eloPackage;
     public String ixUrl;
