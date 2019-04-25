@@ -25,7 +25,12 @@ import org.json.JSONObject;
  */
 public class FXMLDocumentController implements Initializable {
     
+    
+    
     private Profile[] profiles = null;
+    
+    private CommandService cmdService = null;
+    private PowershellService psService = null;
     
     @FXML
     private void handleBtnShowUnittest(ActionEvent event) {
@@ -45,42 +50,45 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
-        
-        int index;  
-        disableControls();
-        index = cmbProfile.getSelectionModel().getSelectedIndex();
-        Command.Execute(profiles[index].command, txtOutput);
-        enableControls();
+        if (cmdService.isRunning()) {
+            System.out.println("Already running. Nothing to do.");
+        } else {
+            cmdService.reset();
+            cmdService.start();
+        }        
     }
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
-        
-        int index;        
-        disableControls();
-        index = cmbProfile.getSelectionModel().getSelectedIndex();
-        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PULL_UNITTEST], profiles[index].psWorkingDir, txtOutput);
-        enableControls();
+        psService.SetPs1(Profile.ELO_PULL_UNITTEST);
+        if (psService.isRunning()) {
+            System.out.println("Already running. Nothing to do.");
+        } else {
+            psService.reset();
+            psService.start();
+        }        
     }
     
     @FXML
     private void handleEloPullPackage(ActionEvent event) {
-        
-        int index;        
-        disableControls();
-        index = cmbProfile.getSelectionModel().getSelectedIndex();
-        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PULL_PACKAGE], profiles[index].psWorkingDir, txtOutput);
-        enableControls();
+        psService.SetPs1(Profile.ELO_PULL_PACKAGE);
+        if (psService.isRunning()) {
+            System.out.println("Already running. Nothing to do.");
+        } else {
+            psService.reset();
+            psService.start();
+        }        
     }
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
-        
-        int index;        
-        disableControls();
-        index = cmbProfile.getSelectionModel().getSelectedIndex();
-        PowerShell.Execute(profiles[index].powerShell.ps1[Profile.ELO_PREPARE], profiles[index].psWorkingDir, txtOutput);
-        enableControls();
+        psService.SetPs1(Profile.ELO_PREPARE);
+        if (psService.isRunning()) {
+            System.out.println("Already running. Nothing to do.");
+        } else {
+            psService.reset();
+            psService.start();
+        }        
     }
     
     @FXML
@@ -104,6 +112,8 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        cmdService = new CommandService(this);        
+        psService = new PowershellService(this);        
         cmbProfile.getItems().clear();
         JSONObject jobj = JsonUtils.readJson("Profiles.json");
         JSONObject[] jarray = JsonUtils.getArray(jobj, "profiles");        
@@ -130,4 +140,16 @@ public class FXMLDocumentController implements Initializable {
         btnEloPullPackage.setDisable(true);  
     }
     
+    public ComboBox<String> getCmbProfile() {
+        return cmbProfile;
+    }
+
+    public Profile[] getProfiles() {
+        return profiles;
+    }
+
+    public TextArea getTxtOutput() {
+        return txtOutput;
+    }
+        
 }
