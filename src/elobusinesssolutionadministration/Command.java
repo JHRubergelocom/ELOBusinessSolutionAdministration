@@ -78,8 +78,6 @@ class Command {
 
             Http.ShowReport(htmlDoc);
 
-            JOptionPane.showMessageDialog(null, cmdPath + " ausgeführt", 
-                       "Execute", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Programmende"); 
             txtOutput.appendText("Programmende" + "\n");                
 

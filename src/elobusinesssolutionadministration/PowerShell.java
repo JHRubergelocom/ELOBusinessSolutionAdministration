@@ -104,8 +104,6 @@ class PowerShell {
 
             Http.ShowReport(htmlDoc);
 
-            JOptionPane.showMessageDialog(null, ps1Path + " ausgeführt", 
-                       "Execute", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Programmende"); 
             txtOutput.appendText("Programmende" + "\n");                
         } catch (IOException ex) {

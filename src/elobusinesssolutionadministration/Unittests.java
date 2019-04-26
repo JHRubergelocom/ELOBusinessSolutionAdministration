@@ -50,7 +50,7 @@ class Unittests {
         for (Sord s : sordELOappsClientInfo) {
             jsonString = RepoUtils.DownloadDocumentToString(s, ixConn);
             jsonString = jsonString.replaceAll("namespace", "namespace1");
-            JSONObject config = new JSONObject(jsonString);                 
+            JSONObject config = new JSONObject(jsonString);    
             JSONObject web = config.getJSONObject("web");                 
             String webId = web.getString("id");
             if (webId != null)

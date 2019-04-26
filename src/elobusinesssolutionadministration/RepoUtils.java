@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +96,7 @@ class RepoUtils {
                 String url = dv.getUrl();                    
                 InputStream inputStream = ixConn.download(url, 0, -1);
                 try {
-                    in = new BufferedReader(new InputStreamReader(inputStream ));
+                    in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));                    
                     while ((line = in.readLine()) != null) {
                         System.out.println("Gelesene Zeile: " + line);
                         docText = docText.concat(line);
@@ -114,6 +115,8 @@ class RepoUtils {
                     }
                 }
                 docText = docText.replaceAll(bom, "");
+                docText = docText.replaceAll("\b", "");
+                docText = docText.replaceAll("\n", "");
             }            
         } catch (RemoteException ex) {
             ex.printStackTrace();            
