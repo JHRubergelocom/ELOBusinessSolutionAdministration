@@ -30,12 +30,12 @@
     {
       "name": "learning",
       "package": "learning",
-      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
+      "ixUrl": "http://ruberg-learning.dev.elo/ix-Solutions/ix",
       "psWorkingDir": "E:\\Git\\solutions\\learning.git"
     },
     {
       "name": "playground",
-      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
+      "ixUrl": "http://playground.dev.elo/ix-Solutions/ix",
       "psWorkingDir": "E:\\Git\\solutions\\playground.git"
     },
     {

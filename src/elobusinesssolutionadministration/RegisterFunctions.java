@@ -41,6 +41,7 @@ public class RegisterFunctions {
                         String[] rfNames = rfName.split("\\(");
                         rfName = rfNames[0];
                         if (rfName.startsWith("RF_") && !line.contains("RF_ServiceBaseName") 
+                            && !line.endsWith(".")
                             && !line.contains("RF_FunctionName") && !line.contains("RF_MyFunction") 
                              && !line.contains("RF_custom_functions_MyFunction") && !line.contains("RF_custom_services_MyFunction") 
                              && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction") 
