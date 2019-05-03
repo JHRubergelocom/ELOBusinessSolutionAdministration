@@ -118,7 +118,7 @@ public class FXMLDocumentController implements Initializable {
         JSONObject jobj = JsonUtils.readJson("Profiles.json");
         JSONObject[] jarray = JsonUtils.getArray(jobj, "profiles");        
         profiles = new Profile[jarray.length];
-        for (int i = 0; i < jarray.length - 1 ; i++) {
+        for (int i = 0; i < jarray.length; i++) {
             Profile p = new Profile(jobj, jarray, i);  
             cmbProfile.getItems().add(p.name);            
             profiles[i] = p;
