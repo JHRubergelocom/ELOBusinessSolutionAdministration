@@ -6,30 +6,13 @@
 package elobusinesssolutionadministration;
 
 import byps.RemoteException;
-import de.elo.ix.client.DocVersion;
-import de.elo.ix.client.EditInfo;
-import de.elo.ix.client.EditInfoC;
 import de.elo.ix.client.IXConnFactory;
 import de.elo.ix.client.IXConnection;
-import de.elo.ix.client.LockC;
 import de.elo.ix.client.Sord;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
@@ -72,7 +55,7 @@ class Unittests {
         IXConnection ixConn;
         IXConnFactory connFact;        
         try {
-            connFact = new IXConnFactory(profile.ixUrl, "Show Unittests", "1.0");            
+            connFact = new IXConnFactory(profile.getIxUrl(), "Show Unittests", "1.0");            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("IllegalStateException message: " +  ex.getMessage());            
@@ -81,7 +64,7 @@ class Unittests {
         try {
             ixConn = connFact.create(profile.user, profile.pwd, null, null);
         } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.user + "\n IxUrl: " + profile.ixUrl, "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.user + "\n IxUrl: " + profile.getIxUrl(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("RemoteException message: " + ex.getMessage());            
             return;
         }
@@ -105,7 +88,7 @@ class Unittests {
         IXConnection ixConn;
         IXConnFactory connFact;   
         try {
-            connFact = new IXConnFactory(profile.ixUrl, "Show Report Match Unittest", "1.0");            
+            connFact = new IXConnFactory(profile.getIxUrl(), "Show Report Match Unittest", "1.0");            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("IllegalStateException message: " +  ex.getMessage());            
@@ -114,7 +97,7 @@ class Unittests {
         try {
             ixConn = connFact.create(profile.user, profile.pwd, null, null);
         } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.user + "\n IxUrl: " + profile.ixUrl, "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.user + "\n IxUrl: " + profile.getIxUrl(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("RemoteException message: " + ex.getMessage());            
             return;
         }

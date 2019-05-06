@@ -182,14 +182,10 @@ class Http {
         htmlTable += "    <div class='container'>\n";
         htmlTable += "      <table border='2'>\n";
         htmlTable += "        <colgroup>\n";
-        for (String col : cols) {
-            htmlTable += "          <col width='100'>\n";
-        }
+        htmlTable = cols.stream().map((_item) -> "          <col width='100'>\n").reduce(htmlTable, String::concat);
         htmlTable += "        </colgroup>\n";
         htmlTable += "        <tr>\n";
-        for (String col : cols) {
-            htmlTable += "          <td class = 'tdh' align='left' valign='top'>" + col + "</td>\n";
-        }
+        htmlTable = cols.stream().map((col) -> "          <td class = 'tdh' align='left' valign='top'>" + col + "</td>\n").reduce(htmlTable, String::concat);
         htmlTable += "        </tr>\n";
 
         int i = 0;
@@ -203,11 +199,7 @@ class Http {
             }
             htmlTable += "        <tr>\n";
             
-            for (String cell : row) {
-                if(cell.equals("false")) {
-                    td += "r";
-                }
-            }    
+            td = row.stream().filter((cell) -> (cell.equals("false"))).map((_item) -> "r").reduce(td, String::concat);    
             for (String cell : row) {
                 htmlTable += "          <td class = '" + td + "' align='left' valign='top'>" + cell + "</td>\n";
             }
@@ -291,9 +283,9 @@ class Http {
                 reportFile.createNewFile();
             }  
             FileWriter fw = new FileWriter(reportFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(htmlDoc);
-            bw.close();                        
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(htmlDoc);
+            }                        
         } catch (IOException ex) {
             ex.printStackTrace();
         }

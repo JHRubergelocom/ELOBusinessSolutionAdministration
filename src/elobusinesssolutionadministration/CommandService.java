@@ -14,11 +14,16 @@ import javafx.concurrent.Task;
  */
 public class CommandService extends Service<Boolean> {
     
-    private FXMLDocumentController dc;
+    private final FXMLDocumentController dc;
+    private EloCommand ec;
     
     public CommandService(FXMLDocumentController dc) {
-        this.dc = dc;
+        this.dc = dc;        
     }
+    
+    public void SetEloCommand(EloCommand ec) {
+        this.ec = ec;
+    } 
 
     @Override
     protected Task<Boolean> createTask() {
@@ -27,8 +32,10 @@ public class CommandService extends Service<Boolean> {
             protected Boolean call() throws Exception {
                 int index;  
                 dc.disableControls();
-                index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();
-                Command.Execute(dc.getProfiles()[index].command, dc.getTxtOutput());
+                index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
+                if (ec.getType().contentEquals(EloCommand.CMD)) {
+                    EloCommand.Execute(dc.getProfiles()[index].command.getCommand(0), ec ,dc.getTxtOutput(), dc.getProfiles()[index].gitSolutionsDir);
+                }                
                 dc.enableControls();  
                 return true;
             }            

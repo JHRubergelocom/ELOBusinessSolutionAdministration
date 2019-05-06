@@ -128,10 +128,9 @@ class RepoUtils {
         List<Sord> sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
         List<String> docTexts = new ArrayList<>();
         
-        for (Sord s : sordRFInfo) {
-            String docText = DownloadDocumentToString (s, ixConn);                
+        sordRFInfo.stream().map((s) -> DownloadDocumentToString (s, ixConn)).forEachOrdered((docText) -> {                
             docTexts.add(docText);
-        }
+        });
         return docTexts;
         
     }

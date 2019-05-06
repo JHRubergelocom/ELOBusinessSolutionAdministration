@@ -5,12 +5,7 @@
  */
 package elobusinesssolutionadministration;
 
-import byps.RemoteException;
-import de.elo.ix.client.DocVersion;
-import de.elo.ix.client.EditInfo;
-import de.elo.ix.client.EditInfoC;
 import de.elo.ix.client.IXConnection;
-import de.elo.ix.client.LockC;
 import de.elo.ix.client.Sord;
 import java.util.List;
 import java.util.SortedMap;

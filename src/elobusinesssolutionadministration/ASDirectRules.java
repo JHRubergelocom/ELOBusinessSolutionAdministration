@@ -5,15 +5,12 @@
  */
 package elobusinesssolutionadministration;
 
-import de.elo.ix.client.Document;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.io.StringReader;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -32,7 +29,7 @@ class ASDirectRules {
         }
         List<Sord> sordRuleInfo = RepoUtils.FindChildren(parentId, ixConn, true);
         SortedMap<String, Boolean> dicRules = new TreeMap<>();
-        for (Sord s : sordRuleInfo) {            
+        sordRuleInfo.forEach((s) -> {            
             try {
                 String xmlText = RepoUtils.DownloadDocumentToString (s, ixConn);             
                 XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -47,7 +44,7 @@ class ASDirectRules {
                 System.err.println("XPathExpressionException: " +  ex.getMessage()); 
                 ex.printStackTrace();
             }
-        }
+        });
         return dicRules;
     }
     

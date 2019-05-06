@@ -1,69 +1,49 @@
 {
   "profiles": [
     {
-      "name": "common",
-      "ixUrl": "http://ruberg-common.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\common.git"
+      "name": "common"
     },
     {
       "name": "contract",
-      "package": "contract",
-      "ixUrl": "http://ruberg-contract.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\contract.git"
+      "package": "contract"
     },
     {
-      "name": "hr",
-      "ixUrl": "http://ruberg-hr.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\hr.git"
+      "name": "hr"
     },
     {
-      "name": "invoice",
-      "ixUrl": "http://ruberg-invoice.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\invoice.git"
+      "name": "invoice"
     },
     {
       "name": "knowledge",
-      "package": "knowledge",
-      "ixUrl": "http://ruberg-knowledge.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\knowledge.git"
+      "package": "knowledge"
     },
     {
       "name": "learning",
-      "package": "learning",
-      "ixUrl": "http://ruberg-learning.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\learning.git"
+      "package": "learning"
     },
     {
-      "name": "playground",
-      "ixUrl": "http://playground.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\playground.git"
+      "name": "playground"
     },
     {
-      "name": "productivity",
-      "ixUrl": "http://ruberg-productivity.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\productivity.git"
+      "name": "productivity"
     },
     {
-      "name": "pubsec",
-      "ixUrl": "http://ruberg-pubsec.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\pubsec.git"
+      "name": "pubsec"
     },
     {
       "name": "recruiting",
-      "package": "recruiting",
-      "ixUrl": "http://ruberg-recruiting.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\hr_recruiting.git"
+      "package": "recruiting"
     },
     {
       "name": "visitor",
-      "package": "visitor",
-      "ixUrl": "http://ruberg-visitor.dev.elo/ix-Solutions/ix",
-      "psWorkingDir": "E:\\Git\\solutions\\visitor.git"
+      "package": "visitor"
     }
   ],
+  "gitSolutionsDir": "E:\\Git\\solutions",
+  "gitUser": "ruberg",  
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
   "powershell": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
-  "command": {"cmd": "gitPullAll", "workingDir": "E:\\Git\\solutions"},
+  "command": {"cmd": "gitPullAll"},
   "user": "Administrator",
   "pwd": "elo"
 }

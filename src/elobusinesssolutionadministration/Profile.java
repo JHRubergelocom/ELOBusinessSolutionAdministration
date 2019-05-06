@@ -1,6 +1,5 @@
 package elobusinesssolutionadministration;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,21 +20,21 @@ public class Profile {
     
     public String name;
     public String eloPackage;
-    public String ixUrl;
-    public String psWorkingDir;
+    public String gitSolutionsDir;
+    public String gitUser;
     public String arcPath;
-    public PowerShell powerShell;
-    public Command command;
+    public EloCommand powershell;
+    public EloCommand command;
     public String user;
     public String pwd;
 
     Profile(JSONObject jobj, JSONObject[] jarray, int index) {
         name = "";
         eloPackage = "";
-        ixUrl = "";
-        psWorkingDir = "";
+        gitSolutionsDir = "";
+        gitUser = "";
         arcPath = "";
-        powerShell = null;
+        powershell = null;
         command = null;
         user = "";
         pwd = "";
@@ -48,11 +47,11 @@ public class Profile {
         } catch (JSONException ex) {            
         }
         try {
-            ixUrl = jarray[index].getString("ixUrl");            
+            gitSolutionsDir = jobj.getString("gitSolutionsDir");            
         } catch (JSONException ex) {            
         }
         try {
-            psWorkingDir = jarray[index].getString("psWorkingDir");            
+            gitUser = jobj.getString("gitUser");            
         } catch (JSONException ex) {            
         }
         try {
@@ -61,12 +60,12 @@ public class Profile {
         }
         try {
             JSONObject jps1 = jobj.getJSONObject("powershell");               
-            powerShell = new PowerShell(jps1);                      
+            powershell = new EloCommand(jps1, EloCommand.PS1);                      
         } catch (JSONException ex) {            
         }
         try {
             JSONObject jcommand = jobj.getJSONObject("command");
-            command = new Command(jcommand);
+            command = new EloCommand(jcommand, EloCommand.CMD);
         } catch (JSONException ex) {            
         }
         try {
@@ -77,5 +76,15 @@ public class Profile {
             pwd = jobj.getString("pwd");              
         } catch (JSONException ex) {            
         }
+    }
+    
+    public String getIxUrl() {
+        
+        if(name.contains("playground")) {
+            return "http://playground.dev.elo/ix-Solutions/ix";
+        }
+        
+        
+        return  "http://" + gitUser + "-" + name + ".dev.elo/ix-Solutions/ix";
     }
 }

@@ -14,13 +14,18 @@ import javafx.concurrent.Task;
  */
 public class PowershellService extends Service <Boolean>{
     
-    private FXMLDocumentController dc;
+    private final FXMLDocumentController dc;    
+    private EloCommand ec;
     private int indexPs1;
     
     public PowershellService(FXMLDocumentController dc) {
         this.dc = dc;        
     }
     
+    public void SetEloCommand(EloCommand ec) {
+        this.ec = ec;
+    } 
+
     public void SetPs1(int indexPs1) {
         this.indexPs1 = indexPs1;        
     }
@@ -33,7 +38,9 @@ public class PowershellService extends Service <Boolean>{
                 int index;        
                 dc.disableControls();
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();
-                PowerShell.Execute(dc.getProfiles()[index].powerShell.ps1[indexPs1], dc.getProfiles()[index].psWorkingDir, dc.getTxtOutput());
+                if (ec.getType().contentEquals(EloCommand.PS1)) {
+                    EloCommand.Execute(dc.getProfiles()[index].powershell.getCommand(indexPs1), ec ,dc.getTxtOutput(), dc.getProfiles()[index].gitSolutionsDir + "\\" + dc.getProfiles()[index].name + ".git");
+                }                
                 dc.enableControls();
                 return true;
             }            

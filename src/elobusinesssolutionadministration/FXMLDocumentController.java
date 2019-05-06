@@ -7,8 +7,6 @@ package elobusinesssolutionadministration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,6 +48,10 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
+
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();    
+        cmdService.SetEloCommand(profiles[index].command);
         if (cmdService.isRunning()) {
             System.out.println("Already running. Nothing to do.");
         } else {
@@ -60,6 +62,10 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
+
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();            
+        psService.SetEloCommand(profiles[index].powershell);
         psService.SetPs1(Profile.ELO_PULL_UNITTEST);
         if (psService.isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -71,6 +77,10 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleEloPullPackage(ActionEvent event) {
+        
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();            
+        psService.SetEloCommand(profiles[index].powershell);
         psService.SetPs1(Profile.ELO_PULL_PACKAGE);
         if (psService.isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -82,6 +92,10 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
+
+        int index;        
+        index = cmbProfile.getSelectionModel().getSelectedIndex();            
+        psService.SetEloCommand(profiles[index].powershell);        
         psService.SetPs1(Profile.ELO_PREPARE);
         if (psService.isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -113,7 +127,8 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         
         cmdService = new CommandService(this);        
-        psService = new PowershellService(this);        
+        psService = new PowershellService(this);  
+        
         cmbProfile.getItems().clear();
         JSONObject jobj = JsonUtils.readJson("Profiles.json");
         JSONObject[] jarray = JsonUtils.getArray(jobj, "profiles");        
