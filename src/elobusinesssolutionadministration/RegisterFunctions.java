@@ -24,32 +24,26 @@ public class RegisterFunctions {
         }
         List<Sord> sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
         SortedMap<String, Boolean> dicRFs = new TreeMap<>();
-        for (Sord s : sordRFInfo) {
-            String jsText = RepoUtils.DownloadDocumentToString(s, ixConn);
-            if (jsText.length() > 0 ) {
-                jsText = jsText.replaceAll("\b", "");                
-                jsText = jsText.replaceAll("\n", " ");                
-                String[] jsLines = jsText.split(" ");
-                for (String line : jsLines) {
-                    if (line.contains("RF_")) {
-                        String rfName = line;
-                        String[] rfNames = rfName.split("\\(");
-                        rfName = rfNames[0];
-                        if (rfName.startsWith("RF_") && !line.contains("RF_ServiceBaseName") 
-                            && !line.endsWith(".") && !line.endsWith(",")
-                            && !line.contains("RF_FunctionName") && !line.contains("RF_MyFunction") 
-                             && !line.contains("RF_custom_functions_MyFunction") && !line.contains("RF_custom_services_MyFunction") 
-                             && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction") 
-                             && !line.contains("RF_sol_service_ScriptVersionReportCreate")) {
-                            if (!dicRFs.containsKey(rfName)) {
-                                boolean match = Unittests.Match(ixConn, rfName, eloPackage, jsTexts);
-                                dicRFs.put(rfName, match);
-                            }
+        sordRFInfo.stream().map((s) -> RepoUtils.DownloadDocumentToString(s, ixConn)).filter((jsText) -> (jsText.length() > 0 )).map((jsText) -> jsText.replaceAll("\b", "")).map((jsText) -> jsText.replaceAll("\n", " ")).map((jsText) -> jsText.split(" ")).forEachOrdered((String[] jsLines) -> {
+            for (String line : jsLines) {
+                if (line.contains("RF_")) {
+                    String rfName = line;
+                    String[] rfNames = rfName.split("\\(");
+                    rfName = rfNames[0];
+                    if (!line.endsWith(",")
+                            && rfName.startsWith("RF_") && !line.contains("RF_ServiceBaseName") && !line.endsWith(".")
+                            && !line.contains("RF_FunctionName") && !line.contains("RF_MyFunction")
+                            && !line.contains("RF_custom_functions_MyFunction") && !line.contains("RF_custom_services_MyFunction")
+                            && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction")
+                            && !line.contains("RF_sol_service_ScriptVersionReportCreate")) {
+                        if (!dicRFs.containsKey(rfName)) {
+                            boolean match = Unittests.Match(ixConn, rfName, eloPackage, jsTexts);
+                            dicRFs.put(rfName, match);
                         }
                     }
                 }                    
             }
-        }        
+        });        
         return dicRFs;
     }
     

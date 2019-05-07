@@ -26,6 +26,34 @@ public class EloService extends Service<Boolean>{
         this.ec = ec;
         this.indexEloCommand = indexEloCommand;        
     } 
+    
+    public void Run(String typeCommand, int indexEloCommand) {
+        int index;        
+        index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();  
+        
+        switch(typeCommand) {
+        case EloCommand.CMD:
+            SetEloCommand(dc.getProfiles()[index].getCommand(), indexEloCommand);
+            break;
+        case EloCommand.PS1:
+            SetEloCommand(dc.getProfiles()[index].getPowershell(), indexEloCommand);        
+            break;
+        case EloCommand.SHOWREPORTMATCHUNITTEST:
+            SetEloCommand(new EloCommand(EloCommand.SHOWREPORTMATCHUNITTEST),indexEloCommand);
+            break;
+        case EloCommand.SHOWUNITTESTSAPP:
+            SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
+            break;
+        }        
+        if (isRunning()) {
+            System.out.println("Already running. Nothing to do.");
+        } else {
+            reset();
+            start();
+        }   
+        
+    }
+
 
     @Override
     protected Task<Boolean> createTask() {

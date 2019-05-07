@@ -31,32 +31,32 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnShowUnittest(ActionEvent event) {
-        RunEloService(EloCommand.SHOWUNITTESTSAPP, 0);
+        eloService.Run(EloCommand.SHOWUNITTESTSAPP, 0);
     }
     
     @FXML
     private void handleBtnMatchUnittest(ActionEvent event) {
-        RunEloService(EloCommand.SHOWREPORTMATCHUNITTEST, 0);
+        eloService.Run(EloCommand.SHOWREPORTMATCHUNITTEST, 0);
     }    
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
-        RunEloService(EloCommand.CMD, Profile.GIT_PULL_ALL);
+        eloService.Run(EloCommand.CMD, Profile.GIT_PULL_ALL);
     }
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
-        RunEloService(EloCommand.PS1, Profile.ELO_PULL_UNITTEST);        
+        eloService.Run(EloCommand.PS1, Profile.ELO_PULL_UNITTEST);        
     }
     
     @FXML
     private void handleEloPullPackage(ActionEvent event) {
-        RunEloService(EloCommand.PS1, Profile.ELO_PULL_PACKAGE);                
+        eloService.Run(EloCommand.PS1, Profile.ELO_PULL_PACKAGE);                
     }
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
-        RunEloService(EloCommand.PS1, Profile.ELO_PREPARE);                
+        eloService.Run(EloCommand.PS1, Profile.ELO_PREPARE);                
     }
     
     @FXML
@@ -132,31 +132,4 @@ public class FXMLDocumentController implements Initializable {
         return txtOutput;
     }
     
-    private void RunEloService(String typeCommand, int indexEloCommand) {
-        int index;        
-        index = cmbProfile.getSelectionModel().getSelectedIndex();  
-        
-        switch(typeCommand) {
-        case EloCommand.CMD:
-            eloService.SetEloCommand(profiles[index].getCommand(), indexEloCommand);
-            break;
-        case EloCommand.PS1:
-            eloService.SetEloCommand(profiles[index].getPowershell(), indexEloCommand);        
-            break;
-        case EloCommand.SHOWREPORTMATCHUNITTEST:
-            eloService.SetEloCommand(new EloCommand(EloCommand.SHOWREPORTMATCHUNITTEST),indexEloCommand);
-            break;
-        case EloCommand.SHOWUNITTESTSAPP:
-            eloService.SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
-            break;
-        }        
-        if (eloService.isRunning()) {
-            System.out.println("Already running. Nothing to do.");
-        } else {
-            eloService.reset();
-            eloService.start();
-        }   
-        
-    }
-        
 }

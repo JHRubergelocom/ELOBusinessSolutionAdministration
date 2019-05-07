@@ -34,7 +34,7 @@ public class EloCommand {
     private String typeCommand;
 
     EloCommand(JSONObject jeloCommand, String commandType) {   
-        this.typeCommand = commandType;
+        typeCommand = commandType;
 
         JSONArray jarr = jeloCommand.getJSONArray(commandType);
         cmdCommand = new String[jarr.length()];
@@ -47,7 +47,7 @@ public class EloCommand {
     }
     
     EloCommand(String commandType) {   
-        this.typeCommand = commandType;
+        typeCommand = commandType;
     }
 
     String getCommand(int index) {
