@@ -5,8 +5,6 @@
         <group>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/ActionDefinitions.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/ELOBusinessSolutionAdministration.java</file>
-            <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/PowershellService.java</file>
-            <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/CommandService.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/EloCommand.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/Unittests.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/JsonUtils.java</file>
@@ -16,6 +14,7 @@
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/FXMLDocument.fxml</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/Http.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/Profiles.json</file>
+            <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/EloService.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/RepoUtils.java</file>
             <file>file:/C:/Users/Ruberg/Documents/NetBeansProjects/ELOBusinessSolutionAdministration/src/elobusinesssolutionadministration/ASDirectRules.java</file>
         </group>

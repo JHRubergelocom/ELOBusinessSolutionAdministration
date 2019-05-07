@@ -43,7 +43,7 @@
   "gitUser": "ruberg",  
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
   "powershell": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
-  "command": {"cmd": "gitPullAll"},
+  "command": {"cmd": ["gitPullAll"]},
   "user": "Administrator",
   "pwd": "elo"
 }

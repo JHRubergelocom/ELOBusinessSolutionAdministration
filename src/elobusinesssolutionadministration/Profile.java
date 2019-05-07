@@ -18,15 +18,18 @@ public class Profile {
     static final int ELO_PULL_PACKAGE = 1;
     static final int ELO_PREPARE = 2;
     
-    public String name;
-    public String eloPackage;
-    public String gitSolutionsDir;
-    public String gitUser;
-    public String arcPath;
-    public EloCommand powershell;
-    public EloCommand command;
-    public String user;
-    public String pwd;
+    static final int GIT_PULL_ALL = 0;
+    
+    
+    private String name;
+    private String eloPackage;
+    private String gitSolutionsDir;
+    private String gitUser;
+    private String arcPath;
+    private EloCommand powershell;
+    private EloCommand command;
+    private String user;
+    private String pwd;
 
     Profile(JSONObject jobj, JSONObject[] jarray, int index) {
         name = "";
@@ -78,13 +81,38 @@ public class Profile {
         }
     }
     
-    public String getIxUrl() {
-        
+    public EloCommand getCommand() {
+        return command;
+    }
+    
+    public EloCommand getPowershell() {
+        return powershell;
+    }
+    
+    public String getGitSolutionsDir() {
+        return gitSolutionsDir;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getUser() {
+        return user;
+    }
+    
+    public String getPwd() {
+        return pwd;
+    }
+
+    public String getEloPackage() {
+        return eloPackage;
+    }
+
+    public String getIxUrl() {        
         if(name.contains("playground")) {
             return "http://playground.dev.elo/ix-Solutions/ix";
         }
-        
-        
         return  "http://" + gitUser + "-" + name + ".dev.elo/ix-Solutions/ix";
     }
 }

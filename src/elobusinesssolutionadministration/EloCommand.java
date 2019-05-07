@@ -27,40 +27,31 @@ import org.json.JSONObject;
 public class EloCommand {
     static final String CMD = "cmd";
     static final String PS1 = "ps1";
+    static final String SHOWREPORTMATCHUNITTEST = "ShowReportMatchUnittest";
+    static final String SHOWUNITTESTSAPP = "ShowUnittestsApp";
     
-    private String cmdCommand;
-    private String[] ps1Command;
+    private String[] cmdCommand;
     private String typeCommand;
 
     EloCommand(JSONObject jeloCommand, String commandType) {   
         this.typeCommand = commandType;
-        if (commandType.contentEquals(CMD)) {
-            cmdCommand = "";
-            try {
-                cmdCommand = jeloCommand.getString("cmd");            
-            } catch (JSONException ex) {            
-            }
-            
-        } else if (commandType.contentEquals(PS1)) {
-            JSONArray jarr = jeloCommand.getJSONArray("ps1");
-            ps1Command = new String[jarr.length()];
-            try {
-                for (int i = 0; i < jarr.length(); i++) {
-                    ps1Command[i] = jarr.getString(i);
-                }             
-            } catch (JSONException ex) {            
-            }
-    
+
+        JSONArray jarr = jeloCommand.getJSONArray(commandType);
+        cmdCommand = new String[jarr.length()];
+        try {
+            for (int i = 0; i < jarr.length(); i++) {
+                cmdCommand[i] = jarr.getString(i);
+            }             
+        } catch (JSONException ex) {            
         }
+    }
+    
+    EloCommand(String commandType) {   
+        this.typeCommand = commandType;
     }
 
     String getCommand(int index) {
-        if (typeCommand.contentEquals(CMD)) {
-            return cmdCommand;
-        } else if (typeCommand.contentEquals(PS1)) {
-            return ps1Command[index];
-        }
-        return "";
+        return cmdCommand[index];
     } 
     
     String getType() {
@@ -72,23 +63,32 @@ public class EloCommand {
         try {
             txtOutput.setText("");
             ProcessBuilder pb = new ProcessBuilder();  
-            if (ec.getType().contentEquals(CMD)) {
+            
+            switch(ec.getType()) {
+            case CMD:
                 eloCommand = workingDir + "\\" + eloCommand + ".cmd";
-            } else if (ec.getType().contentEquals(PS1)) {
+                break;
+            case PS1:
                 eloCommand = workingDir + "\\" + eloCommand + ".ps1";
-            }            
+                break;
+            }
+            
             if (!new File (eloCommand).canExecute()) {
                 JOptionPane.showMessageDialog(null, eloCommand + " kann nicht ausgef\u00FChrt werden!", 
                            "canExecute", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println(eloCommand + " kann nicht ausgef\u00FChrt werden!");
                 txtOutput.appendText(eloCommand + " kann nicht ausgef\u00FChrt werden!" + "\n");                
                 return;                 
-            }                        
-            if (ec.getType().contentEquals(CMD)) {
+            }      
+            
+            switch(ec.getType()) {
+            case CMD:
                 pb = new ProcessBuilder(eloCommand);            
-            } else if (ec.getType().contentEquals(PS1)) {
+                break;
+            case PS1:
                 pb = new ProcessBuilder("powershell.exe", eloCommand);                
-            }
+                break;
+            }            
             
             pb.directory(new File (workingDir));
             Process p; 
