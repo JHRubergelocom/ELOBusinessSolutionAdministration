@@ -64,14 +64,7 @@ public class EloCommand {
             txtOutput.setText("");
             ProcessBuilder pb = new ProcessBuilder();  
             
-            switch(ec.getType()) {
-            case CMD:
-                eloCommand = workingDir + "\\" + eloCommand + ".cmd";
-                break;
-            case PS1:
-                eloCommand = workingDir + "\\" + eloCommand + ".ps1";
-                break;
-            }
+            eloCommand = workingDir + "\\" + eloCommand + "." + ec.getType();
             
             if (!new File (eloCommand).canExecute()) {
                 JOptionPane.showMessageDialog(null, eloCommand + " kann nicht ausgef\u00FChrt werden!", 
@@ -82,12 +75,12 @@ public class EloCommand {
             }      
             
             switch(ec.getType()) {
-            case CMD:
-                pb = new ProcessBuilder(eloCommand);            
-                break;
-            case PS1:
-                pb = new ProcessBuilder("powershell.exe", eloCommand);                
-                break;
+                case CMD:
+                    pb = new ProcessBuilder(eloCommand);            
+                    break;
+                case PS1:
+                    pb = new ProcessBuilder("powershell.exe", eloCommand);                
+                    break;
             }            
             
             pb.directory(new File (workingDir));

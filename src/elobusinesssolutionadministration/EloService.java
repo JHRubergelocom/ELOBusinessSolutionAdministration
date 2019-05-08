@@ -32,18 +32,18 @@ public class EloService extends Service<Boolean>{
         index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();  
         
         switch(typeCommand) {
-        case EloCommand.CMD:
-            SetEloCommand(dc.getProfiles()[index].getCommand(), indexEloCommand);
-            break;
-        case EloCommand.PS1:
-            SetEloCommand(dc.getProfiles()[index].getPowershell(), indexEloCommand);        
-            break;
-        case EloCommand.SHOWREPORTMATCHUNITTEST:
-            SetEloCommand(new EloCommand(EloCommand.SHOWREPORTMATCHUNITTEST),indexEloCommand);
-            break;
-        case EloCommand.SHOWUNITTESTSAPP:
-            SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
-            break;
+            case EloCommand.CMD:
+                SetEloCommand(dc.getProfiles().getCommand(), indexEloCommand);
+                break;
+            case EloCommand.PS1:
+                SetEloCommand(dc.getProfiles().getPowershell(), indexEloCommand);        
+                break;
+            case EloCommand.SHOWREPORTMATCHUNITTEST:
+                SetEloCommand(new EloCommand(EloCommand.SHOWREPORTMATCHUNITTEST),indexEloCommand);
+                break;
+            case EloCommand.SHOWUNITTESTSAPP:
+                SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
+                break;
         }        
         if (isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -64,18 +64,18 @@ public class EloService extends Service<Boolean>{
                 dc.disableControls();
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
                 switch(ec.getType()) {
-                case EloCommand.CMD:
-                    EloCommand.Execute(dc.getProfiles()[index].getCommand().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles()[index].getGitSolutionsDir());
-                    break;
-                case EloCommand.PS1:
-                    EloCommand.Execute(dc.getProfiles()[index].getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles()[index].getGitSolutionsDir() + "\\" + dc.getProfiles()[index].getName() + ".git");                    
-                    break;
-                case EloCommand.SHOWREPORTMATCHUNITTEST:
-                    Unittests.ShowReportMatchUnittest(dc.getProfiles()[index]);
-                    break;
-                case EloCommand.SHOWUNITTESTSAPP:
-                    Unittests.ShowUnittestsApp(dc.getProfiles()[index]);
-                    break;
+                    case EloCommand.CMD:
+                        EloCommand.Execute(dc.getProfiles().getCommand().getCommand(indexEloCommand), ec, dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
+                        break;
+                    case EloCommand.PS1:
+                        EloCommand.Execute(dc.getProfiles().getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getProfile(index).getName() + ".git");                    
+                        break;
+                    case EloCommand.SHOWREPORTMATCHUNITTEST:
+                        Unittests.ShowReportMatchUnittest(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.SHOWUNITTESTSAPP:
+                        Unittests.ShowUnittestsApp(dc.getProfiles(), index);
+                        break;
                 }
                 dc.enableControls();  
                 return true;

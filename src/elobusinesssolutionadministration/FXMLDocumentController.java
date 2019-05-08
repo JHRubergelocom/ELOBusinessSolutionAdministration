@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
-import org.json.JSONObject;
 
 
 
@@ -25,8 +24,7 @@ public class FXMLDocumentController implements Initializable {
     
     
     
-    private Profile[] profiles = null;
-    
+    private Profiles profiles = null;    
     private EloService eloService = null;
     
     @FXML
@@ -41,22 +39,22 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
-        eloService.Run(EloCommand.CMD, Profile.GIT_PULL_ALL);
+        eloService.Run(EloCommand.CMD, Profiles.GIT_PULL_ALL);
     }
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profile.ELO_PULL_UNITTEST);        
+        eloService.Run(EloCommand.PS1, Profiles.ELO_PULL_UNITTEST);        
     }
     
     @FXML
     private void handleEloPullPackage(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profile.ELO_PULL_PACKAGE);                
+        eloService.Run(EloCommand.PS1, Profiles.ELO_PULL_PACKAGE);                
     }
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profile.ELO_PREPARE);                
+        eloService.Run(EloCommand.PS1, Profiles.ELO_PREPARE);                
     }
     
     @FXML
@@ -86,16 +84,12 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        profiles = new Profiles("Profiles.json");
         eloService = new EloService(this);        
         
         cmbProfile.getItems().clear();
-        JSONObject jobj = JsonUtils.readJson("Profiles.json");
-        JSONObject[] jarray = JsonUtils.getArray(jobj, "profiles");        
-        profiles = new Profile[jarray.length];
-        for (int i = 0; i < jarray.length; i++) {
-            Profile p = new Profile(jobj, jarray, i);  
-            cmbProfile.getItems().add(p.getName());            
-            profiles[i] = p;
+        for (int i = 0; i < profiles.getLength(); i++) {
+            cmbProfile.getItems().add(profiles.getProfile(i).getName());            
         } 
         cmbProfile.getSelectionModel().select(0);        
     }  
@@ -124,12 +118,11 @@ public class FXMLDocumentController implements Initializable {
         return cmbProfile;
     }
 
-    public Profile[] getProfiles() {
-        return profiles;
-    }
-
     public TextArea getTxtOutput() {
         return txtOutput;
     }
     
+    public Profiles getProfiles() {
+        return profiles;
+    }
 }

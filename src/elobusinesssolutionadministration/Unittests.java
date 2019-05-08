@@ -27,7 +27,7 @@ class Unittests {
         List<Sord> sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
         String configApp = "";
         String configId = "";
-        String jsonString = "";
+        String jsonString;
         
         Map<String, String> dicApp = new HashMap<>();
         for (Sord s : sordELOappsClientInfo) {
@@ -51,20 +51,20 @@ class Unittests {
         return dicApp;
     }    
 
-    static void ShowUnittestsApp(Profile profile) { 
+    static void ShowUnittestsApp(Profiles profiles, int index) { 
         IXConnection ixConn;
         IXConnFactory connFact;        
         try {
-            connFact = new IXConnFactory(profile.getIxUrl(), "Show Unittests", "1.0");            
+            connFact = new IXConnFactory(profiles.getIxUrl(index), "Show Unittests", "1.0");            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("IllegalStateException message: " +  ex.getMessage());            
             return;
         }
         try {
-            ixConn = connFact.create(profile.getUser(), profile.getPwd(), null, null);
+            ixConn = connFact.create(profiles.getUser(), profiles.getPwd(), null, null);
         } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.getUser() + "\n IxUrl: " + profile.getIxUrl(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profiles.getUser() + "\n IxUrl: " + profiles.getIxUrl(index), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("RemoteException message: " + ex.getMessage());            
             return;
         }
@@ -83,29 +83,29 @@ class Unittests {
         Http.OpenUrl(appUrl);  
     }
 
-    static void ShowReportMatchUnittest(Profile profile) {
+    static void ShowReportMatchUnittest(Profiles profiles, int index) {
         
         IXConnection ixConn;
         IXConnFactory connFact;   
         try {
-            connFact = new IXConnFactory(profile.getIxUrl(), "Show Report Match Unittest", "1.0");            
+            connFact = new IXConnFactory(profiles.getIxUrl(index), "Show Report Match Unittest", "1.0");            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("IllegalStateException message: " +  ex.getMessage());            
             return;
         }
         try {
-            ixConn = connFact.create(profile.getUser(), profile.getPwd(), null, null);
+            ixConn = connFact.create(profiles.getUser(), profiles.getPwd(), null, null);
         } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profile.getUser() + "\n IxUrl: " + profile.getIxUrl(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profiles.getUser() + "\n IxUrl: " + profiles.getIxUrl(index), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("RemoteException message: " + ex.getMessage());            
             return;
         }
         
         List<String> jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
-        SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profile.getEloPackage());        
-        SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profile.getEloPackage());
-        SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profile.getEloPackage());
+        SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackage(index));        
+        SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackage(index));
+        SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackage(index));
         String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
         Http.ShowReport(htmlDoc);
     }
