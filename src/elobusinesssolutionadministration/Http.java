@@ -23,7 +23,6 @@ import java.util.SortedMap;
  * @author ruberg
  */
 class Http {
-
     static void OpenUrl(String url) {
         if(java.awt.Desktop.isDesktopSupported() ) {
         java.awt.Desktop desktop = java.awt.Desktop.getDesktop();

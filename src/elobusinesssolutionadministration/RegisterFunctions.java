@@ -15,8 +15,7 @@ import java.util.TreeMap;
  *
  * @author ruberg
  */
-public class RegisterFunctions {
-    
+public class RegisterFunctions {    
     public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, List<String> jsTexts, String eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/IndexServer Scripting Base";
         if (eloPackage.equals("")) {

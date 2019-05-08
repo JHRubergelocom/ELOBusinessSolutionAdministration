@@ -21,7 +21,6 @@ import org.xml.sax.InputSource;
  * @author ruberg
  */
 class ASDirectRules {
-
     static SortedMap<String, Boolean> GetRules(IXConnection ixConn, List<String> jsTexts, String eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/ELOas Base/Direct";
         if (eloPackage.equals("")) {
@@ -46,6 +45,5 @@ class ASDirectRules {
             }
         });
         return dicRules;
-    }
-    
+    }    
 }

@@ -14,8 +14,6 @@ import org.json.JSONObject;
  * @author ruberg
  */
 public class Profile {
-    
-    
     private String name;
     private String eloPackage;
 

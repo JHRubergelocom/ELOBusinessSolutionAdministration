@@ -31,8 +31,7 @@ public class Profiles {
     private EloCommand powershell;
     private EloCommand command;
     private String user;
-    private String pwd;
-    
+    private String pwd;    
     
     Profiles(String jsonFile) {
         profiles = null;
@@ -132,20 +131,19 @@ public class Profiles {
     }
 
     public String getIxUrl(int index) {   
-        Profile p = profiles[index];
-        if(p.getName().contains("playground")) {
+        if(profiles[index].getName().contains("playground")) {
             return "http://playground.dev.elo/ix-Solutions/ix";
         }
-        return  "http://" + gitUser + "-" + p.getName() + ".dev.elo/ix-Solutions/ix";
+        return  "http://" + gitUser + "-" + profiles[index].getName() + ".dev.elo/ix-Solutions/ix";
     }
     
     public int getLength() {
       return profiles.length;  
     } 
-    
-    public Profile getProfile(int index) {
-      return profiles[index];
-    } 
+
+    public String getName(int index) {
+        return profiles[index].getName();
+    }
     
     public String getEloPackage(int index) {
         return profiles[index].getEloPackage();

@@ -11,8 +11,7 @@ import org.json.JSONObject;
  *
  * @author ruberg
  */
-public class JsonUtils {
-    
+public class JsonUtils {    
     public static JSONObject[] getArray (JSONObject jobj, String key) {
         JSONArray jarr = jobj.getJSONArray(key);
         JSONObject jobjs[] = new JSONObject[jarr.length()];

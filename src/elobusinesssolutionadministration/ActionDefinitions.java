@@ -16,7 +16,6 @@ import java.util.TreeMap;
  * @author ruberg
  */
 class ActionDefinitions {
-
     static SortedMap<String, Boolean> GetActionDefs(IXConnection ixConn, List<String> jsTexts, String eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/Action definitions";
         if (eloPackage.equals("")) {

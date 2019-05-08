@@ -12,8 +12,7 @@ import javafx.concurrent.Task;
  *
  * @author ruberg
  */
-public class EloService extends Service<Boolean>{
-    
+public class EloService extends Service<Boolean>{    
     private final FXMLDocumentController dc;
     private EloCommand ec;
     private int indexEloCommand;
@@ -44,6 +43,18 @@ public class EloService extends Service<Boolean>{
             case EloCommand.SHOWUNITTESTSAPP:
                 SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
                 break;
+            case EloCommand.STARTADMINCONSOLE:
+                SetEloCommand(new EloCommand(EloCommand.STARTADMINCONSOLE),indexEloCommand);
+                break;
+            case EloCommand.STARTAPPMANAGER:
+                SetEloCommand(new EloCommand(EloCommand.STARTAPPMANAGER),indexEloCommand);
+                break;
+            case EloCommand.STARTWEBCLIENT:
+                SetEloCommand(new EloCommand(EloCommand.STARTWEBCLIENT),indexEloCommand);
+                break;
+            case EloCommand.STARTKNOWLEDGEBOARD:
+                SetEloCommand(new EloCommand(EloCommand.STARTKNOWLEDGEBOARD),indexEloCommand);
+                break;
         }        
         if (isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -61,14 +72,14 @@ public class EloService extends Service<Boolean>{
             @Override
             protected Boolean call() throws Exception {
                 int index;  
-                dc.disableControls();
+                dc.setDisableControls(true);
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
                 switch(ec.getType()) {
                     case EloCommand.CMD:
                         EloCommand.Execute(dc.getProfiles().getCommand().getCommand(indexEloCommand), ec, dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
                         break;
                     case EloCommand.PS1:
-                        EloCommand.Execute(dc.getProfiles().getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getProfile(index).getName() + ".git");                    
+                        EloCommand.Execute(dc.getProfiles().getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index) + ".git");                    
                         break;
                     case EloCommand.SHOWREPORTMATCHUNITTEST:
                         Unittests.ShowReportMatchUnittest(dc.getProfiles(), index);
@@ -76,8 +87,20 @@ public class EloService extends Service<Boolean>{
                     case EloCommand.SHOWUNITTESTSAPP:
                         Unittests.ShowUnittestsApp(dc.getProfiles(), index);
                         break;
+                    case EloCommand.STARTADMINCONSOLE:
+                        AdminConsole.StartAdminConsole(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.STARTAPPMANAGER:
+                        AppManager.StartAppManager(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.STARTWEBCLIENT:
+                        Webclient.StartWebclient(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.STARTKNOWLEDGEBOARD:
+                        KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
+                        break;
                 }
-                dc.enableControls();  
+                dc.setDisableControls(false);
                 return true;
             }            
         };        

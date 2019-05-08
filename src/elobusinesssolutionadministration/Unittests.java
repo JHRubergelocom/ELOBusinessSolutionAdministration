@@ -5,23 +5,19 @@
  */
 package elobusinesssolutionadministration;
 
-import byps.RemoteException;
-import de.elo.ix.client.IXConnFactory;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
  *
  * @author ruberg
  */
-class Unittests {
-    
+class Unittests {    
     static Map<String, String> GetUnittestApp(IXConnection ixConn) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/development/ELOapps/ClientInfos";
         List<Sord> sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
@@ -53,61 +49,39 @@ class Unittests {
 
     static void ShowUnittestsApp(Profiles profiles, int index) { 
         IXConnection ixConn;
-        IXConnFactory connFact;        
         try {
-            connFact = new IXConnFactory(profiles.getIxUrl(index), "Show Unittests", "1.0");            
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("IllegalStateException message: " +  ex.getMessage());            
-            return;
-        }
-        try {
-            ixConn = connFact.create(profiles.getUser(), profiles.getPwd(), null, null);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profiles.getUser() + "\n IxUrl: " + profiles.getIxUrl(index), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("RemoteException message: " + ex.getMessage());            
-            return;
-        }
-        String ticket = ixConn.getLoginResult().getClientInfo().getTicket();            
-        String ixUrl = ixConn.getEndpointUrl();
-        String appUrl = ixUrl.replaceAll("ix-", "wf-");
+            ixConn = Connection.getIxConnection(profiles, index);
+            String ticket = ixConn.getLoginResult().getClientInfo().getTicket();            
+            String ixUrl = ixConn.getEndpointUrl();
+            String appUrl = ixUrl.replaceAll("ix-", "wf-");
 
-        appUrl = appUrl.replaceAll("/ix", "/apps/app");
-        appUrl = appUrl + "/";
-        Map<String, String> dicApp = Unittests.GetUnittestApp(ixConn);
-        appUrl = appUrl + dicApp.get("configApp");
-        appUrl = appUrl + "/?lang=de";
-        appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
-        appUrl = appUrl + "&ticket=" + ticket;
-        appUrl = appUrl + "&timezone=Europe%2FBerlin";
-        Http.OpenUrl(appUrl);  
+            appUrl = appUrl.replaceAll("/ix", "/apps/app");
+            appUrl = appUrl + "/";
+            Map<String, String> dicApp = GetUnittestApp(ixConn);
+            appUrl = appUrl + dicApp.get("configApp");
+            appUrl = appUrl + "/?lang=de";
+            appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
+            appUrl = appUrl + "&ticket=" + ticket;
+            appUrl = appUrl + "&timezone=Europe%2FBerlin";
+            Http.OpenUrl(appUrl);              
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    static void ShowReportMatchUnittest(Profiles profiles, int index) {
-        
-        IXConnection ixConn;
-        IXConnFactory connFact;   
+    static void ShowReportMatchUnittest(Profiles profiles, int index) {        
+        IXConnection ixConn;   
         try {
-            connFact = new IXConnFactory(profiles.getIxUrl(index), "Show Report Match Unittest", "1.0");            
+            ixConn = Connection.getIxConnection(profiles, index);
+            List<String> jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
+            SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackage(index));        
+            SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackage(index));
+            SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackage(index));
+            String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
+            Http.ShowReport(htmlDoc);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("IllegalStateException message: " +  ex.getMessage());            
-            return;
+            ex.printStackTrace();
         }
-        try {
-            ixConn = connFact.create(profiles.getUser(), profiles.getPwd(), null, null);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profiles.getUser() + "\n IxUrl: " + profiles.getIxUrl(index), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("RemoteException message: " + ex.getMessage());            
-            return;
-        }
-        
-        List<String> jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
-        SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackage(index));        
-        SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackage(index));
-        SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackage(index));
-        String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
-        Http.ShowReport(htmlDoc);
     }
 
     static boolean Match(IXConnection ixConn, String uName, String eloPackage, List<String> jsTexts) {

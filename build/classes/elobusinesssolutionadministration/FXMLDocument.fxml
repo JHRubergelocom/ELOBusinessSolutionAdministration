@@ -18,5 +18,9 @@
       <Button fx:id="btnEloPrepare" layoutX="18.0" layoutY="151.0" mnemonicParsing="false" onAction="#handleEloPrepare" prefHeight="25.0" prefWidth="128.0" text="EloPrepare" />
       <Button fx:id="btnEloPullPackage" layoutX="150.0" layoutY="151.0" mnemonicParsing="false" onAction="#handleEloPullPackage" prefHeight="25.0" prefWidth="150.0" text="EloPullPackage" />
       <TextArea fx:id="txtOutput" layoutX="18.0" layoutY="206.0" prefHeight="324.0" prefWidth="478.0" />
+      <Button fx:id="btnAdminConsole" layoutX="328.0" layoutY="32.0" mnemonicParsing="false" onAction="#handleBtnAdminConsole" prefHeight="25.0" prefWidth="165.0" text="AdminConsole" />
+      <Button fx:id="btnAppManager" layoutX="328.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleBtnAppManager" prefHeight="25.0" prefWidth="165.0" text="AppManager" />
+      <Button fx:id="btnWebclient" layoutX="328.0" layoutY="116.0" mnemonicParsing="false" onAction="#handleBtnWebclient" prefHeight="25.0" prefWidth="165.0" text="Webclient" />
+      <Button fx:id="btnKnowledgeBoard" layoutX="328.0" layoutY="151.0" mnemonicParsing="false" onAction="#handleBtnKnowledgeBoard" prefHeight="25.0" prefWidth="165.0" text="KnowledgeBoard" />
     </children>
 </AnchorPane>

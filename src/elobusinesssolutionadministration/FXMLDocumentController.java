@@ -21,9 +21,6 @@ import javafx.scene.control.TextArea;
  * @author ruberg
  */
 public class FXMLDocumentController implements Initializable {
-    
-    
-    
     private Profiles profiles = null;    
     private EloService eloService = null;
     
@@ -56,6 +53,27 @@ public class FXMLDocumentController implements Initializable {
     private void handleEloPrepare(ActionEvent event) {
         eloService.Run(EloCommand.PS1, Profiles.ELO_PREPARE);                
     }
+
+    @FXML
+    private void handleBtnAdminConsole(ActionEvent event) {
+        eloService.Run(EloCommand.STARTADMINCONSOLE, 0);
+    }
+
+    @FXML
+    private void handleBtnAppManager(ActionEvent event) {
+        eloService.Run(EloCommand.STARTAPPMANAGER, 0);
+    }
+
+    @FXML
+    private void handleBtnWebclient(ActionEvent event) {
+        eloService.Run(EloCommand.STARTWEBCLIENT, 0);
+    }
+
+    @FXML
+    private void handleBtnKnowledgeBoard(ActionEvent event) {
+        eloService.Run(EloCommand.STARTKNOWLEDGEBOARD, 0);
+    }
+
     
     @FXML
     private ComboBox<String> cmbProfile;    
@@ -79,6 +97,18 @@ public class FXMLDocumentController implements Initializable {
     private Button btnEloPullPackage;
 
     @FXML
+    private Button btnAppManager;
+
+    @FXML
+    private Button btnWebclient;
+
+    @FXML
+    private Button btnKnowledgeBoard;
+
+    @FXML
+    private Button btnAdminConsole;
+
+    @FXML
     private TextArea txtOutput;
     
     @Override
@@ -89,29 +119,23 @@ public class FXMLDocumentController implements Initializable {
         
         cmbProfile.getItems().clear();
         for (int i = 0; i < profiles.getLength(); i++) {
-            cmbProfile.getItems().add(profiles.getProfile(i).getName());            
+            cmbProfile.getItems().add(profiles.getName(i));            
         } 
         cmbProfile.getSelectionModel().select(0);        
     }  
-    
-    public void enableControls() {
-        cmbProfile.setDisable(false);
-        btnGitPullAll.setDisable(false);
-        btnShowUnittest.setDisable(false);
-        btnMatchUnittest.setDisable(false);
-        btnEloPullUnittest.setDisable(false);
-        btnEloPrepare.setDisable(false);
-        btnEloPullPackage.setDisable(false);          
-    }
-    
-    public void disableControls() {
-        cmbProfile.setDisable(true);
-        btnGitPullAll.setDisable(true);        
-        btnShowUnittest.setDisable(true);
-        btnMatchUnittest.setDisable(true);
-        btnEloPullUnittest.setDisable(true);
-        btnEloPrepare.setDisable(true);
-        btnEloPullPackage.setDisable(true);  
+        
+    public void setDisableControls(boolean value) {
+        cmbProfile.setDisable(value);
+        btnGitPullAll.setDisable(value);        
+        btnShowUnittest.setDisable(value);
+        btnMatchUnittest.setDisable(value);
+        btnEloPullUnittest.setDisable(value);
+        btnEloPrepare.setDisable(value);
+        btnEloPullPackage.setDisable(value);  
+        btnAppManager.setDisable(value);
+        btnWebclient.setDisable(value);
+        btnKnowledgeBoard.setDisable(value);
+        btnAdminConsole.setDisable(value);        
     }
     
     public ComboBox<String> getCmbProfile() {

@@ -29,6 +29,10 @@ public class EloCommand {
     static final String PS1 = "ps1";
     static final String SHOWREPORTMATCHUNITTEST = "ShowReportMatchUnittest";
     static final String SHOWUNITTESTSAPP = "ShowUnittestsApp";
+    static final String STARTADMINCONSOLE = "StartAdminConsole";
+    static final String STARTAPPMANAGER = "StartAppManager";
+    static final String STARTWEBCLIENT = "StartWebclient";
+    static final String STARTKNOWLEDGEBOARD = "ShowKnowledgeBoard";
     
     private String[] cmdCommand;
     private String typeCommand;
