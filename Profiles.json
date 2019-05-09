@@ -40,10 +40,10 @@
     }
   ],
   "gitSolutionsDir": "E:\\Git\\solutions",
+  "gitDevDir": "E:\\Git\\dev",
   "gitUser": "ruberg",  
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
   "powershell": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
-  "command": {"cmd": ["gitPullAll"]},
   "user": "Administrator",
   "pwd": "elo"
 }

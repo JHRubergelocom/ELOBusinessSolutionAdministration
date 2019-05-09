@@ -31,9 +31,6 @@ public class EloService extends Service<Boolean>{
         index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();  
         
         switch(typeCommand) {
-            case EloCommand.CMD:
-                SetEloCommand(dc.getProfiles().getCommand(), indexEloCommand);
-                break;
             case EloCommand.PS1:
                 SetEloCommand(dc.getProfiles().getPowershell(), indexEloCommand);        
                 break;
@@ -55,6 +52,9 @@ public class EloService extends Service<Boolean>{
             case EloCommand.STARTKNOWLEDGEBOARD:
                 SetEloCommand(new EloCommand(EloCommand.STARTKNOWLEDGEBOARD),indexEloCommand);
                 break;
+            case EloCommand.GITPULLALL:
+                SetEloCommand(new EloCommand(EloCommand.GITPULLALL),indexEloCommand);
+                break;
         }        
         if (isRunning()) {
             System.out.println("Already running. Nothing to do.");
@@ -75,9 +75,6 @@ public class EloService extends Service<Boolean>{
                 dc.setDisableControls(true);
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
                 switch(ec.getType()) {
-                    case EloCommand.CMD:
-                        EloCommand.Execute(dc.getProfiles().getCommand().getCommand(indexEloCommand), ec, dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
-                        break;
                     case EloCommand.PS1:
                         EloCommand.Execute(dc.getProfiles().getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index) + ".git");                    
                         break;
@@ -98,6 +95,10 @@ public class EloService extends Service<Boolean>{
                         break;
                     case EloCommand.STARTKNOWLEDGEBOARD:
                         KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.GITPULLALL:
+                        GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
+                        GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
                         break;
                 }
                 dc.setDisableControls(false);

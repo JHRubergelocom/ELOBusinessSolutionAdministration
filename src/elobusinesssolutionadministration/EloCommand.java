@@ -25,7 +25,6 @@ import org.json.JSONObject;
  * @author ruberg
  */
 public class EloCommand {
-    static final String CMD = "cmd";
     static final String PS1 = "ps1";
     static final String SHOWREPORTMATCHUNITTEST = "ShowReportMatchUnittest";
     static final String SHOWUNITTESTSAPP = "ShowUnittestsApp";
@@ -33,6 +32,7 @@ public class EloCommand {
     static final String STARTAPPMANAGER = "StartAppManager";
     static final String STARTWEBCLIENT = "StartWebclient";
     static final String STARTKNOWLEDGEBOARD = "ShowKnowledgeBoard";
+    static final String GITPULLALL = "GitPullAll";
     
     private String[] cmdCommand;
     private String typeCommand;
@@ -79,9 +79,6 @@ public class EloCommand {
             }      
             
             switch(ec.getType()) {
-                case CMD:
-                    pb = new ProcessBuilder(eloCommand);            
-                    break;
                 case PS1:
                     pb = new ProcessBuilder("powershell.exe", eloCommand);                
                     break;

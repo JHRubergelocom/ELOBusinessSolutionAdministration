@@ -36,7 +36,7 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
-        eloService.Run(EloCommand.CMD, Profiles.GIT_PULL_ALL);
+        eloService.Run(EloCommand.GITPULLALL, 0);
     }
 
     @FXML

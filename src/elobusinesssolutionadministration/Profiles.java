@@ -22,24 +22,22 @@ public class Profiles {
     static final int ELO_PULL_PACKAGE = 1;
     static final int ELO_PREPARE = 2;
     
-    static final int GIT_PULL_ALL = 0;
-
     private Profile[] profiles;
     private String gitSolutionsDir;
+    private String gitDevDir;
     private String gitUser;
     private String arcPath;
     private EloCommand powershell;
-    private EloCommand command;
     private String user;
     private String pwd;    
     
     Profiles(String jsonFile) {
         profiles = null;
         gitSolutionsDir = "";
+        gitDevDir = "";
         gitUser = "";
         arcPath = "";
         powershell = null;
-        command = null;
         user = "";
         pwd = "";
 
@@ -82,6 +80,10 @@ public class Profiles {
         } catch (JSONException ex) {            
         }
         try {
+            gitDevDir = jobjProfiles.getString("gitDevDir");            
+        } catch (JSONException ex) {            
+        }
+        try {
             gitUser = jobjProfiles.getString("gitUser");            
         } catch (JSONException ex) {            
         }
@@ -95,11 +97,6 @@ public class Profiles {
         } catch (JSONException ex) {            
         }
         try {
-            JSONObject jcommand = jobjProfiles.getJSONObject("command");
-            command = new EloCommand(jcommand, EloCommand.CMD);
-        } catch (JSONException ex) {            
-        }
-        try {
             user = jobjProfiles.getString("user");            
         } catch (JSONException ex) {            
         }
@@ -110,16 +107,16 @@ public class Profiles {
         
     }
 
-    public EloCommand getCommand() {
-        return command;
-    }
-    
     public EloCommand getPowershell() {
         return powershell;
     }
     
     public String getGitSolutionsDir() {
         return gitSolutionsDir;
+    }
+    
+    public String getDevDir() {
+        return gitDevDir;
     }
     
     public String getUser() {
