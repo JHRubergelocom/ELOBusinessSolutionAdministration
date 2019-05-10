@@ -16,7 +16,6 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import javafx.scene.control.TextArea;
 import javax.swing.JOptionPane;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +23,11 @@ import org.json.JSONObject;
  *
  * @author ruberg
  */
-public class EloCommandOld {
+public class EloCommand {
+    static final String ELO_PULL_UNITTEST = "eloPullUnittest";
+    static final String ELO_PULL_PACKAGE = "eloPullPackage";
+    static final String ELO_PREPARE = "eloPrepare";
+    
     static final String SHOWREPORTMATCHUNITTEST = "ShowReportMatchUnittest";
     static final String SHOWUNITTESTSAPP = "ShowUnittestsApp";
     static final String STARTADMINCONSOLE = "StartAdminConsole";
@@ -33,49 +36,68 @@ public class EloCommandOld {
     static final String STARTKNOWLEDGEBOARD = "ShowKnowledgeBoard";
     static final String GITPULLALL = "GitPullAll";
     
-    private String[] cmdCommand;
-    private String typeCommand;
+    private String name;
+    private String cmd;
+    private String workspace;
+    private String version;
+    
 
-    EloCommandOld(JSONObject jeloCommand, String commandType) {   
-        typeCommand = commandType;
-
-        JSONArray jarr = jeloCommand.getJSONArray(commandType);
-        cmdCommand = new String[jarr.length()];
+    EloCommand(JSONObject[] jarray, int index) {
+        name = "";
+        cmd = "";
+        workspace = "";
+        version = "";
+        
         try {
-            for (int i = 0; i < jarr.length(); i++) {
-                cmdCommand[i] = jarr.getString(i);
-            }             
+            name = jarray[index].getString("name");            
         } catch (JSONException ex) {            
         }
+        try {
+            cmd = jarray[index].getString("cmd");      
+        } catch (JSONException ex) {            
+        }
+        try {
+            workspace = jarray[index].getString("workspace");      
+        } catch (JSONException ex) {            
+        }
+        try {
+            version = jarray[index].getString("version");      
+        } catch (JSONException ex) {            
+        }
+    }    
+    EloCommand() {
+        name = "";
+        cmd = "";
+        workspace = "";
+        version = "";
     }
     
-    EloCommandOld(String commandType) {   
-        typeCommand = commandType;
+    public String getName() {
+        return name;
     }
-
-    String getCommand(int index) {
-        return cmdCommand[index];
-    } 
     
-    String getType() {
-        return typeCommand;
-    } 
+    public String getCmd() {
+        return cmd;
+    }
     
-    static void Execute(String eloCommand, EloCommandOld ec, TextArea txtOutput, String workingDir) {
+    public String getWorkspace() {
+        return workspace;
+    }
+    
+    public String getVersion() {
+        return version;
+    }
+    
+    void Execute( TextArea txtOutput, String workingDir, Profiles pfs, int index) {
         
         try {
             txtOutput.setText("");
             ProcessBuilder pb = new ProcessBuilder();  
             
-            eloCommand = workingDir + "\\" + eloCommand + "." + ec.getType();
-            
-            if (!new File (eloCommand).canExecute()) {
-                JOptionPane.showMessageDialog(null, eloCommand + " kann nicht ausgef\u00FChrt werden!", 
-                           "canExecute", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println(eloCommand + " kann nicht ausgef\u00FChrt werden!");
-                txtOutput.appendText(eloCommand + " kann nicht ausgef\u00FChrt werden!" + "\n");                
-                return;                 
-            }      
+            String eloCommand = getCmd() + " -stack " + pfs.getStack(index) + " -workspace " + getWorkspace();
+            if (getVersion().length() > 0) {
+                eloCommand = eloCommand + " -version " + getVersion();                
+            }
             
             pb = new ProcessBuilder("powershell.exe", eloCommand);                
             pb.directory(new File (workingDir));
@@ -135,4 +157,5 @@ public class EloCommandOld {
                        "IOException", JOptionPane.INFORMATION_MESSAGE);
         } 
     }
+
 }

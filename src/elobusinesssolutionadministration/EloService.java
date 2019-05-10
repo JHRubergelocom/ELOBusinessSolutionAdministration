@@ -14,45 +14,18 @@ import javafx.concurrent.Task;
  */
 public class EloService extends Service<Boolean>{    
     private final FXMLDocumentController dc;
-    private EloCommandOld ec;
-    private int indexEloCommand;
+    private String typeCommand;
     
     public EloService(FXMLDocumentController dc) {
         this.dc = dc;        
     }
     
-    public void SetEloCommand(EloCommandOld ec, int indexEloCommand) {
-        this.ec = ec;
-        this.indexEloCommand = indexEloCommand;        
+    public void SetTypeCommand(String typeCommand) {
+        this.typeCommand = typeCommand;
     } 
     
-    public void Run(String typeCommand, int indexEloCommand) {        
-        switch(typeCommand) {
-            case EloCommandOld.SHOWREPORTMATCHUNITTEST:
-                SetEloCommand(new EloCommandOld(EloCommandOld.SHOWREPORTMATCHUNITTEST),indexEloCommand);
-                break;
-            case EloCommandOld.SHOWUNITTESTSAPP:
-                SetEloCommand(new EloCommandOld(EloCommandOld.SHOWUNITTESTSAPP),indexEloCommand);
-                break;
-            case EloCommandOld.STARTADMINCONSOLE:
-                SetEloCommand(new EloCommandOld(EloCommandOld.STARTADMINCONSOLE),indexEloCommand);
-                break;
-            case EloCommandOld.STARTAPPMANAGER:
-                SetEloCommand(new EloCommandOld(EloCommandOld.STARTAPPMANAGER),indexEloCommand);
-                break;
-            case EloCommandOld.STARTWEBCLIENT:
-                SetEloCommand(new EloCommandOld(EloCommandOld.STARTWEBCLIENT),indexEloCommand);
-                break;
-            case EloCommandOld.STARTKNOWLEDGEBOARD:
-                SetEloCommand(new EloCommandOld(EloCommandOld.STARTKNOWLEDGEBOARD),indexEloCommand);
-                break;
-            case EloCommandOld.GITPULLALL:
-                SetEloCommand(new EloCommandOld(EloCommandOld.GITPULLALL),indexEloCommand);
-                break;
-            default:
-                SetEloCommand(dc.getProfiles().getEloCommand(), indexEloCommand);        
-                break;
-        }        
+    public void Run(String typeCommand) {  
+        SetTypeCommand(typeCommand);
         if (isRunning()) {
             System.out.println("Already running. Nothing to do.");
         } else {
@@ -71,31 +44,32 @@ public class EloService extends Service<Boolean>{
                 int index;  
                 dc.setDisableControls(true);
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
-                switch(ec.getType()) {
-                    case EloCommandOld.SHOWREPORTMATCHUNITTEST:
+                switch(typeCommand) {
+                    case EloCommand.SHOWREPORTMATCHUNITTEST:
                         Unittests.ShowReportMatchUnittest(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.SHOWUNITTESTSAPP:
+                    case EloCommand.SHOWUNITTESTSAPP:
                         Unittests.ShowUnittestsApp(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.STARTADMINCONSOLE:
+                    case EloCommand.STARTADMINCONSOLE:
                         AdminConsole.StartAdminConsole(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.STARTAPPMANAGER:
+                    case EloCommand.STARTAPPMANAGER:
                         AppManager.StartAppManager(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.STARTWEBCLIENT:
+                    case EloCommand.STARTWEBCLIENT:
                         Webclient.StartWebclient(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.STARTKNOWLEDGEBOARD:
+                    case EloCommand.STARTKNOWLEDGEBOARD:
                         KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
                         break;
-                    case EloCommandOld.GITPULLALL:
+                    case EloCommand.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
                         break;
                     default:
-                        EloCommandOld.Execute(dc.getProfiles().getEloCommand().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index) + ".git");                    
+                        EloCommand ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
+                        ec.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index)+ ".git", dc.getProfiles(), index);                        
                         break;
                 }
                 dc.setDisableControls(false);

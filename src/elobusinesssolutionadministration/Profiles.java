@@ -18,16 +18,11 @@ import org.json.JSONObject;
  * @author ruberg
  */
 public class Profiles {
-    static final int ELO_PULL_UNITTEST = 0;
-    static final int ELO_PULL_PACKAGE = 1;
-    static final int ELO_PREPARE = 2;
-    
     private Profile[] profiles;
     private String gitSolutionsDir;
     private String gitDevDir;
     private String gitUser;
     private String arcPath;
-    private EloCommandOld eloCommand;
     private String user;
     private String pwd;    
     
@@ -37,7 +32,6 @@ public class Profiles {
         gitDevDir = "";
         gitUser = "";
         arcPath = "";
-        eloCommand = null;
         user = "";
         pwd = "";
 
@@ -92,11 +86,6 @@ public class Profiles {
         } catch (JSONException ex) {            
         }
         try {
-            JSONObject jps1 = jobjProfiles.getJSONObject("eloCommand");               
-            eloCommand = new EloCommandOld(jps1, "ps1");                      
-        } catch (JSONException ex) {            
-        }
-        try {
             user = jobjProfiles.getString("user");            
         } catch (JSONException ex) {            
         }
@@ -107,10 +96,6 @@ public class Profiles {
         
     }
 
-    public EloCommandOld getEloCommand() {
-        return eloCommand;
-    }
-    
     public String getGitSolutionsDir() {
         return gitSolutionsDir;
     }
@@ -150,4 +135,7 @@ public class Profiles {
         return profiles[index].getEloPackage();
     }
 
+    public Profile getProfile(int index) {
+        return profiles[index];
+    }
 }
