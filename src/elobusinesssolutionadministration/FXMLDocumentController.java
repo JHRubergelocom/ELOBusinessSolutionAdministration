@@ -26,52 +26,52 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void handleBtnShowUnittest(ActionEvent event) {
-        eloService.Run(EloCommand.SHOWUNITTESTSAPP, 0);
+        eloService.Run(EloCommandOld.SHOWUNITTESTSAPP, 0);
     }
     
     @FXML
     private void handleBtnMatchUnittest(ActionEvent event) {
-        eloService.Run(EloCommand.SHOWREPORTMATCHUNITTEST, 0);
+        eloService.Run(EloCommandOld.SHOWREPORTMATCHUNITTEST, 0);
     }    
     
     @FXML
     private void handleBtnGitPullAll(ActionEvent event) {
-        eloService.Run(EloCommand.GITPULLALL, 0);
+        eloService.Run(EloCommandOld.GITPULLALL, 0);
     }
 
     @FXML
     private void handleEloPullUnittest(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profiles.ELO_PULL_UNITTEST);        
+        eloService.Run("", Profiles.ELO_PULL_UNITTEST);        
     }
     
     @FXML
     private void handleEloPullPackage(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profiles.ELO_PULL_PACKAGE);                
+        eloService.Run("", Profiles.ELO_PULL_PACKAGE);                
     }
     
     @FXML
     private void handleEloPrepare(ActionEvent event) {
-        eloService.Run(EloCommand.PS1, Profiles.ELO_PREPARE);                
+        eloService.Run("", Profiles.ELO_PREPARE);                
     }
 
     @FXML
     private void handleBtnAdminConsole(ActionEvent event) {
-        eloService.Run(EloCommand.STARTADMINCONSOLE, 0);
+        eloService.Run(EloCommandOld.STARTADMINCONSOLE, 0);
     }
 
     @FXML
     private void handleBtnAppManager(ActionEvent event) {
-        eloService.Run(EloCommand.STARTAPPMANAGER, 0);
+        eloService.Run(EloCommandOld.STARTAPPMANAGER, 0);
     }
 
     @FXML
     private void handleBtnWebclient(ActionEvent event) {
-        eloService.Run(EloCommand.STARTWEBCLIENT, 0);
+        eloService.Run(EloCommandOld.STARTWEBCLIENT, 0);
     }
 
     @FXML
     private void handleBtnKnowledgeBoard(ActionEvent event) {
-        eloService.Run(EloCommand.STARTKNOWLEDGEBOARD, 0);
+        eloService.Run(EloCommandOld.STARTKNOWLEDGEBOARD, 0);
     }
 
     

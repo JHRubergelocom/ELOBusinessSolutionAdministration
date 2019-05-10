@@ -14,46 +14,43 @@ import javafx.concurrent.Task;
  */
 public class EloService extends Service<Boolean>{    
     private final FXMLDocumentController dc;
-    private EloCommand ec;
+    private EloCommandOld ec;
     private int indexEloCommand;
     
     public EloService(FXMLDocumentController dc) {
         this.dc = dc;        
     }
     
-    public void SetEloCommand(EloCommand ec, int indexEloCommand) {
+    public void SetEloCommand(EloCommandOld ec, int indexEloCommand) {
         this.ec = ec;
         this.indexEloCommand = indexEloCommand;        
     } 
     
-    public void Run(String typeCommand, int indexEloCommand) {
-        int index;        
-        index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();  
-        
+    public void Run(String typeCommand, int indexEloCommand) {        
         switch(typeCommand) {
-            case EloCommand.PS1:
-                SetEloCommand(dc.getProfiles().getPowershell(), indexEloCommand);        
+            case EloCommandOld.SHOWREPORTMATCHUNITTEST:
+                SetEloCommand(new EloCommandOld(EloCommandOld.SHOWREPORTMATCHUNITTEST),indexEloCommand);
                 break;
-            case EloCommand.SHOWREPORTMATCHUNITTEST:
-                SetEloCommand(new EloCommand(EloCommand.SHOWREPORTMATCHUNITTEST),indexEloCommand);
+            case EloCommandOld.SHOWUNITTESTSAPP:
+                SetEloCommand(new EloCommandOld(EloCommandOld.SHOWUNITTESTSAPP),indexEloCommand);
                 break;
-            case EloCommand.SHOWUNITTESTSAPP:
-                SetEloCommand(new EloCommand(EloCommand.SHOWUNITTESTSAPP),indexEloCommand);
+            case EloCommandOld.STARTADMINCONSOLE:
+                SetEloCommand(new EloCommandOld(EloCommandOld.STARTADMINCONSOLE),indexEloCommand);
                 break;
-            case EloCommand.STARTADMINCONSOLE:
-                SetEloCommand(new EloCommand(EloCommand.STARTADMINCONSOLE),indexEloCommand);
+            case EloCommandOld.STARTAPPMANAGER:
+                SetEloCommand(new EloCommandOld(EloCommandOld.STARTAPPMANAGER),indexEloCommand);
                 break;
-            case EloCommand.STARTAPPMANAGER:
-                SetEloCommand(new EloCommand(EloCommand.STARTAPPMANAGER),indexEloCommand);
+            case EloCommandOld.STARTWEBCLIENT:
+                SetEloCommand(new EloCommandOld(EloCommandOld.STARTWEBCLIENT),indexEloCommand);
                 break;
-            case EloCommand.STARTWEBCLIENT:
-                SetEloCommand(new EloCommand(EloCommand.STARTWEBCLIENT),indexEloCommand);
+            case EloCommandOld.STARTKNOWLEDGEBOARD:
+                SetEloCommand(new EloCommandOld(EloCommandOld.STARTKNOWLEDGEBOARD),indexEloCommand);
                 break;
-            case EloCommand.STARTKNOWLEDGEBOARD:
-                SetEloCommand(new EloCommand(EloCommand.STARTKNOWLEDGEBOARD),indexEloCommand);
+            case EloCommandOld.GITPULLALL:
+                SetEloCommand(new EloCommandOld(EloCommandOld.GITPULLALL),indexEloCommand);
                 break;
-            case EloCommand.GITPULLALL:
-                SetEloCommand(new EloCommand(EloCommand.GITPULLALL),indexEloCommand);
+            default:
+                SetEloCommand(dc.getProfiles().getEloCommand(), indexEloCommand);        
                 break;
         }        
         if (isRunning()) {
@@ -75,30 +72,30 @@ public class EloService extends Service<Boolean>{
                 dc.setDisableControls(true);
                 index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
                 switch(ec.getType()) {
-                    case EloCommand.PS1:
-                        EloCommand.Execute(dc.getProfiles().getPowershell().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index) + ".git");                    
-                        break;
-                    case EloCommand.SHOWREPORTMATCHUNITTEST:
+                    case EloCommandOld.SHOWREPORTMATCHUNITTEST:
                         Unittests.ShowReportMatchUnittest(dc.getProfiles(), index);
                         break;
-                    case EloCommand.SHOWUNITTESTSAPP:
+                    case EloCommandOld.SHOWUNITTESTSAPP:
                         Unittests.ShowUnittestsApp(dc.getProfiles(), index);
                         break;
-                    case EloCommand.STARTADMINCONSOLE:
+                    case EloCommandOld.STARTADMINCONSOLE:
                         AdminConsole.StartAdminConsole(dc.getProfiles(), index);
                         break;
-                    case EloCommand.STARTAPPMANAGER:
+                    case EloCommandOld.STARTAPPMANAGER:
                         AppManager.StartAppManager(dc.getProfiles(), index);
                         break;
-                    case EloCommand.STARTWEBCLIENT:
+                    case EloCommandOld.STARTWEBCLIENT:
                         Webclient.StartWebclient(dc.getProfiles(), index);
                         break;
-                    case EloCommand.STARTKNOWLEDGEBOARD:
+                    case EloCommandOld.STARTKNOWLEDGEBOARD:
                         KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
                         break;
-                    case EloCommand.GITPULLALL:
+                    case EloCommandOld.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
+                        break;
+                    default:
+                        EloCommandOld.Execute(dc.getProfiles().getEloCommand().getCommand(indexEloCommand), ec ,dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index) + ".git");                    
                         break;
                 }
                 dc.setDisableControls(false);

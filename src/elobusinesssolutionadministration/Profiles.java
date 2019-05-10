@@ -27,7 +27,7 @@ public class Profiles {
     private String gitDevDir;
     private String gitUser;
     private String arcPath;
-    private EloCommand powershell;
+    private EloCommandOld eloCommand;
     private String user;
     private String pwd;    
     
@@ -37,7 +37,7 @@ public class Profiles {
         gitDevDir = "";
         gitUser = "";
         arcPath = "";
-        powershell = null;
+        eloCommand = null;
         user = "";
         pwd = "";
 
@@ -92,8 +92,8 @@ public class Profiles {
         } catch (JSONException ex) {            
         }
         try {
-            JSONObject jps1 = jobjProfiles.getJSONObject("powershell");               
-            powershell = new EloCommand(jps1, EloCommand.PS1);                      
+            JSONObject jps1 = jobjProfiles.getJSONObject("eloCommand");               
+            eloCommand = new EloCommandOld(jps1, "ps1");                      
         } catch (JSONException ex) {            
         }
         try {
@@ -107,8 +107,8 @@ public class Profiles {
         
     }
 
-    public EloCommand getPowershell() {
-        return powershell;
+    public EloCommandOld getEloCommand() {
+        return eloCommand;
     }
     
     public String getGitSolutionsDir() {
@@ -128,10 +128,14 @@ public class Profiles {
     }
 
     public String getIxUrl(int index) {   
+        return  "http://" + getStack(index) + ".dev.elo/ix-Solutions/ix";
+    }
+    
+    public String getStack(int index) {   
         if(profiles[index].getName().contains("playground")) {
-            return "http://playground.dev.elo/ix-Solutions/ix";
+            return "playground";
         }
-        return  "http://" + gitUser + "-" + profiles[index].getName() + ".dev.elo/ix-Solutions/ix";
+        return  gitUser + "-" + profiles[index].getName();
     }
     
     public int getLength() {

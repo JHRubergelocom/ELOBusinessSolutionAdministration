@@ -24,8 +24,7 @@ import org.json.JSONObject;
  *
  * @author ruberg
  */
-public class EloCommand {
-    static final String PS1 = "ps1";
+public class EloCommandOld {
     static final String SHOWREPORTMATCHUNITTEST = "ShowReportMatchUnittest";
     static final String SHOWUNITTESTSAPP = "ShowUnittestsApp";
     static final String STARTADMINCONSOLE = "StartAdminConsole";
@@ -37,7 +36,7 @@ public class EloCommand {
     private String[] cmdCommand;
     private String typeCommand;
 
-    EloCommand(JSONObject jeloCommand, String commandType) {   
+    EloCommandOld(JSONObject jeloCommand, String commandType) {   
         typeCommand = commandType;
 
         JSONArray jarr = jeloCommand.getJSONArray(commandType);
@@ -50,7 +49,7 @@ public class EloCommand {
         }
     }
     
-    EloCommand(String commandType) {   
+    EloCommandOld(String commandType) {   
         typeCommand = commandType;
     }
 
@@ -62,7 +61,7 @@ public class EloCommand {
         return typeCommand;
     } 
     
-    static void Execute(String eloCommand, EloCommand ec, TextArea txtOutput, String workingDir) {
+    static void Execute(String eloCommand, EloCommandOld ec, TextArea txtOutput, String workingDir) {
         
         try {
             txtOutput.setText("");
@@ -78,12 +77,7 @@ public class EloCommand {
                 return;                 
             }      
             
-            switch(ec.getType()) {
-                case PS1:
-                    pb = new ProcessBuilder("powershell.exe", eloCommand);                
-                    break;
-            }            
-            
+            pb = new ProcessBuilder("powershell.exe", eloCommand);                
             pb.directory(new File (workingDir));
             Process p; 
             p = pb.start();  

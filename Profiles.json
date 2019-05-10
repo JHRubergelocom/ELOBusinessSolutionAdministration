@@ -1,49 +1,93 @@
 {
   "profiles": [
     {
-      "name": "common"
+      "name": "common",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan", "version":"12.00"}
+      ]
     },
     {
       "name": "contract",
-      "package": "contract"
+      "package": "contract",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
+      ]
     },
     {
-      "name": "hr"
+      "name": "hr",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
+      ]
     },
     {
-      "name": "invoice"
+      "name": "invoice",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan"}
+      ]
     },
     {
       "name": "knowledge",
-      "package": "knowledge"
+      "package": "knowledge",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "knowledge-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "default", "version":"12.00" }
+      ]
     },
     {
       "name": "learning",
-      "package": "learning"
+      "package": "learning",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "learning-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "default" }
+      ]
     },
     {
-      "name": "playground"
+      "name": "playground",
+      "eloCommands": []
     },
     {
-      "name": "productivity"
+      "name": "productivity",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan" }
+      ]
     },
     {
-      "name": "pubsec"
+      "name": "pubsec",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de" }
+      ]
     },
     {
       "name": "recruiting",
-      "package": "recruiting"
+      "package": "recruiting",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "recruiting-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de", "version":"12.00" }
+      ]
     },
     {
       "name": "visitor",
-      "package": "visitor"
+      "package": "visitor",
+      "eloCommands": [
+        {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de" }
+      ]
     }
   ],
   "gitSolutionsDir": "E:\\Git\\solutions",
   "gitDevDir": "E:\\Git\\dev",
-  "gitUser": "ruberg",  
+  "gitUser": "ruberg",
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
-  "powershell": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
+  "eloCommand": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
   "user": "Administrator",
   "pwd": "elo"
 }
