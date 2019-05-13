@@ -7,7 +7,6 @@ package elobusinesssolutionadministration;
 
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -16,14 +15,19 @@ import java.util.TreeMap;
  * @author ruberg
  */
 public class RegisterFunctions {    
-    public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, List<String> jsTexts, String eloPackage) {
+    public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, String[] jsTexts, String eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/IndexServer Scripting Base";
         if (eloPackage.equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/IndexServer Scripting Base/_ALL/business_solutions";
         }
-        List<Sord> sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        Sord[] sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
         SortedMap<String, Boolean> dicRFs = new TreeMap<>();
-        sordRFInfo.stream().map((s) -> RepoUtils.DownloadDocumentToString(s, ixConn)).filter((jsText) -> (jsText.length() > 0 )).map((jsText) -> jsText.replaceAll("\b", "")).map((jsText) -> jsText.replaceAll("\n", " ")).map((jsText) -> jsText.split(" ")).forEachOrdered((String[] jsLines) -> {
+        
+        for(Sord s : sordRFInfo) {  
+           String jsText = RepoUtils.DownloadDocumentToString (s, ixConn);  
+           jsText = jsText.replaceAll("\b", "");
+           jsText = jsText.replaceAll("\n", " ");
+           String[] jsLines = jsText.split(" ");
             for (String line : jsLines) {
                 if (line.contains("RF_")) {
                     String rfName = line;
@@ -42,7 +46,9 @@ public class RegisterFunctions {
                     }
                 }                    
             }
-        });        
+           
+        }
+                
         return dicRFs;
     }
     

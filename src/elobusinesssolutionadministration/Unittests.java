@@ -8,7 +8,6 @@ package elobusinesssolutionadministration;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import org.json.JSONObject;
@@ -20,7 +19,7 @@ import org.json.JSONObject;
 class Unittests {    
     static Map<String, String> GetUnittestApp(IXConnection ixConn) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/development/ELOapps/ClientInfos";
-        List<Sord> sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
+        Sord[] sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
         String configApp = "";
         String configId = "";
         String jsonString;
@@ -73,7 +72,7 @@ class Unittests {
         IXConnection ixConn;   
         try {
             ixConn = Connection.getIxConnection(profiles, index);
-            List<String> jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
+            String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
             SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackage(index));        
             SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackage(index));
             SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackage(index));
@@ -83,8 +82,8 @@ class Unittests {
             ex.printStackTrace();
         }
     }
-
-    static boolean Match(IXConnection ixConn, String uName, String eloPackage, List<String> jsTexts) {
+    
+    static boolean Match(IXConnection ixConn, String uName, String eloPackage, String[] jsTexts) {
         for (String jsText : jsTexts) {
             String[] jsLines = jsText.split("\n");
             for (String line : jsLines) {
@@ -97,5 +96,5 @@ class Unittests {
         }
         return false;        
     }
-    
+
 }

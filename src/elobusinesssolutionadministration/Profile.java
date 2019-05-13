@@ -55,8 +55,7 @@ public class Profile {
     }
     
     EloCommand getEloCommand(String commandName) {
-        for (int i = 0; i < getEloCommands().length; i++) { 
-            EloCommand ec = getEloCommands()[i];
+        for (EloCommand ec : getEloCommands()) {
             if (ec.getName().contentEquals(commandName)) {
                 return ec;
             }

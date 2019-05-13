@@ -92,14 +92,13 @@ public class EloCommand {
         
         try {
             txtOutput.setText("");
-            ProcessBuilder pb = new ProcessBuilder();  
             
             String eloCommand = getCmd() + " -stack " + pfs.getStack(index) + " -workspace " + getWorkspace();
             if (getVersion().length() > 0) {
                 eloCommand = eloCommand + " -version " + getVersion();                
             }
             
-            pb = new ProcessBuilder("powershell.exe", eloCommand);                
+            ProcessBuilder pb = new ProcessBuilder("powershell.exe", eloCommand);                
             pb.directory(new File (workingDir));
             Process p; 
             p = pb.start();  

@@ -87,7 +87,6 @@
   "gitDevDir": "E:\\Git\\dev",
   "gitUser": "ruberg",
   "arcPath": "ARCPATH[1]:/Administration/Business Solutions",
-  "eloCommand": {"ps1": ["eloPullUnittest", "eloPullPackage", "eloPrepare"] },
   "user": "Administrator",
   "pwd": "elo"
 }

@@ -10,13 +10,11 @@ import de.elo.ix.client.DocVersion;
 import de.elo.ix.client.EditInfo;
 import de.elo.ix.client.EditInfoC;
 import de.elo.ix.client.FindByIndex;
-import de.elo.ix.client.FindByType;
 import de.elo.ix.client.FindChildren;
 import de.elo.ix.client.FindInfo;
 import de.elo.ix.client.FindResult;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.LockC;
-import de.elo.ix.client.ObjKey;
 import de.elo.ix.client.Sord;
 import de.elo.ix.client.SordC;
 import de.elo.ix.client.SordZ;
@@ -27,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,22 +32,20 @@ import java.util.List;
  * @author ruberg
  */
 class RepoUtils {
-    public static List<Sord> FindChildren(String objId, IXConnection ixConn, boolean references) {
+    public static Sord[] FindChildren(String objId, IXConnection ixConn, boolean references) {
         System.out.println("FindChildren: objId " + objId + " ixConn " + ixConn);
         FindResult findResult = new FindResult();
-        List<Sord> children = new ArrayList<>();
+        Sord[] children = new Sord[]{};
         try {
             ixConn.ix().checkoutSord(objId, SordC.mbAll, LockC.NO);
             
             FindInfo findInfo = new FindInfo();
             FindChildren findChildren = new FindChildren();
-            FindByType findByType = new FindByType();
             FindByIndex findByIndex = new FindByIndex();
             Boolean includeReferences = references;
             SordZ sordZ = SordC.mbAll;
             Boolean recursive = true;
             int level = 3;
-            ObjKey[] objKeys = new ObjKey[] { };
             findChildren.setParentId(objId);
             findChildren.setMainParent(!includeReferences);
             findChildren.setEndLevel((recursive) ? level : 1);
@@ -60,7 +55,7 @@ class RepoUtils {
             int idx = 0;
             findResult = ixConn.ix().findFirstSords(findInfo, 1000, sordZ);
             while (true) {
-                children.addAll(Arrays.asList(findResult.getSords()));
+                children = findResult.getSords();
                 if (!findResult.isMoreResults()) {
                     break;
                 }
@@ -124,14 +119,15 @@ class RepoUtils {
         return docText;
     }
 
-    static List<String> LoadTextDocs(String parentId, IXConnection ixConn) {
-        List<Sord> sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
-        List<String> docTexts = new ArrayList<>();
-        
-        sordRFInfo.stream().map((s) -> DownloadDocumentToString (s, ixConn)).forEachOrdered((docText) -> {                
+    static String[] LoadTextDocs(String parentId, IXConnection ixConn) throws RemoteException {
+        Sord[] sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        List<String> docTexts = new ArrayList<>();        
+        for (Sord s : sordRFInfo) {
+            String docText = DownloadDocumentToString(s, ixConn);
             docTexts.add(docText);
-        });
-        return docTexts;
-        
+        }
+        String[] docArray = new String[docTexts.size()];
+        docArray = docTexts.toArray(docArray);
+        return docArray;        
     }
 }

@@ -8,7 +8,6 @@ package elobusinesssolutionadministration;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.io.StringReader;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.xml.xpath.XPath;
@@ -21,14 +20,14 @@ import org.xml.sax.InputSource;
  * @author ruberg
  */
 class ASDirectRules {
-    static SortedMap<String, Boolean> GetRules(IXConnection ixConn, List<String> jsTexts, String eloPackage) {
+    static SortedMap<String, Boolean> GetRules(IXConnection ixConn, String[] jsTexts, String eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/ELOas Base/Direct";
         if (eloPackage.equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/ELOas Base/Direct";
         }
-        List<Sord> sordRuleInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        Sord[] sordRuleInfo = RepoUtils.FindChildren(parentId, ixConn, true);
         SortedMap<String, Boolean> dicRules = new TreeMap<>();
-        sordRuleInfo.forEach((s) -> {            
+        for(Sord s : sordRuleInfo) {            
             try {
                 String xmlText = RepoUtils.DownloadDocumentToString (s, ixConn);             
                 XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -43,7 +42,7 @@ class ASDirectRules {
                 System.err.println("XPathExpressionException: " +  ex.getMessage()); 
                 ex.printStackTrace();
             }
-        });
+        }
         return dicRules;
     }    
 }

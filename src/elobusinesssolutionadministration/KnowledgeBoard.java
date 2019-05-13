@@ -8,7 +8,6 @@ package elobusinesssolutionadministration;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
 
@@ -19,7 +18,7 @@ import org.json.JSONObject;
 class KnowledgeBoard {
     private static Map<String, String> GetKnowledgeBoard(IXConnection ixConn) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/knowledge/ELOapps/ClientInfos";
-        List<Sord> sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
+        Sord[] sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
         String configApp = "";
         String configId = "";
         String jsonString;
