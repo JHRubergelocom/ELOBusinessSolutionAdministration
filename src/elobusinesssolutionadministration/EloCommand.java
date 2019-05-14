@@ -125,16 +125,16 @@ public class EloCommand {
 
             if (line != null) {
                 if (line.contains("already exists")) {
-                    OutputStream os = p.getOutputStream();
-                    OutputStreamWriter osr = new OutputStreamWriter(os);
-                    BufferedWriter bw = new BufferedWriter(osr);
-
-                    Scanner sc = new Scanner("n");
-                    String input = sc.nextLine();
-                    input += "\n";
-                    bw.write(input);
-                    bw.flush();    
-
+                    try (OutputStream os = p.getOutputStream()) {
+                        OutputStreamWriter osr = new OutputStreamWriter(os);
+                        BufferedWriter bw = new BufferedWriter(osr);
+                        
+                        Scanner sc = new Scanner("n");
+                        String input = sc.nextLine();
+                        input += "\n";
+                        bw.write(input);
+                        bw.flush();
+                    }
                     br.close();
                 }                
             }

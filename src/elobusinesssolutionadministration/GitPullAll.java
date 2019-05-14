@@ -27,17 +27,20 @@ class GitPullAll {
         }
     }
 
-    static void GitPull (TextArea txtOutput, String gitDir) throws IOException {
+    static String GitPull (TextArea txtOutput, String htmlBody, String gitDir) throws IOException {
         ProcessBuilder pb = new ProcessBuilder("git", "pull");  
         pb.directory(new File (gitDir));
         Process powerShellProcess = pb.start();
         // Getting the results
         powerShellProcess.getOutputStream().close();
         String line;
+        
+        
         System.out.println("Standard Output:");
         try (BufferedReader stdout = new BufferedReader(new InputStreamReader(
                 powerShellProcess.getInputStream()))) {
             while ((line = stdout.readLine()) != null) {
+                htmlBody += "<h4>"+ line + "</h4>";
                 System.out.println(line);
                 txtOutput.appendText(line + "\n"); 
             }
@@ -51,25 +54,46 @@ class GitPullAll {
         }
         System.out.println("Done");        
         txtOutput.appendText("Done\n"); 
+        return htmlBody;
     }
     
     private static void SubDirectories(TextArea txtOutput, String directory) throws IOException {
-        ArrayList<File> files = getPaths(txtOutput, new File(directory), new ArrayList<>());
+        ArrayList<File> files = getPaths(new File(directory), new ArrayList<>());
         if(files == null) return;   
+        String gitCommand;
+        gitCommand = "directory " + directory + ": " + "GitPullAll";
+        String htmlDoc = "<html>\n";
+        String htmlHead = Http.CreateHtmlHead(gitCommand);
+        String htmlStyle = Http.CreateHtmlStyle();
+        String htmlBody = "<body>\n";
+
+        htmlBody += "<h1>"+ gitCommand + "</h1>";
+        
         for (int i = 0; i < files.size(); i++) {
+            htmlBody += "<h4>"+ files.get(i).getCanonicalPath() + "</h4>";            
             System.out.println(files.get(i).getCanonicalPath()); 
             txtOutput.appendText(files.get(i).getCanonicalPath() + "\n");             
-            GitPull(txtOutput, files.get(i).getCanonicalPath());
-        }        
+            htmlBody = GitPull(txtOutput, htmlBody, files.get(i).getCanonicalPath());            
+        }    
+        
+        htmlBody += "</body>\n";
+        htmlDoc += htmlHead;
+        htmlDoc += htmlStyle;
+        htmlDoc += htmlBody;
+        htmlDoc += "</html>\n";
+
+        Http.ShowReport(htmlDoc);
+
+
     }
 
-    private static ArrayList<File> getPaths(TextArea txtOutput, File file, ArrayList<File> list) {
+    private static ArrayList<File> getPaths(File file, ArrayList<File> list) {
         if (file == null || list == null || !file.isDirectory())
             return null;
         File[] fileArr = file.listFiles(new FileNameFilter(".git"));
         for (File f : fileArr) {
             if (f.isDirectory()) {
-                getPaths(txtOutput, f, list);
+                getPaths(f, list);
                 list.add(f);                
             }
         }
