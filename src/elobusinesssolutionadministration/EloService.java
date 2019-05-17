@@ -69,7 +69,7 @@ public class EloService extends Service<Boolean>{
                         break;
                     default:
                         EloCommand ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
-                        ec.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir() + "\\" + dc.getProfiles().getName(index)+ ".git", dc.getProfiles(), index);                        
+                        ec.Execute(dc.getTxtOutput(), dc.getProfiles(), index);                        
                         break;
                 }
                 dc.setDisableControls(false);

@@ -88,10 +88,11 @@ public class EloCommand {
         return version;
     }
     
-    void Execute( TextArea txtOutput, String workingDir, Profiles pfs, int index) {
+    void Execute( TextArea txtOutput, Profiles pfs, int index) {
         
         try {
             txtOutput.setText("");
+            String workingDir = pfs.getWorkingDir(index);
             
             String eloCommand = getCmd() + " -stack " + pfs.getStack(index) + " -workspace " + getWorkspace();
             if (getVersion().length() > 0) {

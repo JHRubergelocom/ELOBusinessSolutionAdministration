@@ -123,6 +123,15 @@ public class Profiles {
         return  gitUser + "-" + profiles[index].getName();
     }
     
+    public String getWorkingDir(int index) {
+        if(profiles[index].getName().contentEquals("recruiting")) {
+            return gitSolutionsDir + "\\hr_" + getName(index)+ ".git";                        
+        } else {
+            return gitSolutionsDir + "\\" + getName(index)+ ".git";            
+        }
+        
+    }
+    
     public int getLength() {
       return profiles.length;  
     } 
