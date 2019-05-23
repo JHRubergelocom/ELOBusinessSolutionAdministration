@@ -146,5 +146,5 @@ public class Profiles {
 
     public Profile getProfile(int index) {
         return profiles[index];
-    }
+    }    
 }

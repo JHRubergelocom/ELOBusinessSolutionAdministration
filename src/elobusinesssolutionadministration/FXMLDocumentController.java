@@ -23,6 +23,7 @@ import javafx.scene.control.TextArea;
 public class FXMLDocumentController implements Initializable {
     private Profiles profiles = null;    
     private EloService eloService = null;
+    private EloProperties eloProperties = null;
     
     @FXML
     private void handleBtnShowUnittest(ActionEvent event) {
@@ -74,6 +75,13 @@ public class FXMLDocumentController implements Initializable {
         eloService.Run(EloCommand.STARTKNOWLEDGEBOARD);
     }
 
+    @FXML
+    private void handleCmbProfile(ActionEvent event) {
+        int index = cmbProfile.getSelectionModel().getSelectedIndex();
+        eloProperties.SetSelectedProfile(profiles.getProfile(index));
+        System.out.println(event.getEventType() + "Profil: " + profiles.getName(index));
+    }
+
     
     @FXML
     private ComboBox<String> cmbProfile;    
@@ -115,13 +123,20 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         
         profiles = new Profiles("Profiles.json");
-        eloService = new EloService(this);        
+        eloService = new EloService(this);   
+        eloProperties = new EloProperties();
         
         cmbProfile.getItems().clear();
         for (int i = 0; i < profiles.getLength(); i++) {
             cmbProfile.getItems().add(profiles.getName(i));            
         } 
-        cmbProfile.getSelectionModel().select(0);        
+        
+        String selectedProfileName = eloProperties.GetSelectedProfile();
+        if (selectedProfileName != null) {
+            cmbProfile.getSelectionModel().select(selectedProfileName);            
+        } else {
+            cmbProfile.getSelectionModel().select(0);                    
+        }
     }  
         
     public void setDisableControls(boolean value) {
