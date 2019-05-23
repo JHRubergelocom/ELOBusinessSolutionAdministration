@@ -61,6 +61,16 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
+    private void handleBtnLoadEloScripte(ActionEvent event) {
+        eloService.Run(EloCommand.STARTEXPORTELO);
+    }
+
+    @FXML
+    private void handleBtnEloApplicationServer(ActionEvent event) {
+        eloService.Run(EloCommand.SHOWELOAPPLICATIONSERVER);
+    }
+
+    @FXML
     private void handleBtnAppManager(ActionEvent event) {
         eloService.Run(EloCommand.STARTAPPMANAGER);
     }
@@ -117,6 +127,12 @@ public class FXMLDocumentController implements Initializable {
     private Button btnAdminConsole;
 
     @FXML
+    private Button btnLoadEloScripte;
+
+    @FXML
+    private Button btnEloApplicationServer;
+
+    @FXML
     private TextArea txtOutput;
     
     @Override
@@ -151,6 +167,8 @@ public class FXMLDocumentController implements Initializable {
         btnWebclient.setDisable(value);
         btnKnowledgeBoard.setDisable(value);
         btnAdminConsole.setDisable(value);        
+        btnLoadEloScripte.setDisable(value);        
+        btnEloApplicationServer.setDisable(value);        
     }
     
     public ComboBox<String> getCmbProfile() {

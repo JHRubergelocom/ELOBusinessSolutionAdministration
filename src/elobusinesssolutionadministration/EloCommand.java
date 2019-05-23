@@ -35,6 +35,8 @@ public class EloCommand {
     static final String STARTWEBCLIENT = "StartWebclient";
     static final String STARTKNOWLEDGEBOARD = "ShowKnowledgeBoard";
     static final String GITPULLALL = "GitPullAll";
+    static final String STARTEXPORTELO = "StartExportElo";
+    static final String SHOWELOAPPLICATIONSERVER = "ShowEloApplicationServer";
     
     private String name;
     private String cmd;

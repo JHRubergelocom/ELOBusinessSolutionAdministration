@@ -63,6 +63,12 @@ public class EloService extends Service<Boolean>{
                     case EloCommand.STARTKNOWLEDGEBOARD:
                         KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
                         break;
+                    case EloCommand.STARTEXPORTELO:
+                        ExportElo.StartExportElo(dc.getProfiles(), index);
+                        break;
+                    case EloCommand.SHOWELOAPPLICATIONSERVER:
+                        EloApplicationServer.ShowEloApplicationServer(dc.getProfiles(), index);
+                        break;
                     case EloCommand.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
