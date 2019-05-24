@@ -85,6 +85,7 @@ class ExportElo {
                                 try {
                                     subFolderPath.mkdirs();
                                 } catch (Exception ex) {
+                                    System.out.println("Exception mkdir(): " + ex.getMessage() + " " + subFolderPath);
                                     ex.printStackTrace();
                                 }
                             }
@@ -92,16 +93,22 @@ class ExportElo {
                         }
                         // Wenn Dokument Pfad und Name ausgeben
                         if (isDocument) {
+                            File outFile = new File("");
                             try {
                                 // Dokument aus Archiv downloaden und in Windows anlegen
                                 ed = ixConn.ix().checkoutDoc(Integer.toString(sord.getId()), null, EditInfoC.mbDocument, LockC.NO);
                                 DocVersion dv = ed.getDocument().getDocs()[0];
-                                File outFile = new File(exportPath + "\\" + sord.getName() + "." + dv.getExt());
+                                outFile = new File(exportPath + "\\" + sord.getName() + "." + dv.getExt());
                                 if (outFile.exists()) {
                                     outFile.delete();
                                 }
-                                ixConn.download(dv.getUrl(), outFile);                            
+                                ixConn.download(dv.getUrl(), outFile);    
+                                System.out.println("Arcpath=" + arcPath + "/" + sord.getName() + "  Maskname=" + sord.getMaskName());
                             } catch (RemoteException ex) {
+                                System.out.println("RemoteException: " + ex.getMessage() + " " + outFile);
+                                ex.printStackTrace();
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                System.out.println("ArrayIndexOutOfBoundsException: " + ex.getMessage() + " " + outFile);
                                 ex.printStackTrace();
                             }
                         }
