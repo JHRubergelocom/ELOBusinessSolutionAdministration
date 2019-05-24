@@ -24,5 +24,6 @@
       <Button fx:id="btnKnowledgeBoard" layoutX="328.0" layoutY="125.0" mnemonicParsing="false" onAction="#handleBtnKnowledgeBoard" prefHeight="25.0" prefWidth="165.0" text="KnowledgeBoard" />
       <Button fx:id="btnLoadEloScripte" layoutX="18.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnLoadEloScripte" prefHeight="25.0" prefWidth="128.0" text="ELO Scripte laden" />
       <Button fx:id="btnEloApplicationServer" layoutX="162.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnEloApplicationServer" prefHeight="25.0" prefWidth="150.0" text="ELO Application Server" />
+      <Button fx:id="btnRancher" layoutX="328.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnRancher" prefHeight="25.0" prefWidth="165.0" text="Rancher" />
     </children>
 </AnchorPane>

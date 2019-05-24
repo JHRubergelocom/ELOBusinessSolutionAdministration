@@ -112,6 +112,10 @@ public class Profiles {
         return pwd;
     }
 
+    public String getGitUser() {
+        return gitUser;
+    }
+
     public String getIxUrl(int index) {   
         return  "http://" + getStack(index) + ".dev.elo/ix-Solutions/ix";
     }

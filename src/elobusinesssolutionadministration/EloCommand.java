@@ -37,6 +37,7 @@ public class EloCommand {
     static final String GITPULLALL = "GitPullAll";
     static final String STARTEXPORTELO = "StartExportElo";
     static final String SHOWELOAPPLICATIONSERVER = "ShowEloApplicationServer";
+    static final String SHOWRANCHER = "ShowRancher";
     
     private String name;
     private String cmd;

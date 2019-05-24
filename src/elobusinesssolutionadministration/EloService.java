@@ -69,6 +69,9 @@ public class EloService extends Service<Boolean>{
                     case EloCommand.SHOWELOAPPLICATIONSERVER:
                         EloApplicationServer.ShowEloApplicationServer(dc.getProfiles(), index);
                         break;
+                    case EloCommand.SHOWRANCHER:
+                        Rancher.ShowRancher(dc.getProfiles(), index);
+                        break;
                     case EloCommand.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
