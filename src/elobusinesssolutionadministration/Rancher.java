@@ -11,7 +11,7 @@ package elobusinesssolutionadministration;
  */
 class Rancher {
 
-    static void ShowRancher(Profiles profiles, int index) {
+    static void ShowRancher(Profiles profiles) {
         try {
             String rancherUrl = "http://rancher.elo.local/env/1a81/apps/stacks?tags=" + profiles.getGitUser() + "&which=all";
             Http.OpenUrl(rancherUrl);                    

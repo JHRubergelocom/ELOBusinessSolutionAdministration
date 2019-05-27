@@ -5,6 +5,7 @@
  */
 package elobusinesssolutionadministration;
 
+import de.elo.ix.client.IXConnection;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -70,12 +71,20 @@ public class EloService extends Service<Boolean>{
                         EloApplicationServer.ShowEloApplicationServer(dc.getProfiles(), index);
                         break;
                     case EloCommand.SHOWRANCHER:
-                        Rancher.ShowRancher(dc.getProfiles(), index);
+                        Rancher.ShowRancher(dc.getProfiles());
                         break;
                     case EloCommand.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir());
                         break;
+                    case EloCommand.ELO_PULL_PACKAGE:    
+                    case EloCommand.ELO_PULL_UNITTEST:
+                        try {
+                            Connection.getIxConnection(dc.getProfiles(), index);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            break;                            
+                        }
                     default:
                         EloCommand ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
                         ec.Execute(dc.getTxtOutput(), dc.getProfiles(), index);                        
