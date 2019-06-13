@@ -9,7 +9,7 @@
     },
     {
       "name": "contract",
-      "package": "contract",
+      "packages": ["contract"],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
@@ -31,7 +31,7 @@
     },
     {
       "name": "knowledge",
-      "package": "knowledge",
+      "packages": ["knowledge"],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "knowledge-only" },
@@ -40,7 +40,7 @@
     },
     {
       "name": "learning",
-      "package": "learning",
+      "packages": ["learning"],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "learning-only" },
@@ -67,7 +67,7 @@
     },
     {
       "name": "recruiting",
-      "package": "recruiting",
+      "packages": ["recruiting"],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "recruiting-only" },
@@ -76,7 +76,7 @@
     },
     {
       "name": "visitor",
-      "package": "visitor",
+      "packages": ["visitor"],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de" }

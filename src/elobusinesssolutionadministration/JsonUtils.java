@@ -20,4 +20,12 @@ public class JsonUtils {
         } 
         return jobjs;
     }
+    public static String[] getStringArray (JSONObject jobj, String key) {
+        JSONArray jarr = jobj.getJSONArray(key);
+        String jstrings[] = new String[jarr.length()];
+        for (int i = 0; i < jarr.length(); i++) {
+            jstrings[i] = jarr.getString(i);
+        } 
+        return jstrings;
+    }
 }

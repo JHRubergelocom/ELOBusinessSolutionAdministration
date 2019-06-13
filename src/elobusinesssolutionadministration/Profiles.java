@@ -144,8 +144,8 @@ public class Profiles {
         return profiles[index].getName();
     }
     
-    public String getEloPackage(int index) {
-        return profiles[index].getEloPackage();
+    public String[] getEloPackages(int index) {
+        return profiles[index].getEloPackages();
     }
 
     public Profile getProfile(int index) {

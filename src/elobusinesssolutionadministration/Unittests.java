@@ -10,6 +10,7 @@ import de.elo.ix.client.Sord;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import org.json.JSONObject;
 
 /**
@@ -72,10 +73,29 @@ class Unittests {
         IXConnection ixConn;   
         try {
             ixConn = Connection.getIxConnection(profiles, index);
-            String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);        
-            SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackage(index));        
-            SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackage(index));
-            SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackage(index));
+            String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);   
+/*            
+            SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackages(index));        
+            SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackages(index));
+            SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackages(index));
+*/            
+            SortedMap<String, Boolean> dicRFs = new TreeMap<>();
+            SortedMap<String, Boolean> dicASDirectRules = new TreeMap<>();
+            SortedMap<String, Boolean> dicActionDefs = new TreeMap<>();
+            if (profiles.getEloPackages(index).length == 0) {
+                dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, "");        
+                dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, "");
+                dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, "");                
+            } else {
+                for (String eloPackage : profiles.getEloPackages(index)) {
+                    SortedMap<String, Boolean> dicRF = RegisterFunctions.GetRFs(ixConn, jsTexts, eloPackage);        
+                    SortedMap<String, Boolean> dicASDirectRule = ASDirectRules.GetRules(ixConn, jsTexts, eloPackage);
+                    SortedMap<String, Boolean> dicActionDef = ActionDefinitions.GetActionDefs(ixConn, jsTexts, eloPackage);
+                    dicRFs.putAll(dicRF);
+                    dicASDirectRules.putAll(dicASDirectRule);
+                    dicActionDefs.putAll(dicActionDef);
+                }                
+            }
             String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
             Http.ShowReport(htmlDoc);
         } catch (Exception ex) {

@@ -15,20 +15,21 @@ import org.json.JSONObject;
  */
 public class Profile {
     private String name;
-    private String eloPackage;
+    private String[] eloPackages;
     private EloCommand[] eloCommands;
 
     Profile(JSONObject[] jarray, int index) {
         name = "";
-        eloPackage = "";
+        eloPackages = null;
         eloCommands = null;
         try {
             name = jarray[index].getString("name");            
         } catch (JSONException ex) {            
         }
         try {
-            eloPackage = jarray[index].getString("package");      
-        } catch (JSONException ex) {            
+            eloPackages = JsonUtils.getStringArray(jarray[index], "packages");
+        } catch (JSONException ex) {   
+            eloPackages = new String[]{};
         }
         try {
             JSONObject[] jarrayEloCommands = JsonUtils.getArray(jarray[index], "eloCommands");
@@ -46,8 +47,8 @@ public class Profile {
         return name;
     }
     
-    public String getEloPackage() {
-        return eloPackage;
+    public String[] getEloPackages() {
+        return eloPackages;
     }
 
     public EloCommand[] getEloCommands() {
@@ -62,7 +63,5 @@ public class Profile {
         } 
         return new EloCommand();       
     }
-    
-
 
 }
