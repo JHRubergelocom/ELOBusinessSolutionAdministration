@@ -13,11 +13,14 @@ import javafx.concurrent.Task;
  * @author ruberg
  */
 public class EloService extends Service<Boolean>{    
-    private final FXMLDocumentController dc;
+    private FXMLDocumentController dc;
     private String typeCommand;
     
     public EloService(FXMLDocumentController dc) {
         this.dc = dc;        
+    }
+
+    public EloService() {
     }
     
     public void SetTypeCommand(String typeCommand) {

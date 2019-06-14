@@ -83,11 +83,11 @@ class Unittests {
             SortedMap<String, Boolean> dicASDirectRules = new TreeMap<>();
             SortedMap<String, Boolean> dicActionDefs = new TreeMap<>();
             if (profiles.getEloPackages(index).length == 0) {
-                dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, "");        
-                dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, "");
-                dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, "");                
+                dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, new EloPackage());        
+                dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, new EloPackage());
+                dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, new EloPackage());                
             } else {
-                for (String eloPackage : profiles.getEloPackages(index)) {
+                for (EloPackage eloPackage : profiles.getEloPackages(index)) {
                     SortedMap<String, Boolean> dicRF = RegisterFunctions.GetRFs(ixConn, jsTexts, eloPackage);        
                     SortedMap<String, Boolean> dicASDirectRule = ASDirectRules.GetRules(ixConn, jsTexts, eloPackage);
                     SortedMap<String, Boolean> dicActionDef = ActionDefinitions.GetActionDefs(ixConn, jsTexts, eloPackage);
@@ -103,11 +103,11 @@ class Unittests {
         }
     }
     
-    static boolean Match(IXConnection ixConn, String uName, String eloPackage, String[] jsTexts) {
+    static boolean Match(IXConnection ixConn, String uName, EloPackage eloPackage, String[] jsTexts) {
         for (String jsText : jsTexts) {
             String[] jsLines = jsText.split("\n");
             for (String line : jsLines) {
-                if (line.contains(eloPackage)) {
+                if (line.contains(eloPackage.getName())) {
                     if (line.contains(uName)) {
                         return true;
                     }

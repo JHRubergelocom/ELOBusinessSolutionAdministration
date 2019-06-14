@@ -20,9 +20,9 @@ import org.xml.sax.InputSource;
  * @author ruberg
  */
 class ASDirectRules {
-    static SortedMap<String, Boolean> GetRules(IXConnection ixConn, String[] jsTexts, String eloPackage) {
-        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/ELOas Base/Direct";
-        if (eloPackage.equals("")) {
+    static SortedMap<String, Boolean> GetRules(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/ELOas Base/Direct";
+        if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/ELOas Base/Direct";
         }
         Sord[] sordRuleInfo = RepoUtils.FindChildren(parentId, ixConn, true);

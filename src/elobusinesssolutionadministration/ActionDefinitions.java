@@ -15,9 +15,9 @@ import java.util.TreeMap;
  * @author ruberg
  */
 class ActionDefinitions {
-    static SortedMap<String, Boolean> GetActionDefs(IXConnection ixConn, String[] jsTexts, String eloPackage) {
-        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/Action definitions";
-        if (eloPackage.equals("")) {
+    static SortedMap<String, Boolean> GetActionDefs(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/Action definitions";
+        if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Action definitions";
         }
         Sord[] sordActionDefInfo = RepoUtils.FindChildren(parentId, ixConn, true);

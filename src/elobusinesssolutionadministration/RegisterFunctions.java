@@ -15,9 +15,9 @@ import java.util.TreeMap;
  * @author ruberg
  */
 public class RegisterFunctions {    
-    public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, String[] jsTexts, String eloPackage) {
-        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage + "/IndexServer Scripting Base";
-        if (eloPackage.equals("")) {
+    public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/IndexServer Scripting Base";
+        if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/IndexServer Scripting Base/_ALL/business_solutions";
         }
         Sord[] sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
@@ -30,19 +30,21 @@ public class RegisterFunctions {
            String[] jsLines = jsText.split(" ");
             for (String line : jsLines) {
                 if (line.contains("RF_")) {
-                    String rfName = line;
-                    String[] rfNames = rfName.split("\\(");
-                    rfName = rfNames[0];
-                    if (!line.endsWith(",")
-                            && rfName.startsWith("RF_") && !line.contains("RF_ServiceBaseName") && !line.endsWith(".")
-                            && !line.contains("RF_FunctionName") && !line.contains("RF_MyFunction")
-                            && !line.contains("RF_custom_functions_MyFunction") && !line.contains("RF_custom_services_MyFunction")
-                            && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction")
-                            && !line.contains("RF_sol_service_ScriptVersionReportCreate")) {
-                        if (!dicRFs.containsKey(rfName)) {
-                            boolean match = Unittests.Match(ixConn, rfName, eloPackage, jsTexts);
-                            dicRFs.put(rfName, match);
-                        }
+                    if (eloPackage.getName().equals("") || (!eloPackage.getName().equals("") && line.contains(eloPackage.getName()))) {
+                        String rfName = line;
+                        String[] rfNames = rfName.split("\\(");
+                        rfName = rfNames[0];
+                        if (!line.endsWith(",")
+                                && rfName.startsWith("RF_") && !line.contains("RF_ServiceBaseName") && !line.endsWith(".")
+                                && !line.contains("RF_FunctionName") && !line.contains("RF_MyFunction")
+                                && !line.contains("RF_custom_functions_MyFunction") && !line.contains("RF_custom_services_MyFunction")
+                                && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction")
+                                && !line.contains("RF_sol_service_ScriptVersionReportCreate")) {
+                            if (!dicRFs.containsKey(rfName)) {
+                                boolean match = Unittests.Match(ixConn, rfName, eloPackage, jsTexts);
+                                dicRFs.put(rfName, match);
+                            }
+                        }                        
                     }
                 }                    
             }

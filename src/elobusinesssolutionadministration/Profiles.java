@@ -27,7 +27,7 @@ public class Profiles {
     private String pwd;    
     
     Profiles(String jsonFile) {
-        profiles = null;
+        profiles = new Profile[]{};
         gitSolutionsDir = "";
         gitDevDir = "";
         gitUser = "";
@@ -96,6 +96,16 @@ public class Profiles {
         
     }
 
+    Profiles() {
+        profiles = new Profile[]{};
+        gitSolutionsDir = "";
+        gitDevDir = "";
+        gitUser = "";
+        arcPath = "";
+        user = "";
+        pwd = "";
+    }
+
     public String getGitSolutionsDir() {
         return gitSolutionsDir;
     }
@@ -144,7 +154,7 @@ public class Profiles {
         return profiles[index].getName();
     }
     
-    public String[] getEloPackages(int index) {
+    public EloPackage[] getEloPackages(int index) {
         return profiles[index].getEloPackages();
     }
 

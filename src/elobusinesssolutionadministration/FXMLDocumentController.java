@@ -21,9 +21,9 @@ import javafx.scene.control.TextArea;
  * @author ruberg
  */
 public class FXMLDocumentController implements Initializable {
-    private Profiles profiles = null;    
-    private EloService eloService = null;
-    private EloProperties eloProperties = null;
+    private Profiles profiles = new Profiles();    
+    private EloService eloService = new EloService();
+    private EloProperties eloProperties = new EloProperties();
     
     @FXML
     private void handleBtnShowUnittest(ActionEvent event) {

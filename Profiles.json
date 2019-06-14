@@ -9,7 +9,7 @@
     },
     {
       "name": "contract",
-      "packages": ["contract"],
+      "eloPackages": [{"folder":"contract", "name":"contract"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
@@ -17,6 +17,7 @@
     },
     {
       "name": "hr",
+      "eloPackages": [{"folder":"hr", "name":"hr"}, {"folder":"hr_orgchart", "name":"hr"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
@@ -24,6 +25,7 @@
     },
     {
       "name": "invoice",
+      "eloPackages": [{"folder":"invoice", "name":"invoice"}, {"folder":"invoice_datev", "name":"invoice"}, {"folder":"invoice_electronic", "name":"invoice"}, {"folder":"invoice_zugferd", "name":"invoice"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan"}
@@ -31,7 +33,7 @@
     },
     {
       "name": "knowledge",
-      "packages": ["knowledge"],
+      "eloPackages": [{"folder":"knowledge", "name":"knowledge"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "knowledge-only" },
@@ -40,7 +42,7 @@
     },
     {
       "name": "learning",
-      "packages": ["learning"],
+      "eloPackages": [{"folder":"learning", "name":"learning"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "learning-only" },
@@ -67,7 +69,7 @@
     },
     {
       "name": "recruiting",
-      "packages": ["recruiting"],
+      "eloPackages": [{"folder":"recruiting", "name":"recruiting"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "recruiting-only" },
@@ -76,7 +78,7 @@
     },
     {
       "name": "visitor",
-      "packages": ["visitor"],
+      "eloPackages": [{"folder":"visitor", "name":"visitor"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de" }
