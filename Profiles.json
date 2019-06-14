@@ -55,6 +55,7 @@
     },
     {
       "name": "productivity",
+      "eloPackages": [{"folder":"account", "name":"account"}, {"folder":"checklist", "name":"checklist"}, {"folder":"contact", "name":"contact"}, {"folder":"notify", "name":"notify"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan" }
@@ -62,6 +63,7 @@
     },
     {
       "name": "pubsec",
+      "eloPackages": [{"folder":"pubsec", "name":"pubsec"}, {"folder":"pubsec_process", "name":"pubsec"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de" }
@@ -69,7 +71,7 @@
     },
     {
       "name": "recruiting",
-      "eloPackages": [{"folder":"recruiting", "name":"recruiting"}],
+      "eloPackages": [{"folder":"recruiting", "name":"recruiting"}, {"folder":"recruiting_jobportal", "name":"recruiting"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "recruiting-only" },
