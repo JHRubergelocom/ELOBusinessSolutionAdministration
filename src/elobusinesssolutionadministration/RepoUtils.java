@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ class RepoUtils {
     public static Sord[] FindChildren(String objId, IXConnection ixConn, boolean references) {
         System.out.println("FindChildren: objId " + objId + " ixConn " + ixConn);
         FindResult findResult = new FindResult();
-        Sord[] children = new Sord[]{};
+        List<Sord> sordList = new ArrayList<>();
         try {
             ixConn.ix().checkoutSord(objId, SordC.mbAll, LockC.NO);
             
@@ -55,11 +56,12 @@ class RepoUtils {
             int idx = 0;
             findResult = ixConn.ix().findFirstSords(findInfo, 1000, sordZ);
             while (true) {
-                children = findResult.getSords();
+                Sord[] sordArray = findResult.getSords();
+                sordList.addAll(Arrays.asList(sordArray));                
                 if (!findResult.isMoreResults()) {
                     break;
                 }
-                idx += findResult.getSords().length;
+                idx += sordArray.length;
                 findResult = ixConn.ix().findNextSords(findResult.getSearchId(), idx, 1000, sordZ);
             }
             
@@ -75,6 +77,8 @@ class RepoUtils {
                 }
             }
         }
+        Sord[] children = new Sord[sordList.size()];
+        children = sordList.toArray(children);
         return children;
     }
     
