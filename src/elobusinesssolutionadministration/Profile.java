@@ -59,6 +59,25 @@ public class Profile {
         return eloCommands;
     }
     
+    public String getIxUrl(String gitUser) {   
+        return  "http://" + getStack(gitUser) + ".dev.elo/ix-Solutions/ix";
+    }
+    
+    public String getStack(String gitUser) {   
+        if(name.contains("playground")) {
+            return "playground";
+        }
+        return  gitUser + "-" + name;
+    }
+    
+    public String getWorkingDir(String gitSolutionsDir) {
+        if(name.contentEquals("recruiting")) {
+            return gitSolutionsDir + "\\hr_" + name + ".git";                        
+        } else {
+            return gitSolutionsDir + "\\" + name + ".git";            
+        }        
+    }
+    
     EloCommand getEloCommand(String commandName) {
         for (EloCommand ec : getEloCommands()) {
             if (ec.getName().contentEquals(commandName)) {

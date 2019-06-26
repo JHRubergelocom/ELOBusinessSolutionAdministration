@@ -38,6 +38,7 @@ public class EloCommand {
     static final String STARTEXPORTELO = "StartExportElo";
     static final String SHOWELOAPPLICATIONSERVER = "ShowEloApplicationServer";
     static final String SHOWRANCHER = "ShowRancher";
+    static final String SHOWSEARCHRESULT = "ShowSearchResult";
     
     private String name;
     private String cmd;
@@ -91,13 +92,12 @@ public class EloCommand {
         return version;
     }
     
-    void Execute( TextArea txtOutput, Profiles pfs, int index) {
+    void Execute( TextArea txtOutput, Profile pf, String workingDir, String gitUser) {
         
         try {
             txtOutput.setText("");
-            String workingDir = pfs.getWorkingDir(index);
             
-            String eloCommand = getCmd() + " -stack " + pfs.getStack(index) + " -workspace " + getWorkspace();
+            String eloCommand = getCmd() + " -stack " + pf.getStack(gitUser) + " -workspace " + getWorkspace();
             if (getVersion().length() > 0) {
                 eloCommand = eloCommand + " -version " + getVersion();                
             }

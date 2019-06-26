@@ -15,20 +15,20 @@ import javax.swing.JOptionPane;
  * @author ruberg
  */
 public class Connection {
-    static IXConnection getIxConnection(Profiles profiles, int index) throws Exception {
+    static IXConnection getIxConnection(Profile profile, String gitUser, String user, String pwd) throws Exception{
         IXConnection ixConn;
         IXConnFactory connFact;        
         try {
-            connFact = new IXConnFactory(profiles.getIxUrl(index), "IXConnection", "1.0");            
+            connFact = new IXConnFactory(profile.getIxUrl(gitUser), "IXConnection", "1.0");            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Falsche Verbindungsdaten zu ELO \n" + ex.getMessage(), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("IllegalStateException message: " +  ex.getMessage());            
             throw new Exception("Connection");
         }
         try {
-            ixConn = connFact.create(profiles.getUser(), profiles.getPwd(), null, null);
+            ixConn = connFact.create(user, pwd, null, null);
         } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + profiles.getUser() + "\n IxUrl: " + profiles.getIxUrl(index), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Indexserver-Verbindung ungültig \n User: " + user + "\n IxUrl: " + profile.getIxUrl(gitUser), "ELO Connection", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("RemoteException message: " + ex.getMessage());            
             throw new Exception("Connection");
         }

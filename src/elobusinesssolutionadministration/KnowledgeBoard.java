@@ -46,25 +46,19 @@ class KnowledgeBoard {
         
     }
     
-    static void ShowKnowledgeBoard(Profiles profiles, int index) {
-        IXConnection ixConn;
-        try {
-            ixConn = Connection.getIxConnection(profiles, index);
-            String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
-            String ixUrl = ixConn.getEndpointUrl();
-            String appUrl = ixUrl.replace("ix-", "wf-");
-            appUrl = appUrl.replace("/ix", "/apps/app");
-            appUrl = appUrl + "/";
-            Map<String, String> dicApp = KnowledgeBoard.GetKnowledgeBoard(ixConn);
-            appUrl = appUrl + dicApp.get("configApp");
-            appUrl = appUrl + "/?lang=de";
-            appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
-            appUrl = appUrl + "&ticket=" + ticket;
-            appUrl = appUrl + "&timezone=Europe%2FBerlin";
-            Http.OpenUrl(appUrl);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }        
+    static void ShowKnowledgeBoard(IXConnection ixConn) {
+        String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
+        String ixUrl = ixConn.getEndpointUrl();
+        String appUrl = ixUrl.replace("ix-", "wf-");
+        appUrl = appUrl.replace("/ix", "/apps/app");
+        appUrl = appUrl + "/";
+        Map<String, String> dicApp = KnowledgeBoard.GetKnowledgeBoard(ixConn);
+        appUrl = appUrl + dicApp.get("configApp");
+        appUrl = appUrl + "/?lang=de";
+        appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
+        appUrl = appUrl + "&ticket=" + ticket;
+        appUrl = appUrl + "&timezone=Europe%2FBerlin";
+        Http.OpenUrl(appUrl);
     }
     
 }

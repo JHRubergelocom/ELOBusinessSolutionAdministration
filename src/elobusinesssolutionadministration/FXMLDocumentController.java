@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 
 
@@ -91,12 +92,17 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
+    private void handleBtnSearch(ActionEvent event) {
+        eloService.Run(EloCommand.SHOWSEARCHRESULT);
+    }    
+    
+    @FXML
     private void handleCmbProfile(ActionEvent event) {
         int index = cmbProfile.getSelectionModel().getSelectedIndex();
-        eloProperties.SetSelectedProfile(profiles.getProfile(index));
-        System.out.println(event.getEventType() + "Profil: " + profiles.getName(index));
+        Profile profile = profiles.getProfile(index);
+        eloProperties.SetSelectedProfile(profile);
+        System.out.println(event.getEventType() + "Profil: " + profile.getName());
     }
-
     
     @FXML
     private ComboBox<String> cmbProfile;    
@@ -141,6 +147,12 @@ public class FXMLDocumentController implements Initializable {
     private Button btnRancher;
 
     @FXML
+    private Button btnSearch;
+
+    @FXML
+    private TextField txtPattern;
+
+    @FXML
     private TextArea txtOutput;
     
     @Override
@@ -152,7 +164,8 @@ public class FXMLDocumentController implements Initializable {
         
         cmbProfile.getItems().clear();
         for (int i = 0; i < profiles.getLength(); i++) {
-            cmbProfile.getItems().add(profiles.getName(i));            
+            Profile p = profiles.getProfile(i);
+            cmbProfile.getItems().add(p.getName());            
         } 
         
         String selectedProfileName = eloProperties.GetSelectedProfile();
@@ -178,6 +191,8 @@ public class FXMLDocumentController implements Initializable {
         btnLoadEloScripte.setDisable(value);        
         btnEloApplicationServer.setDisable(value);        
         btnRancher.setDisable(value);        
+        btnSearch.setDisable(value);        
+        txtPattern.setDisable(value);        
     }
     
     public ComboBox<String> getCmbProfile() {
@@ -186,6 +201,10 @@ public class FXMLDocumentController implements Initializable {
 
     public TextArea getTxtOutput() {
         return txtOutput;
+    }
+    
+    public TextField getTxtPattern() {
+        return txtPattern;
     }
     
     public Profiles getProfiles() {

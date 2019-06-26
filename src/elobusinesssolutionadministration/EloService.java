@@ -5,8 +5,10 @@
  */
 package elobusinesssolutionadministration;
 
+import de.elo.ix.client.IXConnection;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.scene.control.TextArea;
 
 /**
  *
@@ -43,38 +45,26 @@ public class EloService extends Service<Boolean>{
     protected Task<Boolean> createTask() {
         return new Task<Boolean>() {
             @Override
-            protected Boolean call() throws Exception {
+            protected Boolean call() {
                 EloCommand ec;
                 int index;  
                 dc.setDisableControls(true);
-                index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();                
+                index = dc.getCmbProfile().getSelectionModel().getSelectedIndex();    
+                Profiles profiles = dc.getProfiles();
+                TextArea txtOutput = dc.getTxtOutput();
+                String searchPattern = dc.getTxtPattern().getText();
+                String gitUser = profiles.getGitUser();
+                String user = profiles.getUser();
+                String pwd = profiles.getPwd();
+                String gitSolutionsDir = profiles.getGitSolutionsDir();
+                Profile profile = profiles.getProfile(index);                
+                String workingDir = profile.getWorkingDir(gitSolutionsDir);
+                String name = profile.getName();
+                EloPackage[] eloPackages = profile.getEloPackages();
+                
                 switch(typeCommand) {
-                    case EloCommand.SHOWREPORTMATCHUNITTEST:
-                        Unittests.ShowReportMatchUnittest(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.SHOWUNITTESTSAPP:
-                        Unittests.ShowUnittestsApp(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.STARTADMINCONSOLE:
-                        AdminConsole.StartAdminConsole(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.STARTAPPMANAGER:
-                        AppManager.StartAppManager(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.STARTWEBCLIENT:
-                        Webclient.StartWebclient(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.STARTKNOWLEDGEBOARD:
-                        KnowledgeBoard.ShowKnowledgeBoard(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.STARTEXPORTELO:
-                        ExportElo.StartExportElo(dc.getProfiles(), index);
-                        break;
-                    case EloCommand.SHOWELOAPPLICATIONSERVER:
-                        EloApplicationServer.ShowEloApplicationServer(dc.getProfiles(), index);
-                        break;
                     case EloCommand.SHOWRANCHER:
-                        Rancher.ShowRancher(dc.getProfiles());
+                        Rancher.ShowRancher(profiles);
                         break;
                     case EloCommand.GITPULLALL:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
@@ -84,22 +74,60 @@ public class EloService extends Service<Boolean>{
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir()); 
                         ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
-                        ec.Execute(dc.getTxtOutput(), dc.getProfiles(), index);                        
+                        ec.Execute(txtOutput, profile, workingDir, gitUser);                        
                         break;                        
-                    case EloCommand.ELO_PULL_PACKAGE:    
-                    case EloCommand.ELO_PULL_UNITTEST:
-                        try {
-                            Connection.getIxConnection(dc.getProfiles(), index);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            break;                            
-                        }
-                        ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
-                        ec.Execute(dc.getTxtOutput(), dc.getProfiles(), index);                        
-                        break;
                     default:
                         break;
                 }
+
+                if ((!typeCommand.equals(EloCommand.SHOWRANCHER)) && 
+                    (!typeCommand.equals(EloCommand.GITPULLALL)) && 
+                    (!typeCommand.equals(EloCommand.ELO_PREPARE))) {
+                    IXConnection ixConn;
+                    try {
+                        ixConn = Connection.getIxConnection(profile, gitUser, user, pwd);
+                        switch(typeCommand) {
+                            case EloCommand.SHOWREPORTMATCHUNITTEST:
+                                Unittests.ShowReportMatchUnittest(ixConn, eloPackages);
+                                break;
+                            case EloCommand.SHOWUNITTESTSAPP:
+                                Unittests.ShowUnittestsApp(ixConn);
+                                break;
+                            case EloCommand.STARTADMINCONSOLE:
+                                AdminConsole.StartAdminConsole(ixConn);
+                                break;
+                            case EloCommand.STARTAPPMANAGER:
+                                AppManager.StartAppManager(ixConn);
+                                break;
+                            case EloCommand.STARTWEBCLIENT:
+                                Webclient.StartWebclient(ixConn);
+                                break;
+                            case EloCommand.STARTKNOWLEDGEBOARD:
+                                KnowledgeBoard.ShowKnowledgeBoard(ixConn);
+                                break;
+                            case EloCommand.STARTEXPORTELO:
+                                ExportElo.StartExportElo(ixConn, name);
+                                break;
+                            case EloCommand.SHOWELOAPPLICATIONSERVER:
+                                EloApplicationServer.ShowEloApplicationServer(ixConn);
+                                break;
+                            case EloCommand.SHOWSEARCHRESULT:
+                                Search.ShowSearchResult(ixConn, searchPattern);
+                                break;    
+                            case EloCommand.ELO_PULL_PACKAGE:    
+                            case EloCommand.ELO_PULL_UNITTEST:
+                                ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
+                                ec.Execute(txtOutput, profile, workingDir, gitUser);                        
+                                break;
+                            default:
+                                break;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    
+                }
+                
                 dc.setDisableControls(false);
                 return true;
             }            

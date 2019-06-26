@@ -12,21 +12,15 @@ import de.elo.ix.client.IXConnection;
  * @author ruberg
  */
 class AdminConsole {
-    static void StartAdminConsole(Profiles profiles, int index) {
-        IXConnection ixConn;
-        try {
-            ixConn = Connection.getIxConnection(profiles, index);
-            String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
-            String ixUrl = ixConn.getEndpointUrl();
-            String[] adminConsole = ixUrl.split("/");
-            String adminConsoleUrl = adminConsole[0] + "//" + adminConsole[2] + "/AdminConsole";
-            adminConsoleUrl = adminConsoleUrl + "/?lang=de";
-            adminConsoleUrl = adminConsoleUrl + "&ticket=" + ticket;
-            adminConsoleUrl = adminConsoleUrl + "&timezone=Europe%2FBerlin";
-            Http.OpenUrl(adminConsoleUrl);                    
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    static void StartAdminConsole(IXConnection ixConn) {
+        String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
+        String ixUrl = ixConn.getEndpointUrl();
+        String[] adminConsole = ixUrl.split("/");
+        String adminConsoleUrl = adminConsole[0] + "//" + adminConsole[2] + "/AdminConsole";
+        adminConsoleUrl = adminConsoleUrl + "/?lang=de";
+        adminConsoleUrl = adminConsoleUrl + "&ticket=" + ticket;
+        adminConsoleUrl = adminConsoleUrl + "&timezone=Europe%2FBerlin";
+        Http.OpenUrl(adminConsoleUrl);                    
     }
     
 }

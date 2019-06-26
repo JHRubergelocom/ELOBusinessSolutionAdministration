@@ -27,11 +27,9 @@ class ExportElo {
     static private final String ARCPATH = "ARCPATH[1]:/Administration/Business Solutions"; 
     static private final boolean REFERENCES = false; 
 
-    static void StartExportElo(Profiles profiles, int index) {
-        IXConnection ixConn;
+    static void StartExportElo(IXConnection ixConn, String name) {
         try {
-            ixConn = Connection.getIxConnection(profiles, index);   
-            String exportPath = "E:\\Temp\\ExportElo\\" + profiles.getName(index);
+            String exportPath = "E:\\Temp\\ExportElo\\" + name;
             File exportDir = new File(exportPath);
             if (!exportDir.exists()) {
                 exportDir.mkdirs();

@@ -5,6 +5,7 @@
  */
 package elobusinesssolutionadministration;
 
+import byps.RemoteException;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
 import java.util.HashMap;
@@ -47,47 +48,34 @@ class Unittests {
         return dicApp;
     }    
 
-    static void ShowUnittestsApp(Profiles profiles, int index) { 
-        IXConnection ixConn;
-        try {
-            ixConn = Connection.getIxConnection(profiles, index);
-            String ticket = ixConn.getLoginResult().getClientInfo().getTicket();            
-            String ixUrl = ixConn.getEndpointUrl();
-            String appUrl = ixUrl.replaceAll("ix-", "wf-");
+    static void ShowUnittestsApp(IXConnection ixConn) { 
+        String ticket = ixConn.getLoginResult().getClientInfo().getTicket();            
+        String ixUrl = ixConn.getEndpointUrl();
+        String appUrl = ixUrl.replaceAll("ix-", "wf-");
 
-            appUrl = appUrl.replaceAll("/ix", "/apps/app");
-            appUrl = appUrl + "/";
-            Map<String, String> dicApp = GetUnittestApp(ixConn);
-            appUrl = appUrl + dicApp.get("configApp");
-            appUrl = appUrl + "/?lang=de";
-            appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
-            appUrl = appUrl + "&ticket=" + ticket;
-            appUrl = appUrl + "&timezone=Europe%2FBerlin";
-            Http.OpenUrl(appUrl);              
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        appUrl = appUrl.replaceAll("/ix", "/apps/app");
+        appUrl = appUrl + "/";
+        Map<String, String> dicApp = GetUnittestApp(ixConn);
+        appUrl = appUrl + dicApp.get("configApp");
+        appUrl = appUrl + "/?lang=de";
+        appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
+        appUrl = appUrl + "&ticket=" + ticket;
+        appUrl = appUrl + "&timezone=Europe%2FBerlin";
+        Http.OpenUrl(appUrl);              
     }
 
-    static void ShowReportMatchUnittest(Profiles profiles, int index) {        
-        IXConnection ixConn;   
+    static void ShowReportMatchUnittest(IXConnection ixConn, EloPackage[] eloPackages) {        
         try {
-            ixConn = Connection.getIxConnection(profiles, index);
             String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);   
-/*            
-            SortedMap<String, Boolean> dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, profiles.getEloPackages(index));        
-            SortedMap<String, Boolean> dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, profiles.getEloPackages(index));
-            SortedMap<String, Boolean> dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, profiles.getEloPackages(index));
-*/            
             SortedMap<String, Boolean> dicRFs = new TreeMap<>();
             SortedMap<String, Boolean> dicASDirectRules = new TreeMap<>();
             SortedMap<String, Boolean> dicActionDefs = new TreeMap<>();
-            if (profiles.getEloPackages(index).length == 0) {
+            if (eloPackages.length == 0) {
                 dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, new EloPackage());        
                 dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, new EloPackage());
                 dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, new EloPackage());                
             } else {
-                for (EloPackage eloPackage : profiles.getEloPackages(index)) {
+                for (EloPackage eloPackage : eloPackages) {
                     SortedMap<String, Boolean> dicRF = RegisterFunctions.GetRFs(ixConn, jsTexts, eloPackage);        
                     SortedMap<String, Boolean> dicASDirectRule = ASDirectRules.GetRules(ixConn, jsTexts, eloPackage);
                     SortedMap<String, Boolean> dicActionDef = ActionDefinitions.GetActionDefs(ixConn, jsTexts, eloPackage);
@@ -98,7 +86,7 @@ class Unittests {
             }
             String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
             Http.ShowReport(htmlDoc);
-        } catch (Exception ex) {
+        } catch (RemoteException ex) {
             ex.printStackTrace();
         }
     }

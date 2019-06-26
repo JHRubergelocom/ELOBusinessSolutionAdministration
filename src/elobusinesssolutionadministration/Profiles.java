@@ -126,37 +126,9 @@ public class Profiles {
         return gitUser;
     }
 
-    public String getIxUrl(int index) {   
-        return  "http://" + getStack(index) + ".dev.elo/ix-Solutions/ix";
-    }
-    
-    public String getStack(int index) {   
-        if(profiles[index].getName().contains("playground")) {
-            return "playground";
-        }
-        return  gitUser + "-" + profiles[index].getName();
-    }
-    
-    public String getWorkingDir(int index) {
-        if(profiles[index].getName().contentEquals("recruiting")) {
-            return gitSolutionsDir + "\\hr_" + getName(index)+ ".git";                        
-        } else {
-            return gitSolutionsDir + "\\" + getName(index)+ ".git";            
-        }
-        
-    }
-    
     public int getLength() {
       return profiles.length;  
     } 
-
-    public String getName(int index) {
-        return profiles[index].getName();
-    }
-    
-    public EloPackage[] getEloPackages(int index) {
-        return profiles[index].getEloPackages();
-    }
 
     public Profile getProfile(int index) {
         return profiles[index];

@@ -4,26 +4,29 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="551.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="elobusinesssolutionadministration.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="654.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="elobusinesssolutionadministration.FXMLDocumentController">
     <children>
-        <Button fx:id="btnShowUnittest" layoutX="18.0" layoutY="62.0" onAction="#handleBtnShowUnittest" prefHeight="25.0" prefWidth="128.0" text="Unittests anzeigen" />
+        <Button fx:id="btnShowUnittest" layoutX="163.0" layoutY="68.0" onAction="#handleBtnShowUnittest" prefHeight="25.0" prefWidth="150.0" text="Unittests anzeigen" />
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
       <ComboBox fx:id="cmbProfile" layoutX="163.0" layoutY="32.0" onAction="#handleCmbProfile" prefWidth="150.0" promptText="Profile" />
       <Label layoutX="18.0" layoutY="36.0" text="Profile" />
-      <Button fx:id="btnMatchUnittest" layoutX="163.0" layoutY="62.0" mnemonicParsing="false" onAction="#handleBtnMatchUnittest" prefHeight="25.0" prefWidth="150.0" text="Abgleich Unittests" />
-      <Button fx:id="btnGitPullAll" layoutX="18.0" layoutY="93.0" mnemonicParsing="false" onAction="#handleBtnGitPullAll" prefHeight="25.0" prefWidth="128.0" text="GitPullAll" />
-      <Button fx:id="btnEloPullUnittest" layoutX="162.0" layoutY="93.0" mnemonicParsing="false" onAction="#handleEloPullUnittest" prefHeight="25.0" prefWidth="150.0" text="EloPullUnittest" />
-      <Button fx:id="btnEloPrepare" layoutX="18.0" layoutY="125.0" mnemonicParsing="false" onAction="#handleEloPrepare" prefHeight="25.0" prefWidth="128.0" text="EloPrepare" />
-      <Button fx:id="btnEloPullPackage" layoutX="162.0" layoutY="125.0" mnemonicParsing="false" onAction="#handleEloPullPackage" prefHeight="25.0" prefWidth="150.0" text="EloPullPackage" />
-      <TextArea fx:id="txtOutput" layoutX="18.0" layoutY="206.0" prefHeight="324.0" prefWidth="478.0" />
-      <Button fx:id="btnAdminConsole" layoutX="328.0" layoutY="32.0" mnemonicParsing="false" onAction="#handleBtnAdminConsole" prefHeight="25.0" prefWidth="165.0" text="AdminConsole" />
-      <Button fx:id="btnAppManager" layoutX="328.0" layoutY="62.0" mnemonicParsing="false" onAction="#handleBtnAppManager" prefHeight="25.0" prefWidth="165.0" text="AppManager" />
-      <Button fx:id="btnWebclient" layoutX="328.0" layoutY="93.0" mnemonicParsing="false" onAction="#handleBtnWebclient" prefHeight="25.0" prefWidth="165.0" text="Webclient" />
-      <Button fx:id="btnKnowledgeBoard" layoutX="328.0" layoutY="125.0" mnemonicParsing="false" onAction="#handleBtnKnowledgeBoard" prefHeight="25.0" prefWidth="165.0" text="KnowledgeBoard" />
-      <Button fx:id="btnLoadEloScripte" layoutX="18.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnLoadEloScripte" prefHeight="25.0" prefWidth="128.0" text="ELO Scripte laden" />
-      <Button fx:id="btnEloApplicationServer" layoutX="162.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnEloApplicationServer" prefHeight="25.0" prefWidth="150.0" text="ELO Application Server" />
-      <Button fx:id="btnRancher" layoutX="328.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBtnRancher" prefHeight="25.0" prefWidth="165.0" text="Rancher" />
+      <Button fx:id="btnMatchUnittest" layoutX="328.0" layoutY="68.0" mnemonicParsing="false" onAction="#handleBtnMatchUnittest" prefHeight="25.0" prefWidth="165.0" text="Abgleich Unittests" />
+      <Button fx:id="btnGitPullAll" layoutX="18.0" layoutY="235.0" mnemonicParsing="false" onAction="#handleBtnGitPullAll" prefHeight="25.0" prefWidth="128.0" text="GitPullAll" />
+      <Button fx:id="btnEloPullUnittest" layoutX="328.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleEloPullUnittest" prefHeight="25.0" prefWidth="165.0" text="EloPullUnittest" />
+      <Button fx:id="btnEloPrepare" layoutX="18.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleEloPrepare" prefHeight="25.0" prefWidth="128.0" text="EloPrepare" />
+      <Button fx:id="btnEloPullPackage" layoutX="163.0" layoutY="103.0" mnemonicParsing="false" onAction="#handleEloPullPackage" prefHeight="25.0" prefWidth="150.0" text="EloPullPackage" />
+      <TextArea fx:id="txtOutput" layoutX="18.0" layoutY="308.0" prefHeight="324.0" prefWidth="478.0" />
+      <Button fx:id="btnAdminConsole" layoutX="18.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleBtnAdminConsole" prefHeight="25.0" prefWidth="128.0" text="AdminConsole" />
+      <Button fx:id="btnAppManager" layoutX="162.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleBtnAppManager" prefHeight="25.0" prefWidth="150.0" text="AppManager" />
+      <Button fx:id="btnWebclient" layoutX="328.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleBtnWebclient" prefHeight="25.0" prefWidth="165.0" text="Webclient" />
+      <Button fx:id="btnKnowledgeBoard" layoutX="163.0" layoutY="235.0" mnemonicParsing="false" onAction="#handleBtnKnowledgeBoard" prefHeight="25.0" prefWidth="150.0" text="KnowledgeBoard" />
+      <Button fx:id="btnLoadEloScripte" layoutX="18.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnLoadEloScripte" prefHeight="25.0" prefWidth="128.0" text="ELO Scripte laden" />
+      <Button fx:id="btnEloApplicationServer" layoutX="328.0" layoutY="235.0" mnemonicParsing="false" onAction="#handleBtnEloApplicationServer" prefHeight="25.0" prefWidth="165.0" text="ELO Application Server" />
+      <Button fx:id="btnRancher" layoutX="18.0" layoutY="68.0" mnemonicParsing="false" onAction="#handleBtnRancher" prefHeight="25.0" prefWidth="128.0" text="Rancher" />
+      <Button fx:id="btnSearch" layoutX="18.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleBtnSearch" prefHeight="25.0" prefWidth="128.0" text="Suche" />
+      <TextField fx:id="txtPattern" layoutX="164.0" layoutY="144.0" promptText="Pattern" />
     </children>
 </AnchorPane>
