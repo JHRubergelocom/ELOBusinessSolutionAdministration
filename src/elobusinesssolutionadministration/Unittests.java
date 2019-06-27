@@ -8,7 +8,9 @@ package elobusinesssolutionadministration;
 import byps.RemoteException;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -64,6 +66,62 @@ class Unittests {
         Http.OpenUrl(appUrl);              
     }
 
+    private static String CreateReportMatchUnittest(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs) {
+        String htmlDoc = "<html>\n";
+        String htmlHead = Http.CreateHtmlHead("Register Functions matching Unittest");
+        String htmlStyle = Http.CreateHtmlStyle();
+        String htmlBody = "<body>\n";
+
+        List<String> cols = new ArrayList<>();
+        cols.add("RF");
+        cols.add("Unittest");
+        List<List<String>> rows = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : dicRFs.entrySet()) {
+            List<String> row = new ArrayList<>();
+            row.add(entry.getKey());
+            row.add(entry.getValue().toString());
+            rows.add(row);
+        }
+        String htmlTable = Http.CreateHtmlTable("Register Functions matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+
+        cols = new ArrayList<>();
+        cols.add("AS Direct Rule");
+        cols.add("Unittest");
+        rows = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : dicASDirectRules.entrySet()) {
+            List<String> row = new ArrayList<>();
+            row.add(entry.getKey());
+            row.add(entry.getValue().toString());
+            rows.add(row);            
+        }
+        htmlTable = Http.CreateHtmlTable("AS Direct Rules matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+
+        cols = new ArrayList<>();
+        cols.add("Action Definition");
+        cols.add("Unittest");
+        rows = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : dicActionDefs.entrySet()) {
+            List<String> row = new ArrayList();
+            row.add(entry.getKey());
+            row.add(entry.getValue().toString());
+            rows.add(row);            
+        }
+        htmlTable = Http.CreateHtmlTable("Action Definitions matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+
+
+        htmlBody += "</body>\n";
+        htmlDoc += htmlHead;
+        htmlDoc += htmlStyle;
+        htmlDoc += htmlBody;
+        htmlDoc += "</html>\n";
+
+        return htmlDoc;
+        
+    }
+    
     static void ShowReportMatchUnittest(IXConnection ixConn, EloPackage[] eloPackages) {        
         try {
             String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);   
@@ -84,7 +142,7 @@ class Unittests {
                     dicActionDefs.putAll(dicActionDef);
                 }                
             }
-            String htmlDoc = Http.CreateHtmlReport(dicRFs, dicASDirectRules, dicActionDefs);
+            String htmlDoc = CreateReportMatchUnittest(dicRFs, dicASDirectRules, dicActionDefs);
             Http.ShowReport(htmlDoc);
         } catch (RemoteException ex) {
             ex.printStackTrace();

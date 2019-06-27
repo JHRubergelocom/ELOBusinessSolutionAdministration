@@ -27,6 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  *
@@ -46,7 +48,7 @@ class RepoUtils {
             Boolean includeReferences = references;
             SordZ sordZ = SordC.mbAll;
             Boolean recursive = true;
-            int level = 3;
+            int level = -1;
             findChildren.setParentId(objId);
             findChildren.setMainParent(!includeReferences);
             findChildren.setEndLevel((recursive) ? level : 1);
@@ -124,7 +126,7 @@ class RepoUtils {
     }
 
     static String[] LoadTextDocs(String parentId, IXConnection ixConn) throws RemoteException {
-        Sord[] sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        Sord[] sordRFInfo = FindChildren(parentId, ixConn, true);
         List<String> docTexts = new ArrayList<>();        
         for (Sord s : sordRFInfo) {
             String docText = DownloadDocumentToString(s, ixConn);
@@ -134,4 +136,62 @@ class RepoUtils {
         docArray = docTexts.toArray(docArray);
         return docArray;        
     }
+
+    private static SortedMap<Integer, String> DownloadDocumentToLines(Sord s, IXConnection ixConn, String searchPattern) {
+        SortedMap<Integer, String> docLines = new TreeMap<>();
+        try {
+            String objId = s.getId() + "";   
+            String line;            
+            BufferedReader in = null;
+            String bom = "\uFEFF"; // ByteOrderMark (BOM);
+            EditInfo editInfo = ixConn.ix().checkoutDoc(objId, null, EditInfoC.mbSordDoc, LockC.NO);
+            if (editInfo.getDocument().getDocs().length > 0) {
+                DocVersion dv = editInfo.getDocument().getDocs()[0];
+                String url = dv.getUrl();   
+                InputStream inputStream = ixConn.download(url, 0, -1);
+                try {
+                    in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)); 
+                    int linenr = 1;
+                    while ((line = in.readLine()) != null) {
+                        System.out.println("Gelesene Zeile: " + line);
+                        line = line.replaceAll(bom, "");
+                        line = line.replaceAll("\b", "");
+                        line = line.replaceAll("\n", "");  
+                        if (line.contains(searchPattern)) {
+                            docLines.put(linenr, line);                            
+                        }                        
+                        linenr++;                        
+                    }                       
+                } catch (FileNotFoundException ex) {    
+                    ex.printStackTrace();
+                } catch (IOException ex) {            
+                    ex.printStackTrace();
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }            
+        } catch (RemoteException ex) {
+            ex.printStackTrace();            
+        }
+        return docLines;
+        
+    }
+
+    static SortedMap<Sord, SortedMap<Integer, String>> LoadSordDocLines(String parentId, IXConnection ixConn, String searchPattern) {        
+        SortedMap<Sord, SortedMap<Integer, String>> dicSordDocLines = new TreeMap<>(new SordComparator());
+        Sord[] sords = FindChildren(parentId, ixConn, true);
+        for (Sord s : sords) {
+            SortedMap<Integer, String> docLines = DownloadDocumentToLines(s, ixConn, searchPattern);
+            dicSordDocLines.put(s, docLines);
+        }
+        return dicSordDocLines;        
+        
+    }
+
 }

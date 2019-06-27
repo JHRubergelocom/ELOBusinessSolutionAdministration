@@ -161,6 +161,7 @@ public class FXMLDocumentController implements Initializable {
         profiles = new Profiles("Profiles.json");
         eloService = new EloService(this);   
         eloProperties = new EloProperties();
+        txtPattern.setText("Unittest");
         
         cmbProfile.getItems().clear();
         for (int i = 0; i < profiles.getLength(); i++) {

@@ -21,6 +21,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.json.JSONObject;
 
 /**
  *
@@ -96,11 +99,35 @@ public class WfUtils {
         List<String> wfJsonTexts = new ArrayList<>();        
         for (WFDiagram wf : wfTemplates) {
              String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
+             JSONObject obj = new JSONObject (wfJsonText);
+             wfJsonText = JsonFormatter.format(obj, 2);
              wfJsonTexts.add(wfJsonText);
         }
         String[] wfArray = new String[wfJsonTexts.size()];
         wfArray = wfJsonTexts.toArray(wfArray);
         return wfArray;        
+    }
+    
+    static SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(IXConnection ixConn, String searchPattern) throws RemoteException, UnsupportedEncodingException {
+        SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
+        WFDiagram[] wfTemplates = GetTemplates(ixConn);
+        for (WFDiagram wf : wfTemplates) {
+            SortedMap<Integer, String> wfLines = new TreeMap<>();
+            String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
+            JSONObject obj = new JSONObject (wfJsonText);
+            wfJsonText = JsonFormatter.format(obj, 2);
+            String[] lines = wfJsonText.split("\n");
+            int linenr = 1;
+            for (String line : lines) {
+                System.out.println("Gelesene WFZeile: " + line);
+                if (line.contains(searchPattern)) {
+                    wfLines.put(linenr, line);                            
+                }
+                linenr++;
+            }
+            dicWorkflowLines.put(wf, wfLines);
+        }
+        return dicWorkflowLines;        
     }
 
 }

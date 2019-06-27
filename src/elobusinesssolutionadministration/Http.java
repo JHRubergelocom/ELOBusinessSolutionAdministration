@@ -13,10 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
 
 /**
  *
@@ -176,7 +173,7 @@ class Http {
         return htmlStyle;        
     }
 
-    private static String CreateHtmlTable(String header, List<String> cols, List<List<String>> rows) {
+    static String CreateHtmlTable(String header, List<String> cols, List<List<String>> rows) {
         String htmlTable = "    <h1>" + header + "</h1>\n";
         htmlTable += "    <div class='container'>\n";
         htmlTable += "      <table border='2'>\n";
@@ -213,62 +210,6 @@ class Http {
 
     }
     
-    static String CreateHtmlReport(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs) {
-        String htmlDoc = "<html>\n";
-        String htmlHead = Http.CreateHtmlHead("Register Functions matching Unittest");
-        String htmlStyle = Http.CreateHtmlStyle();
-        String htmlBody = "<body>\n";
-
-        List<String> cols = new ArrayList<>();
-        cols.add("RF");
-        cols.add("Unittest");
-        List<List<String>> rows = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : dicRFs.entrySet()) {
-            List<String> row = new ArrayList<>();
-            row.add(entry.getKey());
-            row.add(entry.getValue().toString());
-            rows.add(row);
-        }
-        String htmlTable = Http.CreateHtmlTable("Register Functions matching Unittest", cols, rows);
-        htmlBody += htmlTable;
-
-        cols = new ArrayList<>();
-        cols.add("AS Direct Rule");
-        cols.add("Unittest");
-        rows = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : dicASDirectRules.entrySet()) {
-            List<String> row = new ArrayList<>();
-            row.add(entry.getKey());
-            row.add(entry.getValue().toString());
-            rows.add(row);            
-        }
-        htmlTable = Http.CreateHtmlTable("AS Direct Rules matching Unittest", cols, rows);
-        htmlBody += htmlTable;
-
-        cols = new ArrayList<>();
-        cols.add("Action Definition");
-        cols.add("Unittest");
-        rows = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : dicActionDefs.entrySet()) {
-            List<String> row = new ArrayList();
-            row.add(entry.getKey());
-            row.add(entry.getValue().toString());
-            rows.add(row);            
-        }
-        htmlTable = Http.CreateHtmlTable("Action Definitions matching Unittest", cols, rows);
-        htmlBody += htmlTable;
-
-
-        htmlBody += "</body>\n";
-        htmlDoc += htmlHead;
-        htmlDoc += htmlStyle;
-        htmlDoc += htmlBody;
-        htmlDoc += "</html>\n";
-
-        return htmlDoc;
-        
-    }
-
     static void ShowReport (String htmlDoc) {
         File dir = new File("E:\\Temp");         
         String reportPath = "E:\\Temp\\Report.html";
