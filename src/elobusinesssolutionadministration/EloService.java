@@ -14,7 +14,7 @@ import javafx.scene.control.TextArea;
  *
  * @author ruberg
  */
-public class EloService extends Service<Boolean>{    
+public class EloService extends Service<Boolean> {    
     private FXMLDocumentController dc;
     private String typeCommand;
     
@@ -112,7 +112,7 @@ public class EloService extends Service<Boolean>{
                                 EloApplicationServer.ShowEloApplicationServer(ixConn);
                                 break;
                             case EloCommand.SHOWSEARCHRESULT:
-                                Search.ShowSearchResult(ixConn, searchPattern);
+                                Search.ShowSearchResult(ixConn, searchPattern, eloPackages);
                                 break;    
                             case EloCommand.ELO_PULL_PACKAGE:    
                             case EloCommand.ELO_PULL_UNITTEST:

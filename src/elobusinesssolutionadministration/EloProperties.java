@@ -18,37 +18,65 @@ import java.util.Properties;
  *
  * @author ruberg
  */
-public final class EloProperties extends Properties{
-
-    private Reader reader = null;
-    private Writer writer = null;
+public final class EloProperties extends Properties {
     private File propertiesFile = new File("eloproperties.txt");
 
     public EloProperties() {
+        Reader reader = null;
         try {
             if (!propertiesFile.exists()) {
                 propertiesFile.createNewFile();
             }  
             reader = new FileReader(propertiesFile);
-            load(reader);            
-        } catch (FileNotFoundException ex) {
-            
+            load(reader);      
+        } catch (FileNotFoundException ex) {            
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {            
+                    reader.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }                
+            }
         }
     }
-
-    void SetSelectedProfile(Profile profile) {
-        setProperty("SelectedProfile", profile.getName());   
+    
+    private void saveProperties() {
+        Writer writer = null;
         try {
             writer = new FileWriter(propertiesFile);
-            store(writer, "Profiles");
+            store(writer, "EloProperties");
         } catch (IOException ex) {
             ex.printStackTrace();
-        }        
+        } finally {
+            if (writer != null) {
+                try {            
+                    writer.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }                
+            }
+        }           
     }
-    String GetSelectedProfile() {
+
+    void setSelectedProfile(Profile profile) {
+        setProperty("SelectedProfile", profile.getName());   
+        saveProperties();
+    }
+
+    String getSelectedProfile() {
         return getProperty("SelectedProfile");        
     }
+    
+    void setPattern(String pattern) {
+        setProperty("Pattern", pattern);   
+        saveProperties();
+    }
+    String getPattern() {
+        return getProperty("Pattern");        
+    }
+
 }

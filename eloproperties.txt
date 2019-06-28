@@ -1,3 +1,4 @@
-#Profiles
-#Thu Jun 27 15:00:19 CEST 2019
-SelectedProfile=learning
+#EloProperties
+#Fri Jun 28 14:40:38 CEST 2019
+Pattern=cover
+SelectedProfile=contract

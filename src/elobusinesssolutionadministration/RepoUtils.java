@@ -99,7 +99,7 @@ class RepoUtils {
                 try {
                     in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));                    
                     while ((line = in.readLine()) != null) {
-                        System.out.println("Gelesene Zeile: " + line);
+                        // System.out.println("Gelesene Zeile: " + line);
                         docText = docText.concat(line);
                     }                       
                 } catch (FileNotFoundException ex) {    
@@ -137,10 +137,10 @@ class RepoUtils {
         return docArray;        
     }
 
-    private static SortedMap<Integer, String> DownloadDocumentToLines(Sord s, IXConnection ixConn, String searchPattern) {
+    private static SortedMap<Integer, String> DownloadDocumentToLines(SordDoc sDoc, IXConnection ixConn, String searchPattern) {
         SortedMap<Integer, String> docLines = new TreeMap<>();
         try {
-            String objId = s.getId() + "";   
+            String objId = sDoc.getId() + "";   
             String line;            
             BufferedReader in = null;
             String bom = "\uFEFF"; // ByteOrderMark (BOM);
@@ -148,12 +148,13 @@ class RepoUtils {
             if (editInfo.getDocument().getDocs().length > 0) {
                 DocVersion dv = editInfo.getDocument().getDocs()[0];
                 String url = dv.getUrl();   
+                sDoc.setExt(dv.getExt());
                 InputStream inputStream = ixConn.download(url, 0, -1);
                 try {
                     in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)); 
                     int linenr = 1;
                     while ((line = in.readLine()) != null) {
-                        System.out.println("Gelesene Zeile: " + line);
+                        // System.out.println("Gelesene Zeile: " + line);
                         line = line.replaceAll(bom, "");
                         line = line.replaceAll("\b", "");
                         line = line.replaceAll("\n", "");  
@@ -183,12 +184,30 @@ class RepoUtils {
         
     }
 
-    static SortedMap<Sord, SortedMap<Integer, String>> LoadSordDocLines(String parentId, IXConnection ixConn, String searchPattern) {        
-        SortedMap<Sord, SortedMap<Integer, String>> dicSordDocLines = new TreeMap<>(new SordComparator());
-        Sord[] sords = FindChildren(parentId, ixConn, true);
-        for (Sord s : sords) {
-            SortedMap<Integer, String> docLines = DownloadDocumentToLines(s, ixConn, searchPattern);
-            dicSordDocLines.put(s, docLines);
+    static SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(EloPackage[] eloPackages, IXConnection ixConn, String searchPattern) {   
+        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = new TreeMap<>(new SordDocComparator());         
+        String parentId;
+        if (eloPackages.length == 0) {
+            parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
+            Sord[] sords = FindChildren(parentId, ixConn, true);
+            for (Sord s : sords) {
+                SordDoc sDoc = new SordDoc(s);
+                SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, ixConn, searchPattern);
+                dicSordDocLines.put(sDoc, docLines);
+            }
+
+        } else {
+            for (EloPackage eloPackage : eloPackages) {
+                SortedMap<SordDoc, SortedMap<Integer, String>> dicEloPackageSordDocLines = new TreeMap<>(new SordDocComparator()); 
+                parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder();
+                Sord[] sords = FindChildren(parentId, ixConn, true);
+                for (Sord s : sords) {
+                    SordDoc sDoc = new SordDoc(s);
+                    SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, ixConn, searchPattern);
+                    dicEloPackageSordDocLines.put(sDoc, docLines);
+                    dicSordDocLines.putAll(dicEloPackageSordDocLines);
+                }                
+            }            
         }
         return dicSordDocLines;        
         

@@ -93,6 +93,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void handleBtnSearch(ActionEvent event) {
+        eloProperties.setPattern(txtPattern.getText());
         eloService.Run(EloCommand.SHOWSEARCHRESULT);
     }    
     
@@ -100,7 +101,7 @@ public class FXMLDocumentController implements Initializable {
     private void handleCmbProfile(ActionEvent event) {
         int index = cmbProfile.getSelectionModel().getSelectedIndex();
         Profile profile = profiles.getProfile(index);
-        eloProperties.SetSelectedProfile(profile);
+        eloProperties.setSelectedProfile(profile);
         System.out.println(event.getEventType() + "Profil: " + profile.getName());
     }
     
@@ -161,7 +162,6 @@ public class FXMLDocumentController implements Initializable {
         profiles = new Profiles("Profiles.json");
         eloService = new EloService(this);   
         eloProperties = new EloProperties();
-        txtPattern.setText("Unittest");
         
         cmbProfile.getItems().clear();
         for (int i = 0; i < profiles.getLength(); i++) {
@@ -169,12 +169,14 @@ public class FXMLDocumentController implements Initializable {
             cmbProfile.getItems().add(p.getName());            
         } 
         
-        String selectedProfileName = eloProperties.GetSelectedProfile();
+        String selectedProfileName = eloProperties.getSelectedProfile();
         if (selectedProfileName != null) {
             cmbProfile.getSelectionModel().select(selectedProfileName);            
         } else {
             cmbProfile.getSelectionModel().select(0);                    
         }
+        txtPattern.setText(eloProperties.getPattern());
+        
     }  
         
     public void setDisableControls(boolean value) {

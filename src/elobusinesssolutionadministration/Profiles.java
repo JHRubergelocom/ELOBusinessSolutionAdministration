@@ -44,7 +44,7 @@ public class Profiles {
         try { 
             in = new BufferedReader(new FileReader(jsonFile));
             while ((line = in.readLine()) != null) {
-                System.out.println("Gelesene Zeile: " + line);
+                // System.out.println("Gelesene Zeile: " + line);
                 jsonString = jsonString.concat(line);
             }            
         } catch (FileNotFoundException ex) {    

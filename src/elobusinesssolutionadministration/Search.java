@@ -7,7 +7,6 @@ package elobusinesssolutionadministration;
 
 import byps.RemoteException;
 import de.elo.ix.client.IXConnection;
-import de.elo.ix.client.Sord;
 import de.elo.ix.client.WFDiagram;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -23,22 +22,26 @@ import javax.swing.JOptionPane;
  */
 class Search {
     
-    private static String CreateReportSearchResult(SortedMap<Sord, SortedMap<Integer, String>> dicSordDocLines, SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines, String searchPattern) {
+    private static String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines, String searchPattern) {
         String htmlDoc = "<html>\n";
         String htmlHead = Http.CreateHtmlHead("Search Results matching '" + searchPattern + "'");
         String htmlStyle = Http.CreateHtmlStyle();
         String htmlBody = "<body>\n";
 
         List<String> cols = new ArrayList<>();
-        cols.add("Sord");
+        cols.add("Name");
+        cols.add("Ext");
+        cols.add("Id");
         cols.add("Lineno");
         cols.add("Line");
         List<List<String>> rows = new ArrayList<>();
-        for (Map.Entry<Sord, SortedMap<Integer, String>> entrySord : dicSordDocLines.entrySet()) {
-            SortedMap<Integer, String> dicDocLines = entrySord.getValue();            
+        for (Map.Entry<SordDoc, SortedMap<Integer, String>> entrySordDoc : dicSordDocLines.entrySet()) {
+            SortedMap<Integer, String> dicDocLines = entrySordDoc.getValue();            
             for (Map.Entry<Integer, String> entryDocLines : dicDocLines.entrySet()) {
                 List<String> row = new ArrayList<>();
-                row.add(entrySord.getKey().getName());                
+                row.add("<a href='elodms://" + entrySordDoc.getKey().getGuid() + "'>" + entrySordDoc.getKey().getName()); 
+                row.add(entrySordDoc.getKey().getExt()); 
+                row.add(Integer.toString(entrySordDoc.getKey().getId()));                     
                 row.add(entryDocLines.getKey().toString());
                 row.add(entryDocLines.getValue());
                 rows.add(row);
@@ -75,8 +78,8 @@ class Search {
         
     }
 
-    static void ShowSearchResult(IXConnection ixConn, String searchPattern) {
-        SortedMap<Sord, SortedMap<Integer, String>> dicSordDocLines = RepoUtils.LoadSordDocLines("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions", ixConn, searchPattern);
+    static void ShowSearchResult(IXConnection ixConn, String searchPattern, EloPackage[] eloPackages) {
+        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = RepoUtils.LoadSordDocLines(eloPackages, ixConn, searchPattern);
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
         try {
             dicWorkflowLines = WfUtils.LoadWorkflowLines(ixConn, searchPattern);

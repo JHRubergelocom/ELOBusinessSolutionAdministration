@@ -119,7 +119,7 @@ public class WfUtils {
             String[] lines = wfJsonText.split("\n");
             int linenr = 1;
             for (String line : lines) {
-                System.out.println("Gelesene WFZeile: " + line);
+                // System.out.println("Gelesene WFZeile: " + line);
                 if (line.contains(searchPattern)) {
                     wfLines.put(linenr, line);                            
                 }

@@ -12,18 +12,18 @@ import java.util.Comparator;
  *
  * @author ruberg
  */
-public class SordComparator implements Comparator {
+public class SordDocComparator implements Comparator {
 
-    public SordComparator() {
+    public SordDocComparator() {
     }
 
     @Override
     public int compare(Object o1, Object o2) {
-        Sord s1 = (Sord)o1;
+        SordDoc s1 = (SordDoc)o1;
         Integer s1Id = s1.getId();
         String s1Name = s1.getName();
         
-        Sord s2 = (Sord)o2;
+        SordDoc s2 = (SordDoc)o2;
         Integer s2Id = s2.getId();
         String s2Name = s2.getName();
         
