@@ -15,12 +15,20 @@ import java.util.TreeMap;
  * @author ruberg
  */
 class ActionDefinitions {
-    static SortedMap<String, Boolean> GetActionDefs(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+    private final IXConnection ixConn;
+
+    ActionDefinitions(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    SortedMap<String, Boolean> GetActionDefs(String[] jsTexts, EloPackage eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/Action definitions";
         if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Action definitions";
         }
-        Sord[] sordActionDefInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+
+        RepoUtils rU = new RepoUtils(ixConn);                
+        Sord[] sordActionDefInfo = rU.FindChildren(parentId, true);
         SortedMap <String, Boolean> dicActionDefs = new TreeMap<>();
         
         for(Sord s : sordActionDefInfo) {
@@ -29,7 +37,8 @@ class ActionDefinitions {
             actionDef = rf[rf.length-1];
             actionDef = "actions." + actionDef;
             if (!dicActionDefs.containsKey(actionDef)) {
-                boolean match = Unittests.Match(ixConn, actionDef, eloPackage, jsTexts);
+                Unittests uT = new Unittests(ixConn);   
+                boolean match = uT.Match(actionDef, eloPackage, jsTexts);
                 dicActionDefs.put(actionDef, match);
             }
         }

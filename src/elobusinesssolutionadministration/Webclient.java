@@ -12,8 +12,13 @@ import de.elo.ix.client.IXConnection;
  * @author ruberg
  */
 class Webclient {
+    private final IXConnection ixConn;
 
-    static void StartWebclient(IXConnection ixConn) {
+    Webclient(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+
+    void StartWebclient() {
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
         String ixUrl = ixConn.getEndpointUrl();
         String webclientUrl = ixUrl.replace("ix-", "web-");

@@ -29,7 +29,13 @@ import java.util.TreeMap;
  * @author ruberg
  */
 public class WfUtils {
-    private static WFDiagram[] FindWorkflows(FindWorkflowInfo findWorkflowInfo, IXConnection ixConn) {
+    private final IXConnection ixConn;
+
+    WfUtils(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    private WFDiagram[] FindWorkflows(FindWorkflowInfo findWorkflowInfo) {
         int max = 100;
         int idx = 0;
         FindResult findResult = new FindResult(); 
@@ -62,18 +68,18 @@ public class WfUtils {
         return workflows;        
     }
     
-    private static WFDiagram[] GetTemplates(IXConnection ixConn) {
+    private WFDiagram[] GetTemplates() {
         FindWorkflowInfo info = new FindWorkflowInfo();
         info.setType(WFTypeC.TEMPLATE);
-        return FindWorkflows(info, ixConn);
+        return FindWorkflows(info);
     }
 
-    private static int GetWorkflowTemplateId(String workflowTemplateName, IXConnection ixConn) throws RemoteException {
+    private int GetWorkflowTemplateId(String workflowTemplateName) throws RemoteException {
         WFDiagram wfDiag = ixConn.ix().checkoutWorkflowTemplate(workflowTemplateName, "", new WFDiagramZ(WFDiagramC.mbId), LockC.NO);
         return wfDiag.getId();        
     }
 
-    private static String GetWorkflowAsJsonText(int flowId, IXConnection ixConn) throws RemoteException, UnsupportedEncodingException {
+    private String GetWorkflowAsJsonText(int flowId) throws RemoteException, UnsupportedEncodingException {
         WorkflowExportOptions workflowExportOptions = new WorkflowExportOptions();
         workflowExportOptions.setFlowId(Integer.toString(flowId));
 
@@ -84,20 +90,20 @@ public class WfUtils {
         
     }
     
-    private static String ExportWorkflow(int workflowId, IXConnection ixConn) throws RemoteException, UnsupportedEncodingException {
-        return GetWorkflowAsJsonText(workflowId, ixConn);
+    private String ExportWorkflow(int workflowId) throws RemoteException, UnsupportedEncodingException {
+        return GetWorkflowAsJsonText(workflowId);
     }
     
-    private static String ExportWorkflowTemplate(WFDiagram wf, IXConnection ixConn) throws RemoteException, UnsupportedEncodingException {
-        int workflowTemplateId = GetWorkflowTemplateId(wf.getName(), ixConn);  
-        return ExportWorkflow(workflowTemplateId, ixConn);
+    private String ExportWorkflowTemplate(WFDiagram wf) throws RemoteException, UnsupportedEncodingException {
+        int workflowTemplateId = GetWorkflowTemplateId(wf.getName());  
+        return ExportWorkflow(workflowTemplateId);
     }
     
-    static String[] LoadWorkflowTemplatesAsJsonString(IXConnection ixConn) throws RemoteException, UnsupportedEncodingException{
-        WFDiagram[] wfTemplates = GetTemplates(ixConn);
+    String[] LoadWorkflowTemplatesAsJsonString() throws RemoteException, UnsupportedEncodingException{
+        WFDiagram[] wfTemplates = GetTemplates();
         List<String> wfJsonTexts = new ArrayList<>();        
         for (WFDiagram wf : wfTemplates) {
-             String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
+             String wfJsonText = ExportWorkflowTemplate(wf);
              wfJsonText = JsonUtils.formatJsonString(wfJsonText);
              wfJsonTexts.add(wfJsonText);
         }
@@ -106,12 +112,12 @@ public class WfUtils {
         return wfArray;        
     }
     
-    static SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(IXConnection ixConn, String searchPattern) throws RemoteException, UnsupportedEncodingException {
+    SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(String searchPattern) throws RemoteException, UnsupportedEncodingException {
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
-        WFDiagram[] wfTemplates = GetTemplates(ixConn);
+        WFDiagram[] wfTemplates = GetTemplates();
         for (WFDiagram wf : wfTemplates) {
             SortedMap<Integer, String> wfLines = new TreeMap<>();
-            String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
+            String wfJsonText = ExportWorkflowTemplate(wf);
             wfJsonText = JsonUtils.formatJsonString(wfJsonText);            
             String[] lines = wfJsonText.split("\n");
             int linenr = 1;

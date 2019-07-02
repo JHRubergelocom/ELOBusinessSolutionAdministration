@@ -20,17 +20,24 @@ import org.json.JSONObject;
  *
  * @author ruberg
  */
-class Unittests {    
-    static Map<String, String> GetUnittestApp(IXConnection ixConn) {
+class Unittests {   
+    private final IXConnection ixConn;
+
+    Unittests(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    Map<String, String> GetUnittestApp() {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/development/ELOapps/ClientInfos";
-        Sord[] sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
+        RepoUtils rU = new RepoUtils(ixConn);        
+        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false);
         String configApp = "";
         String configId = "";
         String jsonString;
         
         Map<String, String> dicApp = new HashMap<>();
         for (Sord s : sordELOappsClientInfo) {
-            jsonString = RepoUtils.DownloadDocumentToString(s, ixConn);
+            jsonString = rU.DownloadDocumentToString(s);
             jsonString = jsonString.replaceAll("namespace", "namespace1");
             JSONObject config = new JSONObject(jsonString);    
             JSONObject web = config.getJSONObject("web");                 
@@ -50,14 +57,14 @@ class Unittests {
         return dicApp;
     }    
 
-    static void ShowUnittestsApp(IXConnection ixConn) { 
+    void ShowUnittestsApp() { 
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();            
         String ixUrl = ixConn.getEndpointUrl();
         String appUrl = ixUrl.replaceAll("ix-", "wf-");
 
         appUrl = appUrl.replaceAll("/ix", "/apps/app");
         appUrl = appUrl + "/";
-        Map<String, String> dicApp = GetUnittestApp(ixConn);
+        Map<String, String> dicApp = GetUnittestApp();
         appUrl = appUrl + dicApp.get("configApp");
         appUrl = appUrl + "/?lang=de";
         appUrl = appUrl + "&ciId=" + dicApp.get("configApp");
@@ -66,7 +73,7 @@ class Unittests {
         Http.OpenUrl(appUrl);              
     }
 
-    private static String CreateReportMatchUnittest(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs) {
+    private String CreateReportMatchUnittest(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs) {
         String htmlDoc = "<html>\n";
         String htmlHead = Http.CreateHtmlHead("Register Functions matching Unittest");
         String htmlStyle = Http.CreateHtmlStyle();
@@ -122,21 +129,28 @@ class Unittests {
         
     }
     
-    static void ShowReportMatchUnittest(IXConnection ixConn, EloPackage[] eloPackages) {        
+    void ShowReportMatchUnittest(EloPackage[] eloPackages) {    
+        RepoUtils rU = new RepoUtils(ixConn);        
+        RegisterFunctions rFs = new RegisterFunctions(ixConn);        
+        ASDirectRules asDR = new ASDirectRules(ixConn);       
+        ActionDefinitions asDef = new ActionDefinitions(ixConn);       
+        
         try {
-            String[] jsTexts = RepoUtils.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests", ixConn);   
+            String[] jsTexts = rU.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests");   
             SortedMap<String, Boolean> dicRFs = new TreeMap<>();
             SortedMap<String, Boolean> dicASDirectRules = new TreeMap<>();
             SortedMap<String, Boolean> dicActionDefs = new TreeMap<>();
+            
             if (eloPackages.length == 0) {
-                dicRFs = RegisterFunctions.GetRFs(ixConn, jsTexts, new EloPackage());        
-                dicASDirectRules = ASDirectRules.GetRules(ixConn, jsTexts, new EloPackage());
-                dicActionDefs = ActionDefinitions.GetActionDefs(ixConn, jsTexts, new EloPackage());                
+                
+                dicRFs = rFs.GetRFs(jsTexts, new EloPackage()); 
+                dicASDirectRules = asDR.GetRules(jsTexts, new EloPackage());
+                dicActionDefs = asDef.GetActionDefs(jsTexts, new EloPackage());                
             } else {
                 for (EloPackage eloPackage : eloPackages) {
-                    SortedMap<String, Boolean> dicRF = RegisterFunctions.GetRFs(ixConn, jsTexts, eloPackage);        
-                    SortedMap<String, Boolean> dicASDirectRule = ASDirectRules.GetRules(ixConn, jsTexts, eloPackage);
-                    SortedMap<String, Boolean> dicActionDef = ActionDefinitions.GetActionDefs(ixConn, jsTexts, eloPackage);
+                    SortedMap<String, Boolean> dicRF = rFs.GetRFs(jsTexts, eloPackage);        
+                    SortedMap<String, Boolean> dicASDirectRule = asDR.GetRules(jsTexts, eloPackage);
+                    SortedMap<String, Boolean> dicActionDef = asDef.GetActionDefs(jsTexts, eloPackage);
                     dicRFs.putAll(dicRF);
                     dicASDirectRules.putAll(dicASDirectRule);
                     dicActionDefs.putAll(dicActionDef);
@@ -149,7 +163,7 @@ class Unittests {
         }
     }
     
-    static boolean Match(IXConnection ixConn, String uName, EloPackage eloPackage, String[] jsTexts) {
+    boolean Match(String uName, EloPackage eloPackage, String[] jsTexts) {
         for (String jsText : jsTexts) {
             String[] jsLines = jsText.split("\n");
             for (String line : jsLines) {

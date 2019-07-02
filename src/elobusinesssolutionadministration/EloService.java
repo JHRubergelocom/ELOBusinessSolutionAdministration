@@ -84,35 +84,44 @@ public class EloService extends Service<Boolean> {
                     (!typeCommand.equals(EloCommand.GITPULLALL)) && 
                     (!typeCommand.equals(EloCommand.ELO_PREPARE))) {
                     IXConnection ixConn;
+                    Unittests uT;
                     try {
                         ixConn = Connection.getIxConnection(profile, gitUser, user, pwd);
+                        uT = new Unittests(ixConn);
                         switch(typeCommand) {
                             case EloCommand.SHOWREPORTMATCHUNITTEST:
-                                Unittests.ShowReportMatchUnittest(ixConn, eloPackages);
+                                uT.ShowReportMatchUnittest(eloPackages);
                                 break;
                             case EloCommand.SHOWUNITTESTSAPP:
-                                Unittests.ShowUnittestsApp(ixConn);
+                                uT.ShowUnittestsApp();
                                 break;
                             case EloCommand.STARTADMINCONSOLE:
-                                AdminConsole.StartAdminConsole(ixConn);
+                                AdminConsole aC = new AdminConsole(ixConn);                
+                                aC.StartAdminConsole();
                                 break;
                             case EloCommand.STARTAPPMANAGER:
-                                AppManager.StartAppManager(ixConn);
+                                AppManager aM = new AppManager(ixConn);                                                
+                                aM.StartAppManager();
                                 break;
                             case EloCommand.STARTWEBCLIENT:
-                                Webclient.StartWebclient(ixConn);
+                                Webclient wC = new Webclient(ixConn);                                                
+                                wC.StartWebclient();
                                 break;
                             case EloCommand.STARTKNOWLEDGEBOARD:
-                                KnowledgeBoard.ShowKnowledgeBoard(ixConn);
+                                KnowledgeBoard kB = new KnowledgeBoard(ixConn);                                                                                
+                                kB.ShowKnowledgeBoard();
                                 break;
                             case EloCommand.STARTEXPORTELO:
-                                ExportElo.StartExportElo(ixConn, name);
+                                ExportElo eE = new ExportElo(ixConn);                                                                                
+                                eE.StartExportElo(name);
                                 break;
                             case EloCommand.SHOWELOAPPLICATIONSERVER:
-                                EloApplicationServer.ShowEloApplicationServer(ixConn);
+                                EloApplicationServer aS = new EloApplicationServer(ixConn);                                                                                
+                                aS.ShowEloApplicationServer();
                                 break;
                             case EloCommand.SHOWSEARCHRESULT:
-                                Search.ShowSearchResult(ixConn, searchPattern, eloPackages);
+                                Search s = new Search(ixConn);                                                                                
+                                s.ShowSearchResult(searchPattern, eloPackages);
                                 break;    
                             case EloCommand.ELO_PULL_PACKAGE:    
                             case EloCommand.ELO_PULL_UNITTEST:

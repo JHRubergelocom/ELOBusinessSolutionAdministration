@@ -20,22 +20,30 @@ import org.xml.sax.InputSource;
  * @author ruberg
  */
 class ASDirectRules {
-    static SortedMap<String, Boolean> GetRules(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+    private final IXConnection ixConn;
+
+    ASDirectRules(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    SortedMap<String, Boolean> GetRules(String[] jsTexts, EloPackage eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/ELOas Base/Direct";
         if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/ELOas Base/Direct";
         }
-        Sord[] sordRuleInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        RepoUtils rU = new RepoUtils(ixConn);
+        Sord[] sordRuleInfo = rU.FindChildren(parentId, true);
         SortedMap<String, Boolean> dicRules = new TreeMap<>();
         for(Sord s : sordRuleInfo) {            
             try {
-                String xmlText = RepoUtils.DownloadDocumentToString (s, ixConn);             
+                String xmlText = rU.DownloadDocumentToString (s);             
                 XPathFactory xpathFactory = XPathFactory.newInstance();
                 XPath xpath = xpathFactory.newXPath();
                 InputSource source = new InputSource(new StringReader(xmlText));            
                 String rulesetname = xpath.evaluate("ruleset/base/name", source);
                 if (!dicRules.containsKey(rulesetname)) {
-                    boolean match = Unittests.Match(ixConn, rulesetname, eloPackage, jsTexts);
+                Unittests uT = new Unittests(ixConn);                    
+                    boolean match = uT.Match(rulesetname, eloPackage, jsTexts);
                     dicRules.put(rulesetname, match);
                 }
             } catch (XPathExpressionException ex) {

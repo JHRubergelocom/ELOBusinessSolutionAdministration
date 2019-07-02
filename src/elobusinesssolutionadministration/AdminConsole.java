@@ -12,7 +12,13 @@ import de.elo.ix.client.IXConnection;
  * @author ruberg
  */
 class AdminConsole {
-    static void StartAdminConsole(IXConnection ixConn) {
+    private final IXConnection ixConn;
+
+    AdminConsole(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    void StartAdminConsole() {
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
         String ixUrl = ixConn.getEndpointUrl();
         String[] adminConsole = ixUrl.split("/");

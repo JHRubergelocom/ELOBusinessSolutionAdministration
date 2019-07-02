@@ -16,7 +16,7 @@ public class EloPackage {
     private String name;
     private String folder;
     
-        EloPackage(JSONObject[] jarray, int index) {
+    EloPackage(JSONObject[] jarray, int index) {
         name = "";
         folder = "";
         

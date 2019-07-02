@@ -14,17 +14,24 @@ import java.util.TreeMap;
  *
  * @author ruberg
  */
-public class RegisterFunctions {    
-    public static SortedMap<String, Boolean> GetRFs(IXConnection ixConn, String[] jsTexts, EloPackage eloPackage) {
+public class RegisterFunctions {  
+    private final IXConnection ixConn;
+
+    RegisterFunctions(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    public SortedMap<String, Boolean> GetRFs(String[] jsTexts, EloPackage eloPackage) {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/IndexServer Scripting Base";
         if (eloPackage.getFolder().equals("")) {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/IndexServer Scripting Base/_ALL/business_solutions";
         }
-        Sord[] sordRFInfo = RepoUtils.FindChildren(parentId, ixConn, true);
+        RepoUtils rU = new RepoUtils(ixConn);  
+        Sord[] sordRFInfo = rU.FindChildren(parentId, true);
         SortedMap<String, Boolean> dicRFs = new TreeMap<>();
         
         for(Sord s : sordRFInfo) {  
-           String jsText = RepoUtils.DownloadDocumentToString (s, ixConn);  
+           String jsText = rU.DownloadDocumentToString (s);  
            jsText = jsText.replaceAll("\b", "");
            jsText = jsText.replaceAll("\n", " ");
            String[] jsLines = jsText.split(" ");
@@ -41,7 +48,8 @@ public class RegisterFunctions {
                                 && !line.contains("RF_sol_function_FeedComment}.") && !line.contains("RF_sol_my_actions_MyAction")
                                 && !line.contains("RF_sol_service_ScriptVersionReportCreate")) {
                             if (!dicRFs.containsKey(rfName)) {
-                                boolean match = Unittests.Match(ixConn, rfName, eloPackage, jsTexts);
+                                Unittests uT = new Unittests(ixConn); 
+                                boolean match = uT.Match(rfName, eloPackage, jsTexts);
                                 dicRFs.put(rfName, match);
                             }
                         }                        

@@ -12,7 +12,13 @@ import de.elo.ix.client.IXConnection;
  * @author ruberg
  */
 class AppManager {
-    static void StartAppManager(IXConnection ixConn) {
+    private final IXConnection ixConn;
+
+    AppManager(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    void StartAppManager() {
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
         String ixUrl = ixConn.getEndpointUrl();
         String appManagerUrl = ixUrl.replace("ix-", "wf-");

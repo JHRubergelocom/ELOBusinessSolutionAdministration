@@ -26,15 +26,22 @@ import java.io.File;
 class ExportElo {
     static private final String ARCPATH = "ARCPATH[1]:/Administration/Business Solutions"; 
     static private final boolean REFERENCES = false; 
+    
+    private final IXConnection ixConn;
 
-    static void StartExportElo(IXConnection ixConn, String name) {
+    ExportElo(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+
+
+    void StartExportElo(String name) {
         try {
             String exportPath = "E:\\Temp\\ExportElo\\" + name;
             File exportDir = new File(exportPath);
             if (!exportDir.exists()) {
                 exportDir.mkdirs();
             }  
-            FindChildren(ixConn, ARCPATH, exportDir, REFERENCES);
+            FindChildren(ARCPATH, exportDir, REFERENCES);
             System.out.println("ticket=" + ixConn.getLoginResult().getClientInfo().getTicket());
             
         } catch (Exception ex) {
@@ -42,7 +49,7 @@ class ExportElo {
         }
     }
 
-    private static void FindChildren(IXConnection ixConn, String arcPath, File exportPath, boolean exportReferences) {        
+    private void FindChildren(String arcPath, File exportPath, boolean exportReferences) {        
         FindResult fr = new FindResult();
         try {
             EditInfo ed = ixConn.ix().checkoutSord(arcPath, EditInfoC.mbOnlyId, LockC.NO);
@@ -87,7 +94,7 @@ class ExportElo {
                                     ex.printStackTrace();
                                 }
                             }
-                            FindChildren(ixConn, arcPath + "/" + sord.getName(), subFolderPath, exportReferences);
+                            FindChildren(arcPath + "/" + sord.getName(), subFolderPath, exportReferences);
                         }
                         // Wenn Dokument Pfad und Name ausgeben
                         if (isDocument) {

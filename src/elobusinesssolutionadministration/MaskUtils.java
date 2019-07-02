@@ -29,7 +29,13 @@ import java.util.TreeMap;
  * @author ruberg
  */
 class MaskUtils {
-    private static DocMask[] GetDocMasks(IXConnection ixConn) throws RemoteException {        
+    private final IXConnection ixConn;
+
+    MaskUtils(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    private DocMask[] GetDocMasks() throws RemoteException {        
         String arcPath = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
         EditInfo ed = ixConn.ix().checkoutSord(arcPath, EditInfoC.mbAll, LockC.NO);
         List<DocMask> dmList = new ArrayList<>();
@@ -50,7 +56,7 @@ class MaskUtils {
         return docMasks;           
     }
     
-    private static void clearIds(AclItem[] aclItems) {
+    private void clearIds(AclItem[] aclItems) {
         int i; 
         AclItem element;
 
@@ -61,20 +67,20 @@ class MaskUtils {
         
     }
 
-    private static String getUserName(int id, IXConnection ixConn) throws RemoteException {
+    private String getUserName(int id) throws RemoteException {
         String[] ids = new String[]{id + ""};
         UserName[] userNames = ixConn.ix().getUserNames(ids, CheckoutUsersC.BY_IDS_RAW);
         String name = userNames[0].getName();
         return name;        
     }
     
-    private static void adjustAcl(AclItem[] aclItems, IXConnection ixConn) throws RemoteException {
+    private void adjustAcl(AclItem[] aclItems) throws RemoteException {
         int i; 
         AclItem aclItem; 
         String aclName;
 
-        String adminName = getUserName(UserInfoC.ID_ADMINISTRATOR, ixConn);
-        String everyoneName = getUserName(UserInfoC.ID_EVERYONE_GROUP, ixConn);
+        String adminName = getUserName(UserInfoC.ID_ADMINISTRATOR);
+        String everyoneName = getUserName(UserInfoC.ID_EVERYONE_GROUP);
 
         for (i = 0; i < aclItems.length; i++) {
           aclItem = aclItems[i];
@@ -89,7 +95,7 @@ class MaskUtils {
         }        
     }
     
-    private static void adjustMask(DocMask dm, IXConnection ixConn) throws RemoteException {
+    private void adjustMask(DocMask dm) throws RemoteException {
         String[] childMaskNames;
         int i; 
         DocMaskLine line;
@@ -97,16 +103,16 @@ class MaskUtils {
         dm.setId(-1);
         dm.setTStamp("2018.01.01.00.00.00");
 
-        adjustAcl(dm.getAclItems(), ixConn);
+        adjustAcl(dm.getAclItems());
 
         for (i = 0; i < dm.getLines().length; i++) {
           line = dm.getLines()[i];
           line.setMaskId(-1);
-          adjustAcl(line.getAclItems(), ixConn);
+          adjustAcl(line.getAclItems());
         }        
     }
     
-    private static String GetDocMaskAsJsonText(DocMask dm, IXConnection ixConn) throws RemoteException {
+    private String ExportDocMask(DocMask dm) throws RemoteException {
         int i;
         dm.setAcl("");
         dm.setDAcl("");
@@ -119,21 +125,17 @@ class MaskUtils {
         }
         String json = JsonUtils.getJsonString(dm);
         dm = JsonUtils.getDocMask(json);
-        adjustMask(dm, ixConn);
+        adjustMask(dm);
         json = JsonUtils.formatJsonString(json);
         return json;
     }
     
-    private static String ExportDocMask(DocMask dm, IXConnection ixConn) throws RemoteException {
-        return GetDocMaskAsJsonText(dm, ixConn);
-    }
-
-    static SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(IXConnection ixConn, String searchPattern) throws RemoteException {
+    SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(String searchPattern) throws RemoteException {
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
-        DocMask[] docMasks = GetDocMasks(ixConn);
+        DocMask[] docMasks = GetDocMasks();
         for (DocMask dm : docMasks) {
             SortedMap<Integer, String> dmLines = new TreeMap<>();
-            String dmJsonText = ExportDocMask(dm, ixConn);
+            String dmJsonText = ExportDocMask(dm);
             String[] lines = dmJsonText.split("\n");
             int linenr = 1;
             for (String line : lines) {

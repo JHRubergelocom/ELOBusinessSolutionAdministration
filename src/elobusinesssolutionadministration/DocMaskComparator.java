@@ -30,8 +30,7 @@ public class DocMaskComparator implements Comparator {
         if (dm1Name.equals(dm2Name)){
             return dm1Id.compareTo(dm2Id);
         }
-        return dm1Name.compareTo(dm2Name);        
-        
+        return dm1Name.compareTo(dm2Name);                
     }
     
 }

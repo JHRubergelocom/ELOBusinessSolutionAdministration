@@ -6,27 +6,31 @@
 package elobusinesssolutionadministration;
 
 import byps.RemoteException;
-import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.WFDiagram;
 import de.elo.ix.client.DocMask;
+import de.elo.ix.client.IXConnection;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author ruberg
  */
-class Search {
-    
-    private static String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, 
-                                                   SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines,
-                                                   SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines,
-                                                   String searchPattern) {
+class Search {  
+    private final IXConnection ixConn;
+
+    Search(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+
+    private String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, 
+                                            SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines,
+                                            SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines,
+                                            String searchPattern) {
         String htmlDoc = "<html>\n";
         String htmlHead = Http.CreateHtmlHead("Search Results matching '" + searchPattern + "'");
         String htmlStyle = Http.CreateHtmlStyle();
@@ -78,7 +82,6 @@ class Search {
         htmlTable = Http.CreateHtmlTable("Search Results Workflow Templates matching <span>'" + searchPattern + "'</span>", cols, rows);
         htmlBody += htmlTable;
         
-        
         cols = new ArrayList<>();
         cols.add("DocMask");
         cols.add("Lineno");
@@ -110,22 +113,23 @@ class Search {
         
     }
 
-    static void ShowSearchResult(IXConnection ixConn, String searchPattern, EloPackage[] eloPackages) {
-        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = RepoUtils.LoadSordDocLines(eloPackages, ixConn, searchPattern);
+    void ShowSearchResult(String searchPattern, EloPackage[] eloPackages) {
+        RepoUtils rU = new RepoUtils(ixConn);   
+        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, searchPattern);
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
+        
         try {
-            dicWorkflowLines = WfUtils.LoadWorkflowLines(ixConn, searchPattern);
-            dicDocMaskLines = MaskUtils.LoadDocMaskLines(ixConn, searchPattern);
+            WfUtils wfU = new WfUtils(ixConn);   
+            MaskUtils mU = new MaskUtils(ixConn);               
+            dicWorkflowLines = wfU.LoadWorkflowLines(searchPattern);
+            dicDocMaskLines = mU.LoadDocMaskLines(searchPattern);
         } catch (RemoteException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
         
         String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, dicDocMaskLines, searchPattern);
         Http.ShowReport(htmlDoc);
-
-        
-        JOptionPane.showMessageDialog(null, "Noch nicht implementiert", "ShowSearchResult", JOptionPane.INFORMATION_MESSAGE);
     }
     
 }

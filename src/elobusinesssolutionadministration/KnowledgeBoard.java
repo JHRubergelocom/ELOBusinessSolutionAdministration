@@ -16,16 +16,23 @@ import org.json.JSONObject;
  * @author ruberg
  */
 class KnowledgeBoard {
-    private static Map<String, String> GetKnowledgeBoard(IXConnection ixConn) {
+    private final IXConnection ixConn;
+
+    KnowledgeBoard(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+    
+    private Map<String, String> GetKnowledgeBoard() {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/knowledge/ELOapps/ClientInfos";
-        Sord[] sordELOappsClientInfo = RepoUtils.FindChildren(parentId, ixConn, false);
+        RepoUtils rU = new RepoUtils(ixConn);
+        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false);
         String configApp = "";
         String configId = "";
         String jsonString;
         
         Map<String, String> dicApp = new HashMap<>();
         for (Sord s : sordELOappsClientInfo) {
-            jsonString = RepoUtils.DownloadDocumentToString(s, ixConn);    
+            jsonString = rU.DownloadDocumentToString(s);    
             jsonString = jsonString.replaceAll("namespace", "namespace1");
             JSONObject config = new JSONObject(jsonString);
             JSONObject web = config.getJSONObject("web");                 
@@ -46,13 +53,13 @@ class KnowledgeBoard {
         
     }
     
-    static void ShowKnowledgeBoard(IXConnection ixConn) {
+    void ShowKnowledgeBoard() {
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
         String ixUrl = ixConn.getEndpointUrl();
         String appUrl = ixUrl.replace("ix-", "wf-");
         appUrl = appUrl.replace("/ix", "/apps/app");
         appUrl = appUrl + "/";
-        Map<String, String> dicApp = KnowledgeBoard.GetKnowledgeBoard(ixConn);
+        Map<String, String> dicApp = GetKnowledgeBoard();
         appUrl = appUrl + dicApp.get("configApp");
         appUrl = appUrl + "/?lang=de";
         appUrl = appUrl + "&ciId=" + dicApp.get("configApp");

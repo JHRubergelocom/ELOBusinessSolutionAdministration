@@ -12,8 +12,13 @@ import de.elo.ix.client.IXConnection;
  * @author ruberg
  */
 class EloApplicationServer {
+    private final IXConnection ixConn;
 
-    static void ShowEloApplicationServer(IXConnection ixConn) {
+    EloApplicationServer(IXConnection ixConn) {
+        this.ixConn = ixConn;
+    }
+
+    void ShowEloApplicationServer() {
         String ticket = ixConn.getLoginResult().getClientInfo().getTicket();
         String ixUrl = ixConn.getEndpointUrl();
         String[] eloApplicationServer = ixUrl.split("/");
