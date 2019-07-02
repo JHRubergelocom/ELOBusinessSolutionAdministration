@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.json.JSONObject;
 
 /**
  *
@@ -99,8 +98,7 @@ public class WfUtils {
         List<String> wfJsonTexts = new ArrayList<>();        
         for (WFDiagram wf : wfTemplates) {
              String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
-             JSONObject obj = new JSONObject (wfJsonText);
-             wfJsonText = JsonFormatter.format(obj, 2);
+             wfJsonText = JsonUtils.formatJsonString(wfJsonText);
              wfJsonTexts.add(wfJsonText);
         }
         String[] wfArray = new String[wfJsonTexts.size()];
@@ -114,14 +112,15 @@ public class WfUtils {
         for (WFDiagram wf : wfTemplates) {
             SortedMap<Integer, String> wfLines = new TreeMap<>();
             String wfJsonText = ExportWorkflowTemplate(wf, ixConn);
-            JSONObject obj = new JSONObject (wfJsonText);
-            wfJsonText = JsonFormatter.format(obj, 2);
+            wfJsonText = JsonUtils.formatJsonString(wfJsonText);            
             String[] lines = wfJsonText.split("\n");
             int linenr = 1;
             for (String line : lines) {
                 // System.out.println("Gelesene WFZeile: " + line);
-                if (line.contains(searchPattern)) {
-                    wfLines.put(linenr, line);                            
+                if (searchPattern.length() > 0) {
+                    if (line.contains(searchPattern)) {
+                        wfLines.put(linenr, line);                            
+                    }                    
                 }
                 linenr++;
             }

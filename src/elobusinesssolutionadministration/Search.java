@@ -8,6 +8,7 @@ package elobusinesssolutionadministration;
 import byps.RemoteException;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.WFDiagram;
+import de.elo.ix.client.DocMask;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,10 @@ import javax.swing.JOptionPane;
  */
 class Search {
     
-    private static String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines, String searchPattern) {
+    private static String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, 
+                                                   SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines,
+                                                   SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines,
+                                                   String searchPattern) {
         String htmlDoc = "<html>\n";
         String htmlHead = Http.CreateHtmlHead("Search Results matching '" + searchPattern + "'");
         String htmlStyle = Http.CreateHtmlStyle();
@@ -43,11 +47,14 @@ class Search {
                 row.add(entrySordDoc.getKey().getExt()); 
                 row.add(Integer.toString(entrySordDoc.getKey().getId()));                     
                 row.add(entryDocLines.getKey().toString());
-                row.add(entryDocLines.getValue());
+                String lineText = entryDocLines.getValue();
+                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
+                row.add(lineText);
+                
                 rows.add(row);
             }
         }
-        String htmlTable = Http.CreateHtmlTable("Search Results Sord Documents matching '" + searchPattern + "'", cols, rows);
+        String htmlTable = Http.CreateHtmlTable("Search Results Sord Documents matching <span>'" + searchPattern + "'</span>", cols, rows);
         htmlBody += htmlTable;
 
         cols = new ArrayList<>();
@@ -61,11 +68,36 @@ class Search {
                 List<String> row = new ArrayList<>();
                 row.add(entryWorkflow.getKey().getName());                
                 row.add(entryDocLines.getKey().toString());
-                row.add(entryDocLines.getValue());
+                String lineText = entryDocLines.getValue();
+                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
+                row.add(lineText);
+                
                 rows.add(row);
             }
         }
-        htmlTable = Http.CreateHtmlTable("Search Results Workflow Templates matching '" + searchPattern + "'", cols, rows);
+        htmlTable = Http.CreateHtmlTable("Search Results Workflow Templates matching <span>'" + searchPattern + "'</span>", cols, rows);
+        htmlBody += htmlTable;
+        
+        
+        cols = new ArrayList<>();
+        cols.add("DocMask");
+        cols.add("Lineno");
+        cols.add("Line");
+        rows = new ArrayList<>();
+        for (Map.Entry<DocMask, SortedMap<Integer, String>> entryDocMask : dicDocMaskLines.entrySet()) {
+            SortedMap<Integer, String> dicDocLines = entryDocMask.getValue();            
+            for (Map.Entry<Integer, String> entryDocLines : dicDocLines.entrySet()) {
+                List<String> row = new ArrayList<>();
+                row.add(entryDocMask.getKey().getName());                
+                row.add(entryDocLines.getKey().toString());
+                String lineText = entryDocLines.getValue();
+                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
+                row.add(lineText);
+                
+                rows.add(row);
+            }
+        }
+        htmlTable = Http.CreateHtmlTable("Search Results Doc Masks matching <span>'" + searchPattern + "'</span>", cols, rows);
         htmlBody += htmlTable;
         
         htmlBody += "</body>\n";
@@ -81,13 +113,15 @@ class Search {
     static void ShowSearchResult(IXConnection ixConn, String searchPattern, EloPackage[] eloPackages) {
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = RepoUtils.LoadSordDocLines(eloPackages, ixConn, searchPattern);
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
+        SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
         try {
             dicWorkflowLines = WfUtils.LoadWorkflowLines(ixConn, searchPattern);
+            dicDocMaskLines = MaskUtils.LoadDocMaskLines(ixConn, searchPattern);
         } catch (RemoteException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
-    
-        String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, searchPattern);
+        
+        String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, dicDocMaskLines, searchPattern);
         Http.ShowReport(htmlDoc);
 
         

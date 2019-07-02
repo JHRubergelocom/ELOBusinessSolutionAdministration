@@ -5,7 +5,10 @@
  */
 package elobusinesssolutionadministration;
 
+import com.google.gson.Gson;
+import de.elo.ix.client.DocMask;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 /**
  *
@@ -27,5 +30,27 @@ public class JsonUtils {
             jstrings[i] = jarr.getString(i);
         } 
         return jstrings;
+    }
+
+    static String getJsonString(DocMask dm) {
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(dm);
+        return jsonString;        
+    }
+    
+    static DocMask getDocMask(String jsonString) {
+        Gson gson = new Gson();
+        DocMask dm = gson.fromJson(jsonString, DocMask.class);
+        return dm;
+    }
+    
+    static String formatJsonString(String jsonText) {
+        try {
+            JSONObject obj = new JSONObject (jsonText);
+            return JsonFormatter.format(obj, 2);            
+        } catch (JSONException ex){
+            ex.printStackTrace();
+        }
+        return jsonText;
     }
 }

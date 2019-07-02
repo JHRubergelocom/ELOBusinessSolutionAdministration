@@ -50,12 +50,16 @@ class Http {
         String htmlStyle = "  <style>\n";
 
         htmlStyle += "body {\n";
-        htmlStyle += "  font-family: 'Segoe UI', Verdana, 'sans serif';\n";
+        htmlStyle += "  font-family: 'Courier', monospace;\n";
         htmlStyle += "  margin: 15px;\n";
-                htmlStyle += "  font-size: 12px;\n";
+        htmlStyle += "  font-size: 12px;\n";
+        htmlStyle += "}\n";        
+        htmlStyle += "span {\n";
+        htmlStyle += "  color: red;\n";
+        htmlStyle += "  background-color: yellow;\n";
         htmlStyle += "}\n";
         htmlStyle += "table {\n";
-                htmlStyle += "  font-size: 12px;\n";
+        htmlStyle += "  font-size: 12px;\n";
         htmlStyle += "  padding-left: 10px;\n";
         htmlStyle += "  border-width: 0px;\n";
         htmlStyle += "  border-collapse: collapse;\n";
