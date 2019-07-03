@@ -62,7 +62,7 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    private void handleBtnLoadEloScripte(ActionEvent event) {
+    private void handleBtnExportElo(ActionEvent event) {
         eloService.Run(EloCommand.STARTEXPORTELO);
     }
 
@@ -139,7 +139,7 @@ public class FXMLDocumentController implements Initializable {
     private Button btnAdminConsole;
 
     @FXML
-    private Button btnLoadEloScripte;
+    private Button btnExportElo;
 
     @FXML
     private Button btnEloApplicationServer;
@@ -191,7 +191,7 @@ public class FXMLDocumentController implements Initializable {
         btnWebclient.setDisable(value);
         btnKnowledgeBoard.setDisable(value);
         btnAdminConsole.setDisable(value);        
-        btnLoadEloScripte.setDisable(value);        
+        btnExportElo.setDisable(value);        
         btnEloApplicationServer.setDisable(value);        
         btnRancher.setDisable(value);        
         btnSearch.setDisable(value);        

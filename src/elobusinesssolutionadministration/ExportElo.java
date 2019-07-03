@@ -6,18 +6,39 @@
 package elobusinesssolutionadministration;
 
 import byps.RemoteException;
+import de.elo.ix.client.AccessC;
+import de.elo.ix.client.AclItem;
+import de.elo.ix.client.CheckoutUsersC;
+import de.elo.ix.client.DocMask;
+import de.elo.ix.client.DocMaskC;
+import de.elo.ix.client.DocMaskLine;
 import de.elo.ix.client.DocVersion;
 import de.elo.ix.client.EditInfo;
 import de.elo.ix.client.EditInfoC;
+import de.elo.ix.client.FileData;
 import de.elo.ix.client.FindChildren;
 import de.elo.ix.client.FindInfo;
 import de.elo.ix.client.FindResult;
+import de.elo.ix.client.FindWorkflowInfo;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.LockC;
+import de.elo.ix.client.MaskName;
 import de.elo.ix.client.Sord;
 import de.elo.ix.client.SordC;
 import de.elo.ix.client.SordZ;
+import de.elo.ix.client.UserInfoC;
+import de.elo.ix.client.UserName;
+import de.elo.ix.client.WFDiagram;
+import de.elo.ix.client.WFDiagramC;
+import de.elo.ix.client.WFDiagramZ;
+import de.elo.ix.client.WFTypeC;
+import de.elo.ix.client.WorkflowExportOptions;
+import de.elo.ix.client.WorkflowExportOptionsC;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -33,7 +54,6 @@ class ExportElo {
         this.ixConn = ixConn;
     }
 
-
     void StartExportElo(String name) {
         try {
             String exportPath = "E:\\Temp\\ExportElo\\" + name;
@@ -42,13 +62,15 @@ class ExportElo {
                 exportDir.mkdirs();
             }  
             FindChildren(ARCPATH, exportDir, REFERENCES);
+            FindWorkflows(exportDir);
+            FindDocMasks(exportDir);
             System.out.println("ticket=" + ixConn.getLoginResult().getClientInfo().getTicket());
             
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
+    
     private void FindChildren(String arcPath, File exportPath, boolean exportReferences) {        
         FindResult fr = new FindResult();
         try {
@@ -135,4 +157,184 @@ class ExportElo {
             }            
         }
     } 
+    
+    private void FindWorkflows(File exportPath) {
+        FindWorkflowInfo findWorkflowInfo = new FindWorkflowInfo();
+        findWorkflowInfo.setType(WFTypeC.TEMPLATE);
+        
+        int max = 100;
+        int idx = 0;
+        FindResult findResult = new FindResult(); 
+        List<WFDiagram> wfList = new ArrayList<>();
+        WFDiagramZ checkoutOptions = WFDiagramC.mbLean;
+        try {
+            findResult = ixConn.ix().findFirstWorkflows(findWorkflowInfo, max, checkoutOptions);
+            while (true) {
+                WFDiagram[] wfArray = findResult.getWorkflows();   
+                wfList.addAll(Arrays.asList(wfArray));
+                if (!findResult.isMoreResults()) {
+                  break;
+                }
+                idx += wfArray.length;
+                findResult = ixConn.ix().findNextWorkflows(findResult.getSearchId(), idx, max);
+            }
+          } catch (RemoteException ex) {
+                ex.printStackTrace();
+          } finally {
+            if (findResult != null) {
+                try {
+                    ixConn.ix().findClose(findResult.getSearchId());
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }        
+        WFDiagram[] workflows = new WFDiagram[wfList.size()];
+        workflows = wfList.toArray(workflows);
+
+        for (WFDiagram wf : workflows) {
+            ExportWorkflow(exportPath, wf);
+        }
+        
+    }
+
+    private void ExportWorkflow(File exportPath, WFDiagram wf) {
+        try {
+            WFDiagram wfDiag = ixConn.ix().checkoutWorkflowTemplate(wf.getName(), "", new WFDiagramZ(WFDiagramC.mbId), LockC.NO);
+            WorkflowExportOptions workflowExportOptions = new WorkflowExportOptions();
+            workflowExportOptions.setFlowId(Integer.toString(wfDiag.getId()));
+
+            workflowExportOptions.setFormat(WorkflowExportOptionsC.FORMAT_JSON);
+            FileData fileData = ixConn.ix().exportWorkflow(workflowExportOptions);
+            String jsonData = new String(fileData.getData(), "UTF-8");
+            jsonData = JsonUtils.formatJsonString(jsonData);  
+            
+            String dirName = exportPath + "\\Workflows";
+            String fileName = wf.getName();
+            FileUtils.SaveToFile(dirName, fileName, jsonData, "json");
+            System.out.println("Save Workflow: '" + wf.getName() + "'");                        
+        } catch (RemoteException ex) {
+            System.out.println("RemoteException: " + ex.getMessage());
+            ex.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println("UnsupportedEncodingException: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        
+    }
+    
+    private void clearIds(AclItem[] aclItems) {
+        int i; 
+        AclItem element;
+
+        for (i = 0; i < aclItems.length; i++) {
+          element = aclItems[i];
+          element.setId(-1);
+        }
+        
+    }
+
+    private String getUserName(int id) throws RemoteException {
+        String[] ids = new String[]{id + ""};
+        UserName[] userNames = ixConn.ix().getUserNames(ids, CheckoutUsersC.BY_IDS_RAW);
+        String name = userNames[0].getName();
+        return name;        
+    }
+    
+    private void adjustAcl(AclItem[] aclItems) throws RemoteException {
+        int i; 
+        AclItem aclItem; 
+        String aclName;
+
+        String adminName = getUserName(UserInfoC.ID_ADMINISTRATOR);
+        String everyoneName = getUserName(UserInfoC.ID_EVERYONE_GROUP);
+
+        for (i = 0; i < aclItems.length; i++) {
+          aclItem = aclItems[i];
+          aclName = aclItem.getName();
+          if (aclName.equals(adminName)) {
+              aclItem.setId(0);
+              aclItem.setName("");              
+          } else if (aclName.equals(everyoneName)) {
+              aclItem.setId(9999);
+              aclItem.setName("");              
+          }
+        }        
+    }
+    
+    private void adjustMask(DocMask dm) throws RemoteException {
+        String[] childMaskNames;
+        int i; 
+        DocMaskLine line;
+
+        dm.setId(-1);
+        dm.setTStamp("2018.01.01.00.00.00");
+
+        adjustAcl(dm.getAclItems());
+
+        for (i = 0; i < dm.getLines().length; i++) {
+          line = dm.getLines()[i];
+          line.setMaskId(-1);
+          adjustAcl(line.getAclItems());
+        }        
+    }
+    
+    private void ExportDocMask(File exportPath, DocMask dm) {
+        try {
+            int i;
+            dm.setAcl("");
+            dm.setDAcl("");
+            clearIds(dm.getAclItems());
+            clearIds(dm.getDocAclItems());
+            for (i = 0; i < dm.getLines().length; i++) {
+              DocMaskLine line = dm.getLines()[i];
+              line.setAcl("");
+              clearIds(line.getAclItems());
+            }
+            String json = JsonUtils.getJsonString(dm);
+            dm = JsonUtils.getDocMask(json);
+            adjustMask(dm);
+            json = JsonUtils.formatJsonString(json);     
+            
+            String dirName = exportPath + "\\DocMasks";
+            String fileName = dm.getName();
+            FileUtils.SaveToFile(dirName, fileName, json, "json");
+            System.out.println("Save DocMask: '" + dm.getName() + "'");                        
+            
+        } catch (RemoteException ex) {
+            System.out.println("RemoteException: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+
+    private void FindDocMasks(File exportPath) {
+        String arcPath = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
+        try {
+            EditInfo ed = ixConn.ix().checkoutSord(arcPath, EditInfoC.mbAll, LockC.NO);
+            List<DocMask> dmList = new ArrayList<>();
+            for (MaskName mn : ed.getMaskNames()) { 
+                boolean canRead = (mn.getAccess() & AccessC.LUR_READ) != 0; 
+                System.out.println("id=" + Integer.toString(mn.getId()) +
+                    ", name=" + mn.getName() + 
+                    ", folderMask=" + Boolean.toString(mn.isFolderMask()) + 
+                    ", documentMask=" + Boolean.toString(mn.isDocumentMask()) + 
+                    ", searchMask=" + Boolean.toString(mn.isSearchMask()) + 
+                    ", canRead=" + Boolean.toString(canRead)); 
+
+                DocMask dm = ixConn.ix().checkoutDocMask(mn.getName(), DocMaskC.mbAll, LockC.NO);
+                dmList.add(dm);            
+            }
+            DocMask[] docMasks = new DocMask[dmList.size()];
+            docMasks = dmList.toArray(docMasks);   
+            
+            for (DocMask dm : docMasks) {
+                ExportDocMask(exportPath, dm);                
+            }
+        } catch (RemoteException ex) {
+                ex.printStackTrace();
+        }
+        
+    }
+
 }

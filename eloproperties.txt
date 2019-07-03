@@ -1,4 +1,4 @@
 #EloProperties
-#Tue Jul 02 15:25:39 CEST 2019
-Pattern=contract
-SelectedProfile=contract
+#Wed Jul 03 14:31:06 CEST 2019
+Pattern=invoice
+SelectedProfile=learning

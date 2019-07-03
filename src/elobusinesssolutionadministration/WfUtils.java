@@ -99,19 +99,6 @@ public class WfUtils {
         return ExportWorkflow(workflowTemplateId);
     }
     
-    String[] LoadWorkflowTemplatesAsJsonString() throws RemoteException, UnsupportedEncodingException{
-        WFDiagram[] wfTemplates = GetTemplates();
-        List<String> wfJsonTexts = new ArrayList<>();        
-        for (WFDiagram wf : wfTemplates) {
-             String wfJsonText = ExportWorkflowTemplate(wf);
-             wfJsonText = JsonUtils.formatJsonString(wfJsonText);
-             wfJsonTexts.add(wfJsonText);
-        }
-        String[] wfArray = new String[wfJsonTexts.size()];
-        wfArray = wfJsonTexts.toArray(wfArray);
-        return wfArray;        
-    }
-    
     SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(String searchPattern) throws RemoteException, UnsupportedEncodingException {
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
         WFDiagram[] wfTemplates = GetTemplates();

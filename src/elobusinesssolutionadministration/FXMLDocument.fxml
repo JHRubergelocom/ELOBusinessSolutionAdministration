@@ -23,7 +23,7 @@
       <Button fx:id="btnAppManager" layoutX="162.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleBtnAppManager" prefHeight="25.0" prefWidth="150.0" text="AppManager" />
       <Button fx:id="btnWebclient" layoutX="328.0" layoutY="271.0" mnemonicParsing="false" onAction="#handleBtnWebclient" prefHeight="25.0" prefWidth="165.0" text="Webclient" />
       <Button fx:id="btnKnowledgeBoard" layoutX="163.0" layoutY="235.0" mnemonicParsing="false" onAction="#handleBtnKnowledgeBoard" prefHeight="25.0" prefWidth="150.0" text="KnowledgeBoard" />
-      <Button fx:id="btnLoadEloScripte" layoutX="18.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnLoadEloScripte" prefHeight="25.0" prefWidth="128.0" text="ELO Scripte laden" />
+      <Button fx:id="btnExportElo" layoutX="18.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnExportElo" prefHeight="25.0" prefWidth="128.0" text="Export ELO" />
       <Button fx:id="btnEloApplicationServer" layoutX="328.0" layoutY="235.0" mnemonicParsing="false" onAction="#handleBtnEloApplicationServer" prefHeight="25.0" prefWidth="165.0" text="ELO Application Server" />
       <Button fx:id="btnRancher" layoutX="18.0" layoutY="68.0" mnemonicParsing="false" onAction="#handleBtnRancher" prefHeight="25.0" prefWidth="128.0" text="Rancher" />
       <Button fx:id="btnSearch" layoutX="18.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleBtnSearch" prefHeight="25.0" prefWidth="128.0" text="Suche" />

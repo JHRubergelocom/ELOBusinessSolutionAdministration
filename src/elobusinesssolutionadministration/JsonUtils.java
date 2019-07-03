@@ -47,10 +47,11 @@ public class JsonUtils {
     static String formatJsonString(String jsonText) {
         try {
             JSONObject obj = new JSONObject (jsonText);
-            return JsonFormatter.format(obj, 2);            
+            return obj.toString(2);
         } catch (JSONException ex){
             ex.printStackTrace();
         }
         return jsonText;
     }
+
 }
