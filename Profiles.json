@@ -20,6 +20,7 @@
       "eloPackages": [{"folder":"hr", "name":"hr"}, {"folder":"hr_orgchart", "name":"hr"}],
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
+        {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "hr-de-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "de"}
       ]
     },
