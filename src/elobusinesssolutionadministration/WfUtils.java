@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -99,7 +100,7 @@ public class WfUtils {
         return ExportWorkflow(workflowTemplateId);
     }
     
-    SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(String searchPattern) throws RemoteException, UnsupportedEncodingException {
+    SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(Pattern p) throws RemoteException, UnsupportedEncodingException {
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
         WFDiagram[] wfTemplates = GetTemplates();
         for (WFDiagram wf : wfTemplates) {
@@ -110,10 +111,10 @@ public class WfUtils {
             int linenr = 1;
             for (String line : lines) {
                 // System.out.println("Gelesene WFZeile: " + line);
-                if (searchPattern.length() > 0) {
-                    if (line.contains(searchPattern)) {
-                        wfLines.put(linenr, line);                            
-                    }                    
+                if (p.toString().length() > 0) {
+                    if (p.matcher(line).find()){
+                        wfLines.put(linenr, line);                                                                            
+                    }                                                                
                 }
                 linenr++;
             }

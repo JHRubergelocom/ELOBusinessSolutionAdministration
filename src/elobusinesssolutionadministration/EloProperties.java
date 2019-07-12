@@ -79,4 +79,16 @@ public final class EloProperties extends Properties {
         return getProperty("Pattern");        
     }
 
+    void setCaseSensitiv(boolean caseSensitiv) {
+        setProperty("CaseSensitiv", Boolean.toString(caseSensitiv));   
+        saveProperties();
+    }
+    boolean getCaseSensitiv() {
+        String value = getProperty("CaseSensitiv").toLowerCase();
+        if (value.toLowerCase().equals("true")) {
+            return true;
+        }
+        return false;
+    }
+    
 }

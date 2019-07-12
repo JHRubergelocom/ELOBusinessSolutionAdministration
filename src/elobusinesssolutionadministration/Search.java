@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -22,17 +25,32 @@ import java.util.TreeMap;
  */
 class Search {  
     private final IXConnection ixConn;
+    private final Pattern p;
 
-    Search(IXConnection ixConn) {
+    Search(IXConnection ixConn, String searchPattern, boolean caseSensitiv) {
         this.ixConn = ixConn;
+        if (caseSensitiv) {
+            p = Pattern.compile(searchPattern);
+        } else {
+            p = Pattern.compile(searchPattern, Pattern.CASE_INSENSITIVE);                        
+        }           
+    }
+    
+    private String MarkAllMatches(String htmlText) {
+        Matcher matcher = p.matcher( htmlText );
+        StringBuffer sb = new StringBuffer( htmlText.length() );
+        while ( matcher.find() ) {
+          matcher.appendReplacement( sb, "<span>$0</span>" );                    
+        }
+        matcher.appendTail( sb );
+        return new String(sb);                        
     }
 
     private String CreateReportSearchResult(SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines, 
                                             SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines,
-                                            SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines,
-                                            String searchPattern) {
+                                            SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines) {
         String htmlDoc = "<html>\n";
-        String htmlHead = Http.CreateHtmlHead("Search Results matching '" + searchPattern + "'");
+        String htmlHead = Http.CreateHtmlHead("Search Results matching '" + p.toString() + "'");
         String htmlStyle = Http.CreateHtmlStyle();
         String htmlBody = "<body>\n";
 
@@ -52,13 +70,12 @@ class Search {
                 row.add(Integer.toString(entrySordDoc.getKey().getId()));                     
                 row.add(entryDocLines.getKey().toString());
                 String lineText = entryDocLines.getValue();
-                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
-                row.add(lineText);
-                
+                lineText = MarkAllMatches(lineText);
+                row.add(lineText);                
                 rows.add(row);
             }
         }
-        String htmlTable = Http.CreateHtmlTable("Search Results Sord Documents matching <span>'" + searchPattern + "'</span>", cols, rows);
+        String htmlTable = Http.CreateHtmlTable("Search Results Sord Documents matching <span>'" + p.toString() + "'</span>", cols, rows);
         htmlBody += htmlTable;
 
         cols = new ArrayList<>();
@@ -73,13 +90,12 @@ class Search {
                 row.add(entryWorkflow.getKey().getName());                
                 row.add(entryDocLines.getKey().toString());
                 String lineText = entryDocLines.getValue();
-                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
-                row.add(lineText);
-                
+                lineText = MarkAllMatches(lineText);                
+                row.add(lineText);                
                 rows.add(row);
             }
         }
-        htmlTable = Http.CreateHtmlTable("Search Results Workflow Templates matching <span>'" + searchPattern + "'</span>", cols, rows);
+        htmlTable = Http.CreateHtmlTable("Search Results Workflow Templates matching <span>'" + p.toString() + "'</span>", cols, rows);
         htmlBody += htmlTable;
         
         cols = new ArrayList<>();
@@ -94,13 +110,12 @@ class Search {
                 row.add(entryDocMask.getKey().getName());                
                 row.add(entryDocLines.getKey().toString());
                 String lineText = entryDocLines.getValue();
-                lineText = lineText.replaceAll(searchPattern, "<span>" + searchPattern + "</span>");
-                row.add(lineText);
-                
+                lineText = MarkAllMatches(lineText);
+                row.add(lineText);                
                 rows.add(row);
             }
         }
-        htmlTable = Http.CreateHtmlTable("Search Results Doc Masks matching <span>'" + searchPattern + "'</span>", cols, rows);
+        htmlTable = Http.CreateHtmlTable("Search Results Doc Masks matching <span>'" + p.toString() + "'</span>", cols, rows);
         htmlBody += htmlTable;
         
         htmlBody += "</body>\n";
@@ -113,22 +128,22 @@ class Search {
         
     }
 
-    void ShowSearchResult(String searchPattern, EloPackage[] eloPackages) {
+    void ShowSearchResult(EloPackage[] eloPackages) {
         RepoUtils rU = new RepoUtils(ixConn);   
-        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, searchPattern);
+        SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, p);
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
         
         try {
             WfUtils wfU = new WfUtils(ixConn);   
             MaskUtils mU = new MaskUtils(ixConn);               
-            dicWorkflowLines = wfU.LoadWorkflowLines(searchPattern);
-            dicDocMaskLines = mU.LoadDocMaskLines(searchPattern);
+            dicWorkflowLines = wfU.LoadWorkflowLines(p);
+            dicDocMaskLines = mU.LoadDocMaskLines(p);
         } catch (RemoteException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
         
-        String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, dicDocMaskLines, searchPattern);
+        String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, dicDocMaskLines);
         Http.ShowReport(htmlDoc);
     }
     

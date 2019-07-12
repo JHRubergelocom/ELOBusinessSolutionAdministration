@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -28,5 +29,6 @@
       <Button fx:id="btnRancher" layoutX="18.0" layoutY="68.0" mnemonicParsing="false" onAction="#handleBtnRancher" prefHeight="25.0" prefWidth="128.0" text="Rancher" />
       <Button fx:id="btnSearch" layoutX="18.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleBtnSearch" prefHeight="25.0" prefWidth="128.0" text="Suche" />
       <TextField fx:id="txtPattern" layoutX="164.0" layoutY="144.0" promptText="Pattern" />
+      <CheckBox fx:id="chkCaseSensitiv" layoutX="328.0" layoutY="148.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="165.0" text="Case sensitiv" />
     </children>
 </AnchorPane>

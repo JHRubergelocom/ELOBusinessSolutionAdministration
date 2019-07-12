@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -143,7 +144,7 @@ class RepoUtils {
         return docArray;        
     }
 
-    private SortedMap<Integer, String> DownloadDocumentToLines(SordDoc sDoc, String searchPattern) {
+    private SortedMap<Integer, String> DownloadDocumentToLines(SordDoc sDoc, Pattern p) {
         SortedMap<Integer, String> docLines = new TreeMap<>();
         try {
             String objId = sDoc.getId() + "";   
@@ -164,9 +165,9 @@ class RepoUtils {
                         line = line.replaceAll(bom, "");
                         line = line.replaceAll("\b", "");
                         line = line.replaceAll("\n", "");  
-                        if (line.contains(searchPattern)) {
-                            docLines.put(linenr, line);                            
-                        }                        
+                        if (p.matcher(line).find()){
+                            docLines.put(linenr, line);                                                                            
+                        } 
                         linenr++;                        
                     }                       
                 } catch (FileNotFoundException ex) {    
@@ -190,17 +191,17 @@ class RepoUtils {
         
     }
 
-    SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(EloPackage[] eloPackages, String searchPattern) {   
+    SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(EloPackage[] eloPackages, Pattern p) {   
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = new TreeMap<>(new SordDocComparator());         
         String parentId;
         
-        if (searchPattern.length() > 0) {
+        if (p.toString().length() > 0) {
             if (eloPackages.length == 0) {
                 parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
                 Sord[] sords = FindChildren(parentId, true);
                 for (Sord s : sords) {
                     SordDoc sDoc = new SordDoc(s);
-                    SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, searchPattern);
+                    SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, p);
                     dicSordDocLines.put(sDoc, docLines);
                 }
 
@@ -211,7 +212,7 @@ class RepoUtils {
                     Sord[] sords = FindChildren(parentId, true);
                     for (Sord s : sords) {
                         SordDoc sDoc = new SordDoc(s);
-                        SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, searchPattern);
+                        SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, p);
                         dicEloPackageSordDocLines.put(sDoc, docLines);
                         dicSordDocLines.putAll(dicEloPackageSordDocLines);
                     }                

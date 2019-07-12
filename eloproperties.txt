@@ -1,4 +1,5 @@
 #EloProperties
-#Thu Jul 11 10:48:38 CEST 2019
-Pattern=sol.hr.shared.Utils.translate
+#Fri Jul 12 15:27:39 CEST 2019
+CaseSensitiv=false
+Pattern=FeedComment
 SelectedProfile=hr

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -94,6 +95,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleBtnSearch(ActionEvent event) {
         eloProperties.setPattern(txtPattern.getText());
+        eloProperties.setCaseSensitiv(chkCaseSensitiv.isSelected());
         eloService.Run(EloCommand.SHOWSEARCHRESULT);
     }    
     
@@ -154,6 +156,9 @@ public class FXMLDocumentController implements Initializable {
     private TextField txtPattern;
 
     @FXML
+    private CheckBox chkCaseSensitiv;
+
+    @FXML
     private TextArea txtOutput;
     
     @Override
@@ -176,6 +181,7 @@ public class FXMLDocumentController implements Initializable {
             cmbProfile.getSelectionModel().select(0);                    
         }
         txtPattern.setText(eloProperties.getPattern());
+        chkCaseSensitiv.setSelected(eloProperties.getCaseSensitiv());
         
     }  
         
@@ -196,6 +202,7 @@ public class FXMLDocumentController implements Initializable {
         btnRancher.setDisable(value);        
         btnSearch.setDisable(value);        
         txtPattern.setDisable(value);        
+        chkCaseSensitiv.setDisable(value);        
     }
     
     public ComboBox<String> getCmbProfile() {
@@ -208,6 +215,10 @@ public class FXMLDocumentController implements Initializable {
     
     public TextField getTxtPattern() {
         return txtPattern;
+    }
+    
+    public CheckBox getChkCaseSensitiv() {
+        return chkCaseSensitiv;
     }
     
     public Profiles getProfiles() {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -130,7 +131,7 @@ class MaskUtils {
         return json;
     }
     
-    SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(String searchPattern) throws RemoteException {
+    SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(Pattern p) throws RemoteException {
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
         DocMask[] docMasks = GetDocMasks();
         for (DocMask dm : docMasks) {
@@ -139,10 +140,10 @@ class MaskUtils {
             String[] lines = dmJsonText.split("\n");
             int linenr = 1;
             for (String line : lines) {
-                // System.out.println("Gelesene WFZeile: " + line);
-                if (searchPattern.length() > 0) {
-                    if (line.contains(searchPattern)) {
-                        dmLines.put(linenr, line);                            
+                // System.out.println("Gelesene WFZeile: " + line);                    
+                if (p.toString().length() > 0) {
+                    if (p.matcher(line).find()){
+                        dmLines.put(linenr, line);                                                                            
                     }                    
                 }
                 linenr++;

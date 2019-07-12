@@ -53,6 +53,7 @@ public class EloService extends Service<Boolean> {
                 Profiles profiles = dc.getProfiles();
                 TextArea txtOutput = dc.getTxtOutput();
                 String searchPattern = dc.getTxtPattern().getText();
+                boolean caseSensitiv = dc.getChkCaseSensitiv().isSelected();
                 String gitUser = profiles.getGitUser();
                 String user = profiles.getUser();
                 String pwd = profiles.getPwd();
@@ -120,8 +121,8 @@ public class EloService extends Service<Boolean> {
                                 aS.ShowEloApplicationServer();
                                 break;
                             case EloCommand.SHOWSEARCHRESULT:
-                                Search s = new Search(ixConn);                                                                                
-                                s.ShowSearchResult(searchPattern, eloPackages);
+                                Search s = new Search(ixConn, searchPattern, caseSensitiv);                                                                                
+                                s.ShowSearchResult(eloPackages);
                                 break;    
                             case EloCommand.ELO_PULL_PACKAGE:    
                             case EloCommand.ELO_PULL_UNITTEST:
