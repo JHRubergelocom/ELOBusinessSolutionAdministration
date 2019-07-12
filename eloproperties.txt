@@ -1,5 +1,5 @@
 #EloProperties
-#Fri Jul 12 15:27:39 CEST 2019
-CaseSensitiv=false
+#Fri Jul 12 15:41:30 CEST 2019
+CaseSensitiv=true
 Pattern=FeedComment
 SelectedProfile=hr
