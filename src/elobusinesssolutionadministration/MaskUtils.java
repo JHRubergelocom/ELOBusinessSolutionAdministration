@@ -20,6 +20,7 @@ import de.elo.ix.client.MaskName;
 import de.elo.ix.client.UserInfoC;
 import de.elo.ix.client.UserName;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -132,7 +133,10 @@ class MaskUtils {
     }
     
     SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(Pattern p) throws RemoteException {
-        SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
+        Comparator<DocMask> byName = Comparator.comparing(dm -> dm.getName());
+        Comparator<DocMask> byId = Comparator.comparing(dm -> dm.getId());
+        Comparator<DocMask> byDocMask = byName.thenComparing(byId);                        
+        SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(byDocMask);
         DocMask[] docMasks = GetDocMasks();
         for (DocMask dm : docMasks) {
             SortedMap<Integer, String> dmLines = new TreeMap<>();

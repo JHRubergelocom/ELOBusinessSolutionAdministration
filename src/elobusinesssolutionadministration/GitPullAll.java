@@ -7,6 +7,7 @@ package elobusinesssolutionadministration;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ class GitPullAll {
     private static ArrayList<File> getPaths(File file, ArrayList<File> list) {
         if (file == null || list == null || !file.isDirectory())
             return null;
-        File[] fileArr = file.listFiles(new FileNameFilter(".git"));
+        File[] fileArr = file.listFiles(f ->(f.getName().endsWith(".git")) && !(f.getName().contentEquals(".git")));
         for (File f : fileArr) {
             if (f.isDirectory()) {
                 getPaths(f, list);

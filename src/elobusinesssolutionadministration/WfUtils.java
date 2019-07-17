@@ -20,6 +20,7 @@ import de.elo.ix.client.WorkflowExportOptionsC;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -101,7 +102,10 @@ public class WfUtils {
     }
     
     SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(Pattern p) throws RemoteException, UnsupportedEncodingException {
-        SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
+        Comparator<WFDiagram> byName = Comparator.comparing(wf -> wf.getName());
+        Comparator<WFDiagram> byId = Comparator.comparing(wf -> wf.getId());
+        Comparator<WFDiagram> byWFDiagram = byName.thenComparing(byId);                        
+        SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(byWFDiagram);
         WFDiagram[] wfTemplates = GetTemplates();
         for (WFDiagram wf : wfTemplates) {
             SortedMap<Integer, String> wfLines = new TreeMap<>();

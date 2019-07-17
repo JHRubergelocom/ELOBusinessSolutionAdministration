@@ -1,5 +1,5 @@
 #EloProperties
-#Fri Jul 12 15:41:30 CEST 2019
+#Wed Jul 17 14:46:44 CEST 2019
 CaseSensitiv=true
 Pattern=FeedComment
-SelectedProfile=hr
+SelectedProfile=playground

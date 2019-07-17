@@ -11,6 +11,7 @@ import de.elo.ix.client.DocMask;
 import de.elo.ix.client.IXConnection;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -131,8 +132,15 @@ class Search {
     void ShowSearchResult(EloPackage[] eloPackages) {
         RepoUtils rU = new RepoUtils(ixConn);   
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, p);
-        SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(new WFDiagramComparator());
-        SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(new DocMaskComparator());
+        Comparator<WFDiagram> byName = Comparator.comparing(wf -> wf.getName());
+        Comparator<WFDiagram> byId = Comparator.comparing(wf -> wf.getId());
+        Comparator<WFDiagram> byWFDiagram = byName.thenComparing(byId);                
+        SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(byWFDiagram);
+        
+        Comparator<DocMask> byNameDm = Comparator.comparing(dm -> dm.getName());
+        Comparator<DocMask> byIdDm = Comparator.comparing(dm -> dm.getId());
+        Comparator<DocMask> byDocMaskDm = byNameDm.thenComparing(byIdDm);                                
+        SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(byDocMaskDm);
         
         try {
             WfUtils wfU = new WfUtils(ixConn);   
