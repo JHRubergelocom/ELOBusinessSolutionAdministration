@@ -7,10 +7,10 @@ package elobusinesssolutionadministration;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Optional;
 import javafx.scene.control.TextArea;
 
 /**
@@ -59,8 +59,14 @@ class GitPullAll {
     }
     
     private static void SubDirectories(TextArea txtOutput, String directory) throws IOException {
-        ArrayList<File> files = getPaths(new File(directory), new ArrayList<>());
-        if(files == null) return;   
+        Optional<ArrayList<File>> optFiles = getPaths(new File(directory), new ArrayList<>());
+        ArrayList<File> files;
+        if (optFiles.isPresent()) {
+            files = optFiles.get();
+        } else {
+            return;
+        }
+        
         String gitCommand;
         gitCommand = "directory " + directory + ": " + "GitPullAll";
         String htmlDoc = "<html>\n";
@@ -88,9 +94,9 @@ class GitPullAll {
 
     }
 
-    private static ArrayList<File> getPaths(File file, ArrayList<File> list) {
+    private static Optional<ArrayList<File>> getPaths(File file, ArrayList<File> list) {
         if (file == null || list == null || !file.isDirectory())
-            return null;
+            return Optional.empty();
         File[] fileArr = file.listFiles(f ->(f.getName().endsWith(".git")) && !(f.getName().contentEquals(".git")));
         for (File f : fileArr) {
             if (f.isDirectory()) {
@@ -98,7 +104,7 @@ class GitPullAll {
                 list.add(f);                
             }
         }
-        return list;
+        return Optional.of(list);
     }
     
 }

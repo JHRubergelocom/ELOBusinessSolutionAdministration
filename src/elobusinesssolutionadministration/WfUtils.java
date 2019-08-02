@@ -103,7 +103,7 @@ public class WfUtils {
     
     SortedMap<WFDiagram, SortedMap<Integer, String>> LoadWorkflowLines(Pattern p) throws RemoteException, UnsupportedEncodingException {
         Comparator<WFDiagram> byName = Comparator.comparing(wf -> wf.getName());
-        Comparator<WFDiagram> byId = Comparator.comparing(wf -> wf.getId());
+        Comparator<WFDiagram> byId = Comparator.comparingInt(wf -> wf.getId());
         Comparator<WFDiagram> byWFDiagram = byName.thenComparing(byId);                        
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(byWFDiagram);
         WFDiagram[] wfTemplates = GetTemplates();

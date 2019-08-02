@@ -134,7 +134,7 @@ class MaskUtils {
     
     SortedMap<DocMask, SortedMap<Integer, String>> LoadDocMaskLines(Pattern p) throws RemoteException {
         Comparator<DocMask> byName = Comparator.comparing(dm -> dm.getName());
-        Comparator<DocMask> byId = Comparator.comparing(dm -> dm.getId());
+        Comparator<DocMask> byId = Comparator.comparingInt(dm -> dm.getId());
         Comparator<DocMask> byDocMask = byName.thenComparing(byId);                        
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(byDocMask);
         DocMask[] docMasks = GetDocMasks();

@@ -1,5 +1,5 @@
 #EloProperties
-#Wed Jul 17 14:46:44 CEST 2019
-CaseSensitiv=true
-Pattern=FeedComment
+#Fri Aug 02 14:16:01 CEST 2019
+CaseSensitiv=false
+Pattern=retrieveCurrentRoutineIdFromWorkflow
 SelectedProfile=playground

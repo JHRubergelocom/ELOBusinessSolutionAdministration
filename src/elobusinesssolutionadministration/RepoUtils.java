@@ -194,7 +194,7 @@ class RepoUtils {
 
     SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(EloPackage[] eloPackages, Pattern p) {   
         Comparator<SordDoc> byName = Comparator.comparing(sd -> sd.getName());
-        Comparator<SordDoc> byId = Comparator.comparing(sd -> sd.getId());
+        Comparator<SordDoc> byId = Comparator.comparingInt(sd -> sd.getId());
         Comparator<SordDoc> bySordDoc = byName.thenComparing(byId);        
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = new TreeMap<>(bySordDoc);         
         String parentId;

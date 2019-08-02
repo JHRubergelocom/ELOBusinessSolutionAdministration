@@ -133,12 +133,12 @@ class Search {
         RepoUtils rU = new RepoUtils(ixConn);   
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, p);
         Comparator<WFDiagram> byName = Comparator.comparing(wf -> wf.getName());
-        Comparator<WFDiagram> byId = Comparator.comparing(wf -> wf.getId());
+        Comparator<WFDiagram> byId = Comparator.comparingInt(wf -> wf.getId());
         Comparator<WFDiagram> byWFDiagram = byName.thenComparing(byId);                
         SortedMap<WFDiagram, SortedMap<Integer, String>> dicWorkflowLines = new TreeMap<>(byWFDiagram);
         
         Comparator<DocMask> byNameDm = Comparator.comparing(dm -> dm.getName());
-        Comparator<DocMask> byIdDm = Comparator.comparing(dm -> dm.getId());
+        Comparator<DocMask> byIdDm = Comparator.comparingInt(dm -> dm.getId());
         Comparator<DocMask> byDocMaskDm = byNameDm.thenComparing(byIdDm);                                
         SortedMap<DocMask, SortedMap<Integer, String>> dicDocMaskLines = new TreeMap<>(byDocMaskDm);
         
