@@ -93,6 +93,9 @@ public class EloService extends Service<Boolean> {
                             case EloCommand.SHOWREPORTMATCHUNITTEST:
                                 uT.ShowReportMatchUnittest(eloPackages);
                                 break;
+                            case EloCommand.CREATEUNITTEST:
+                                uT.CreateUnittest(eloPackages);
+                                break;                                
                             case EloCommand.SHOWUNITTESTSAPP:
                                 uT.ShowUnittestsApp();
                                 break;

@@ -132,7 +132,48 @@ class RepoUtils {
         }
         return docText;
     }
-
+    
+    List<String> DownloadDocumentToList (Sord s) {
+        List<String> docList = new ArrayList<>();
+        try {
+            String objId = s.getId() + "";   
+            String line;            
+            BufferedReader in = null;
+            String bom = "\uFEFF"; // ByteOrderMark (BOM);
+            EditInfo editInfo = ixConn.ix().checkoutDoc(objId, null, EditInfoC.mbSordDoc, LockC.NO);
+            if (editInfo.getDocument().getDocs().length > 0) {
+                DocVersion dv = editInfo.getDocument().getDocs()[0];
+                String url = dv.getUrl();                    
+                InputStream inputStream = ixConn.download(url, 0, -1);
+                try {
+                    in = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));                    
+                    while ((line = in.readLine()) != null) {
+                        // System.out.println("Gelesene Zeile: " + line);
+                        line = line.replaceAll(bom, "");
+                        line = line.replaceAll("\b", "");
+                        line = line.replaceAll("\n", "");  
+                        docList.add(line);
+                    }                       
+                } catch (FileNotFoundException ex) {    
+                    ex.printStackTrace();
+                } catch (IOException ex) {            
+                    ex.printStackTrace();
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }            
+        } catch (RemoteException ex) {
+            ex.printStackTrace();            
+        }
+        return docList;
+    }
+    
     String[] LoadTextDocs(String parentId) throws RemoteException {
         Sord[] sordRFInfo = FindChildren(parentId, true);
         List<String> docTexts = new ArrayList<>();        

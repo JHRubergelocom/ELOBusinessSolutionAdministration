@@ -30,5 +30,6 @@
       <Button fx:id="btnSearch" layoutX="18.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleBtnSearch" prefHeight="25.0" prefWidth="128.0" text="Suche" />
       <TextField fx:id="txtPattern" layoutX="164.0" layoutY="144.0" promptText="Pattern" />
       <CheckBox fx:id="chkCaseSensitiv" layoutX="328.0" layoutY="148.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="165.0" text="Case sensitiv" />
+      <Button fx:id="btnCreateUnittest" layoutX="161.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleBtnCreateUnittest" prefHeight="25.0" prefWidth="150.0" text="Create Unittest" />
     </children>
 </AnchorPane>

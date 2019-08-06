@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import javax.swing.JOptionPane;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -267,5 +268,90 @@ class Unittests {
             ex.printStackTrace();
         }
     }
+
+// TODO    
+    private SortedMap<String, SortedMap<String, List<String>>> GetLibs(EloPackage eloPackage, String libDir) {
+        if (eloPackage.getFolder().equals("")) {
+            return new TreeMap<>();        
+        }        
+        String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/" + libDir;
+        RepoUtils rU = new RepoUtils(ixConn);  
+        Sord[] sordRFInfo = rU.FindChildren(parentId, true);
+        SortedMap<String, SortedMap<String, List<String>>> dicLibs = new TreeMap<>();        
+        for(Sord s : sordRFInfo) {  
+           String libName = ""; 
+           List<String> jsLines = rU.DownloadDocumentToList (s);  
+            for (String line : jsLines) {
+                if (line.contains("sol.define(")) {
+                    libName = line;                    
+                    if (libName.split("\"").length > 1) {
+                        libName = libName.split("\"")[1].trim();                    
+                        if (!dicLibs.containsKey(libName)) {
+                            dicLibs.put(libName, new TreeMap<>());
+                        }                        
+                    }
+                }
+                if (dicLibs.containsKey(libName)) {
+                    if (line.contains("function") && line.contains(":") && line.contains("(") && line.contains(")")&& !line.contains("*")){
+                        String fName = line;
+                        if (fName.split(":").length > 0) {
+                            fName = fName.split(":")[0].trim();
+                            List<String> params = new ArrayList<>();                            
+                            String pNames = line;
+                            pNames = pNames.trim();
+                            pNames = pNames.split("\\(")[1];
+                            pNames = pNames.split("\\)")[0];
+                            String [] ps = pNames.split(",");
+                            for (String p: ps) {
+                                params.add(p.trim());
+                            } 
+                            dicLibs.get(libName).put(fName, params);                            
+                        }                        
+                    }                       
+                }                
+            }           
+        }                
+        return dicLibs;
+    }
     
+    private void Debug(SortedMap<String, SortedMap<String, List<String>>> dicLibs, String dicLibsName) {
+        System.out.println("dicLibs" + dicLibsName);
+        for (Map.Entry<String, SortedMap<String, List<String>>> entryLib : dicLibs.entrySet()) {
+            System.out.println("Lib: " + entryLib.getKey());            
+            entryLib.getValue().entrySet().stream().map((entryFunc) -> {
+                System.out.println("    Function: " + entryFunc.getKey()); 
+                return entryFunc;
+            }).forEachOrdered((entryFunc) -> {
+                entryFunc.getValue().forEach((p) -> {
+                    System.out.println("      Parameter: " + p);
+                });
+            });
+        }
+    }
+    
+    private void CreateUnittestTemplate(SortedMap<String, SortedMap<String, List<String>>> dicAlls, SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos) {
+        Debug(dicAlls, "dicAlls");
+        Debug(dicAllRhinos, "dicAllRhinos");        
+        JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittestTemplate", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    
+    void CreateUnittest(EloPackage[] eloPackages) {
+        SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
+        SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
+        if (eloPackages.length == 0) {                
+            dicAlls = GetLibs(new EloPackage(), "All"); 
+            dicAllRhinos = GetLibs(new EloPackage(), "All Rhino"); 
+        } else {
+            for (EloPackage eloPackage : eloPackages) {
+                SortedMap<String, SortedMap<String, List<String>>> dicAll = GetLibs(eloPackage, "All");    
+                SortedMap<String, SortedMap<String, List<String>>> dicAllRhino = GetLibs(eloPackage, "All Rhino");    
+                dicAlls.putAll(dicAll);
+                dicAllRhinos.putAll(dicAllRhino);
+            }                
+        }
+        CreateUnittestTemplate(dicAlls, dicAllRhinos);
+        JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
+    }
+
 }

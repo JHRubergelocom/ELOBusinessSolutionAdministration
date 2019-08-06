@@ -100,6 +100,11 @@ public class FXMLDocumentController implements Initializable {
     }    
     
     @FXML
+    private void handleBtnCreateUnittest(ActionEvent event) {
+        eloService.Run(EloCommand.CREATEUNITTEST);
+    }    
+    
+    @FXML
     private void handleCmbProfile(ActionEvent event) {
         int index = cmbProfile.getSelectionModel().getSelectedIndex();
         Profile profile = profiles.getProfile(index);
@@ -151,6 +156,9 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private Button btnSearch;
+    
+    @FXML
+    private Button btnCreateUnittest;
 
     @FXML
     private TextField txtPattern;
@@ -201,6 +209,7 @@ public class FXMLDocumentController implements Initializable {
         btnEloApplicationServer.setDisable(value);        
         btnRancher.setDisable(value);        
         btnSearch.setDisable(value);        
+        btnCreateUnittest.setDisable(value);        
         txtPattern.setDisable(value);        
         chkCaseSensitiv.setDisable(value);        
     }

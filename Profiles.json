@@ -2,6 +2,15 @@
   "profiles": [
     {
       "name": "common",
+      "eloPackages": [
+        {"folder":"common", "name":"common"}, 
+        {"folder":"common_document", "name":"common_document"}, 
+        {"folder":"common_fx", "name":"common_fx"}, 
+        {"folder":"common_monitoring", "name":"common_monitoring"},
+        {"folder":"common_signature", "name":"common_sig"},
+        {"folder":"connector_xml", "name":"connector_xml"},
+        {"folder":"development", "name":"dev"}
+      ],            
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "jan", "version":"12.00"}

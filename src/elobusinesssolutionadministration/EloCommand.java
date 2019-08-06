@@ -39,6 +39,7 @@ public class EloCommand {
     static final String SHOWELOAPPLICATIONSERVER = "ShowEloApplicationServer";
     static final String SHOWRANCHER = "ShowRancher";
     static final String SHOWSEARCHRESULT = "ShowSearchResult";
+    static final String CREATEUNITTEST = "CreateUnittest";
     
     private String name;
     private String cmd;
