@@ -8,6 +8,7 @@ package elobusinesssolutionadministration;
 import byps.RemoteException;
 import de.elo.ix.client.IXConnection;
 import de.elo.ix.client.Sord;
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -315,7 +316,8 @@ class Unittests {
     }
     
     private void Debug(SortedMap<String, SortedMap<String, List<String>>> dicLibs, String dicLibsName) {
-        System.out.println("dicLibs" + dicLibsName);
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("dicLibs: " + dicLibsName);
         for (Map.Entry<String, SortedMap<String, List<String>>> entryLib : dicLibs.entrySet()) {
             System.out.println("Lib: " + entryLib.getKey());            
             entryLib.getValue().entrySet().stream().map((entryFunc) -> {
@@ -329,13 +331,190 @@ class Unittests {
         }
     }
     
-    private void CreateUnittestTemplate(SortedMap<String, SortedMap<String, List<String>>> dicAlls, SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos) {
-        Debug(dicAlls, "dicAlls");
-        Debug(dicAllRhinos, "dicAllRhinos");        
-        JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittestTemplate", JOptionPane.INFORMATION_MESSAGE);
+    private void SaveUnittestLib(String lib, String jsScript) {
+        String exportPath = "E:\\Temp\\Unittests";
+        String eloPackage = lib.split("\\.")[1];
+        String eloLibModul = lib.split("\\.")[2];
+        
+        String fileName = "[lib] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";
+        fileName = fileName.replaceAll("<PACKAGE>", eloPackage);
+        fileName = fileName.replaceAll("<LIBMODUL>", eloLibModul);
+        
+        File exportDir = new File(exportPath);
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }          
+        FileUtils.SaveToFile(exportPath, fileName, jsScript, "js");        
+    }
+        
+    private String CreateUnittestLibBeforeAll() {
+        String jsScript = "";
+        
+        jsScript += "  beforeAll(function (done) {\n";
+        jsScript += "    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;\n";
+        jsScript += "    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;\n";
+        jsScript += "    expect(function () {\n";
+        jsScript += "      test.Utils.createTempSord(\"sol<PACKAGE><LIBMODUL>\").then(function success(obsol<PACKAGE><LIBMODUL>Id) {\n";
+        jsScript += "        test.Utils.getSord(\"ARCPATH:/Administration/Business Solutions/<PACKAGE> [unit tests]/Resources/<LIBMODUL>\").then(function success1(<LIBMODUL>Sord1) {\n";
+        jsScript += "          <LIBMODUL>Sord = <LIBMODUL>Sord1;\n";
+        jsScript += "          userName = test.Utils.getCurrentUserName();\n";
+        jsScript += "          test.Utils.getUserInfo(userName).then(function success3(userInfo1) {\n";
+        jsScript += "            userInfo = userInfo1;\n";
+        jsScript += "            done();\n";
+        jsScript += "          }, function error(err) {\n";
+        jsScript += "            fail(err);\n";
+        jsScript += "            console.error(err);\n";
+        jsScript += "            done();\n";
+        jsScript += "          }\n";
+        jsScript += "          );\n";
+        jsScript += "        }, function error(err) {\n";
+        jsScript += "          fail(err);\n";
+        jsScript += "          console.error(err);\n";
+        jsScript += "          done();\n";
+        jsScript += "        }\n";
+        jsScript += "        );\n";
+        jsScript += "      }, function error(err) {\n";
+        jsScript += "        fail(err);\n";
+        jsScript += "        console.error(err);\n";
+        jsScript += "        done();\n";
+        jsScript += "      }\n";
+        jsScript += "      );\n";
+        jsScript += "    }).not.toThrow();\n";
+        jsScript += "  });\n";
+        
+        return jsScript;
+    }
+    
+    private String CreateUnittestLibDescribeTestLibFunctions(String lib, SortedMap<String, List<String>> dicFunctions) {
+        String jsScript = "";
+        
+        jsScript += "  describe(\"Test Lib Functions\", function () {\n";
+        jsScript += "    describe(\"sol.<PACKAGE>.<LIBMODUL>\", function () {\n";
+        
+        for (Map.Entry<String, List<String>> entryFunction : dicFunctions.entrySet()) {
+            String functionName = entryFunction.getKey();
+            List<String> parameters = entryFunction.getValue();
+            
+            jsScript += "      it(\"" + functionName + "\", function (done) {\n";
+            jsScript += "        expect(function () {\n";
+            
+            for (String p : parameters) {
+                if (p.length() > 0) {
+                    jsScript += "          " + p + " = PVALUE;\n";                                    
+                }
+            }                
+            
+            jsScript += "          test.Utils.execute(\"RF_sol_unittest_service_ExecuteLib\", {\n";
+            jsScript += "            className: \"" + lib + "\",\n";
+            jsScript += "            classConfig: {},\n";
+            jsScript += "            method: \"" + functionName + "\",\n";
+            
+            boolean firstitem = true;
+            jsScript += "            params: [";
+            for (String p : parameters) {
+                if (!firstitem) {
+                    jsScript += ", ";
+                }
+                jsScript += p;
+                firstitem = false;
+            }
+            jsScript += "]\n";
+            jsScript += "          }).then(function success(jsonResult) {\n";
+            jsScript += "            done();\n";
+            jsScript += "          }, function error(err) {\n";
+            jsScript += "            fail(err);\n";
+            jsScript += "            console.error(err);\n";
+            jsScript += "            done();\n";
+            jsScript += "          }\n";
+            jsScript += "          );\n";
+            jsScript += "        }).not.toThrow();\n";
+            jsScript += "      });\n";            
+        }
+        jsScript += "    });\n";
+        jsScript += "  });\n";
+        
+        return jsScript;
     }
 
+    private String CreateUnittestLibAfterAll() {
+        String jsScript = "";
+        
+        jsScript += "  afterAll(function (done) {\n";
+        jsScript += "    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;\n";
+        jsScript += "    expect(function () {\n";
+        jsScript += "      test.Utils.getTempfolder().then(function success(tempfolder) {\n";
+        jsScript += "        test.Utils.deleteSord(tempfolder).then(function success1(deleteResult) {\n";
+        jsScript += "          done();\n";
+        jsScript += "        }, function error(err) {\n";
+        jsScript += "          fail(err);\n";
+        jsScript += "          console.error(err);\n";
+        jsScript += "          done();\n";
+        jsScript += "        }\n";
+        jsScript += "        );\n";
+        jsScript += "      }, function error(err) {\n";
+        jsScript += "        fail(err);\n";
+        jsScript += "        console.error(err);\n";
+        jsScript += "        done();\n";
+        jsScript += "      }\n";
+        jsScript += "      );\n";
+        jsScript += "    }).not.toThrow();\n";
+        jsScript += "  });\n";
+        
+        return jsScript;
+    }
     
+    private String CreateUnittestLibDescribe(String lib, SortedMap<String, List<String>> dicFunctions) {
+        String varParameters = "";
+        for (Map.Entry<String, List<String>> entryFunction : dicFunctions.entrySet()) {
+            List<String> parameters = entryFunction.getValue();
+            for (String p : parameters) {
+                if (!varParameters.contains(p)) {
+                    varParameters += ", ";
+                    varParameters += p;
+                }                
+            }            
+        }
+
+        String eloPackage = "";
+        String eloLibModul = "";        
+        try {
+            eloPackage = lib.split("\\.")[1];
+            eloLibModul = lib.split("\\.")[2];
+        } catch (Exception ex){
+            ex.printStackTrace();            
+        }
+        
+        String jsScript = "";
+        jsScript += "\n";        
+        
+        jsScript += "describe(\"[lib] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>\", function () {\n";
+        jsScript += "  var <LIBMODUL>Sord, userName, userInfo, originalTimeout" + varParameters + ";\n";
+        
+        jsScript += "\n";        
+        jsScript += CreateUnittestLibBeforeAll();
+        jsScript += CreateUnittestLibDescribeTestLibFunctions(lib, dicFunctions);
+        jsScript += CreateUnittestLibAfterAll();
+        jsScript += "});";
+        
+        jsScript = jsScript.replaceAll("<PACKAGE>", eloPackage);
+        jsScript = jsScript.replaceAll("<LIBMODUL>", eloLibModul);
+        
+        return jsScript;
+    }
+    
+    private void CreateUnittestLib(String lib, SortedMap<String, List<String>> dicFunctions) {
+        
+        String jsScript = CreateUnittestLibDescribe(lib, dicFunctions);
+        SaveUnittestLib(lib, jsScript);
+    }
+
+    private void CreateUnittestLibs(SortedMap<String, SortedMap<String, List<String>>> dicLibs) {
+        // Debug(dicLibs, "dicLibs");
+        dicLibs.entrySet().forEach((entryLib) -> {
+            CreateUnittestLib(entryLib.getKey(), entryLib.getValue());
+        });
+    }
+        
     void CreateUnittest(EloPackage[] eloPackages) {
         SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
@@ -350,7 +529,8 @@ class Unittests {
                 dicAllRhinos.putAll(dicAllRhino);
             }                
         }
-        CreateUnittestTemplate(dicAlls, dicAllRhinos);
+        // CreateUnittestLibs(dicAlls);
+        CreateUnittestLibs(dicAllRhinos);
         JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
     }
 
