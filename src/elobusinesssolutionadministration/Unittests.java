@@ -331,10 +331,16 @@ class Unittests {
         }
     }
     
-    private void SaveUnittestLib(String lib, String jsScript) {
-        String exportPath = "E:\\Temp\\Unittests";
-        String eloPackage = lib.split("\\.")[1];
-        String eloLibModul = lib.split("\\.")[2];
+    private void SaveUnittestLib(String lib, String jsScript, String profileName, String libDir) {
+        String exportPath = "E:\\Temp\\Unittests\\" + profileName + "\\"  + libDir;
+        
+        String eloPackage = "";
+        String eloLibModul = "";        
+        try {
+            eloPackage = lib.split("\\.")[1];
+            eloLibModul = lib.split("\\.")[2];
+        } catch (Exception ex){
+        }
         
         String fileName = "[lib] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";
         fileName = fileName.replaceAll("<PACKAGE>", eloPackage);
@@ -481,7 +487,6 @@ class Unittests {
             eloPackage = lib.split("\\.")[1];
             eloLibModul = lib.split("\\.")[2];
         } catch (Exception ex){
-            ex.printStackTrace();            
         }
         
         String jsScript = "";
@@ -502,25 +507,25 @@ class Unittests {
         return jsScript;
     }
     
-    private void CreateUnittestLib(String lib, SortedMap<String, List<String>> dicFunctions) {
+    private void CreateUnittestLib(String lib, SortedMap<String, List<String>> dicFunctions, String profileName, String libDir) {
         
         String jsScript = CreateUnittestLibDescribe(lib, dicFunctions);
-        SaveUnittestLib(lib, jsScript);
+        SaveUnittestLib(lib, jsScript, profileName, libDir);
     }
 
-    private void CreateUnittestLibs(SortedMap<String, SortedMap<String, List<String>>> dicLibs) {
+    private void CreateUnittestLibs(SortedMap<String, SortedMap<String, List<String>>> dicLibs, String profileName, String libDir) {
         // Debug(dicLibs, "dicLibs");
         dicLibs.entrySet().forEach((entryLib) -> {
-            CreateUnittestLib(entryLib.getKey(), entryLib.getValue());
+            CreateUnittestLib(entryLib.getKey(), entryLib.getValue(), profileName, libDir);
         });
     }
         
-    void CreateUnittest(EloPackage[] eloPackages) {
+    void CreateUnittest(EloPackage[] eloPackages, String profileName) {
         SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
         if (eloPackages.length == 0) {                
             dicAlls = GetLibs(new EloPackage(), "All"); 
-            dicAllRhinos = GetLibs(new EloPackage(), "All Rhino"); 
+            dicAllRhinos = GetLibs(new EloPackage(), "All Rhino");             
         } else {
             for (EloPackage eloPackage : eloPackages) {
                 SortedMap<String, SortedMap<String, List<String>>> dicAll = GetLibs(eloPackage, "All");    
@@ -529,8 +534,8 @@ class Unittests {
                 dicAllRhinos.putAll(dicAllRhino);
             }                
         }
-        // CreateUnittestLibs(dicAlls);
-        CreateUnittestLibs(dicAllRhinos);
+        CreateUnittestLibs(dicAlls, profileName, "All");
+        CreateUnittestLibs(dicAllRhinos, profileName, "All Rhino");
         JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
     }
 
