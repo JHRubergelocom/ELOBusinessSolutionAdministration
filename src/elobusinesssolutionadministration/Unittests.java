@@ -401,7 +401,7 @@ class Unittests {
             String functionName = entryFunction.getKey();
             List<String> parameters = entryFunction.getValue();
             
-            jsScript += "      it(\"" + functionName + "\", function (done) {\n";
+            jsScript += "      xit(\"" + functionName + "\", function (done) {\n";
             jsScript += "        expect(function () {\n";
             
             for (String p : parameters) {
@@ -449,8 +449,22 @@ class Unittests {
         jsScript += "    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;\n";
         jsScript += "    expect(function () {\n";
         jsScript += "      test.Utils.getTempfolder().then(function success(tempfolder) {\n";
-        jsScript += "        test.Utils.deleteSord(tempfolder).then(function success1(deleteResult) {\n";
-        jsScript += "          done();\n";
+        jsScript += "        test.Utils.deleteSord(tempfolder).then(function success1(deleteResult) {\n";        
+        jsScript += "          test.Utils.getFinishedWorkflows().then(function success2(wfs) {\n";
+        jsScript += "            test.Utils.removeFinishedWorkflows(wfs).then(function success3(removeFinishedWorkflowsResult) {\n";
+        jsScript += "              done();\n";
+        jsScript += "            }, function error(err) {\n";
+        jsScript += "              fail(err);\n";
+        jsScript += "              console.error(err);\n";
+        jsScript += "              done();\n";
+        jsScript += "            }\n";
+        jsScript += "            );\n";
+        jsScript += "          }, function error(err) {\n";
+        jsScript += "            fail(err);\n";
+        jsScript += "            console.error(err);\n";
+        jsScript += "            done();\n";
+        jsScript += "          }\n";
+        jsScript += "          );\n";
         jsScript += "        }, function error(err) {\n";
         jsScript += "          fail(err);\n";
         jsScript += "          console.error(err);\n";
