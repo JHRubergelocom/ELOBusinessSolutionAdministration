@@ -48,7 +48,7 @@
       "eloCommands": [
         {"name": "eloPullUnittest", "cmd": "elo pull", "workspace": "unittests-only" },
         {"name": "eloPullPackage", "cmd": "elo pull", "workspace": "knowledge-only" },
-        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "default" }
+        {"name": "eloPrepare", "cmd": "elo prepare", "workspace": "default", "version":"12.00" }
       ]
     },
     {
