@@ -153,6 +153,9 @@ class Unittests {
             actionDef = "actions." + actionDef;
             if (!dicActionDefs.containsKey(actionDef)) {
                 boolean match = Match(actionDef, eloPackage, jsTexts);
+                if(eloPackage.getName().equals("privacy")) {
+                    match = true;
+                }                
                 dicActionDefs.put(actionDef, match);
             }
         }
