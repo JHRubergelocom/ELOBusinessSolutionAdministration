@@ -37,7 +37,7 @@ class Unittests {
     Map<String, String> GetUnittestApp() {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/development/ELOapps/ClientInfos";
         RepoUtils rU = new RepoUtils(ixConn);        
-        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false);
+        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false, true);
         String configApp = "";
         String configId = "";
         String jsonString;
@@ -143,7 +143,7 @@ class Unittests {
         }
 
         RepoUtils rU = new RepoUtils(ixConn);                
-        Sord[] sordActionDefInfo = rU.FindChildren(parentId, true);
+        Sord[] sordActionDefInfo = rU.FindChildren(parentId, true, true);
         SortedMap <String, Boolean> dicActionDefs = new TreeMap<>();
         
         for(Sord s : sordActionDefInfo) {
@@ -153,7 +153,7 @@ class Unittests {
             actionDef = "actions." + actionDef;
             if (!dicActionDefs.containsKey(actionDef)) {
                 boolean match = Match(actionDef, eloPackage, jsTexts);
-                if(eloPackage.getName().equals("privacy")) {
+                if(eloPackage.getName().equals("privacy") || eloPackage.getName().equals("pubsec")) {
                     match = true;
                 }                
                 dicActionDefs.put(actionDef, match);
@@ -168,7 +168,7 @@ class Unittests {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/ELOas Base/Direct";
         }
         RepoUtils rU = new RepoUtils(ixConn);
-        Sord[] sordRuleInfo = rU.FindChildren(parentId, true);
+        Sord[] sordRuleInfo = rU.FindChildren(parentId, true, true);
         SortedMap<String, Boolean> dicRules = new TreeMap<>();
         for(Sord s : sordRuleInfo) {            
             try {
@@ -195,7 +195,7 @@ class Unittests {
             parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/IndexServer Scripting Base/_ALL/business_solutions";
         }
         RepoUtils rU = new RepoUtils(ixConn);  
-        Sord[] sordRFInfo = rU.FindChildren(parentId, true);
+        Sord[] sordRFInfo = rU.FindChildren(parentId, true, true);
         SortedMap<String, Boolean> dicRFs = new TreeMap<>();
         
         for(Sord s : sordRFInfo) {  
@@ -273,14 +273,13 @@ class Unittests {
         }
     }
 
-// TODO    
     private SortedMap<String, SortedMap<String, List<String>>> GetLibs(EloPackage eloPackage, String libDir) {
         if (eloPackage.getFolder().equals("")) {
             return new TreeMap<>();        
         }        
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder() + "/" + libDir;
         RepoUtils rU = new RepoUtils(ixConn);  
-        Sord[] sordRFInfo = rU.FindChildren(parentId, true);
+        Sord[] sordRFInfo = rU.FindChildren(parentId, true, false);
         SortedMap<String, SortedMap<String, List<String>>> dicLibs = new TreeMap<>();        
         for(Sord s : sordRFInfo) {  
            String libName = ""; 
@@ -334,7 +333,7 @@ class Unittests {
         }
     }
     
-    private void SaveUnittestLib(String lib, String jsScript, String profileName, String libDir) {
+    private void SaveUnittestLib(String lib, String jsScript, String profileName, String libDir, String libixas) {
         String exportPath = "E:\\Temp\\Unittests\\" + profileName + "\\"  + libDir;
         
         String eloPackage = "";
@@ -345,7 +344,7 @@ class Unittests {
         } catch (Exception ex){
         }
         
-        String fileName = "[lib] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";
+        String fileName = "[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";
         fileName = fileName.replaceAll("<PACKAGE>", eloPackage);
         fileName = fileName.replaceAll("<LIBMODUL>", eloLibModul);
         
@@ -407,11 +406,7 @@ class Unittests {
             jsScript += "      xit(\"" + functionName + "\", function (done) {\n";
             jsScript += "        expect(function () {\n";
             
-            for (String p : parameters) {
-                if (p.length() > 0) {
-                    jsScript += "          " + p + " = PVALUE;\n";                                    
-                }
-            }                
+            jsScript = parameters.stream().filter((p) -> (p.length() > 0)).map((p) -> "          " + p + " = PVALUE;\n").reduce(jsScript, String::concat);                
             
             jsScript += "          test.Utils.execute(\"RF_sol_unittest_service_ExecuteLib\", {\n";
             jsScript += "            className: \"" + lib + "\",\n";
@@ -486,7 +481,7 @@ class Unittests {
         return jsScript;
     }
     
-    private String CreateUnittestLibDescribe(String lib, SortedMap<String, List<String>> dicFunctions) {
+    private String CreateUnittestLibDescribe(String lib, SortedMap<String, List<String>> dicFunctions, String libixas) {
         String varParameters = "";
         for (Map.Entry<String, List<String>> entryFunction : dicFunctions.entrySet()) {
             List<String> parameters = entryFunction.getValue();
@@ -509,7 +504,7 @@ class Unittests {
         String jsScript = "";
         jsScript += "\n";        
         
-        jsScript += "describe(\"[lib] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>\", function () {\n";
+        jsScript += "describe(\"[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>\", function () {\n";
         jsScript += "  var <LIBMODUL>Sord, userName, userInfo, originalTimeout" + varParameters + ";\n";
         
         jsScript += "\n";        
@@ -524,35 +519,44 @@ class Unittests {
         return jsScript;
     }
     
-    private void CreateUnittestLib(String lib, SortedMap<String, List<String>> dicFunctions, String profileName, String libDir) {
+    private void CreateUnittestLib(String lib, SortedMap<String, List<String>> dicFunctions, String profileName, String libDir, String libixas) {
         
-        String jsScript = CreateUnittestLibDescribe(lib, dicFunctions);
-        SaveUnittestLib(lib, jsScript, profileName, libDir);
+        String jsScript = CreateUnittestLibDescribe(lib, dicFunctions, libixas);
+        SaveUnittestLib(lib, jsScript, profileName, libDir, libixas);
     }
 
-    private void CreateUnittestLibs(SortedMap<String, SortedMap<String, List<String>>> dicLibs, String profileName, String libDir) {
+    private void CreateUnittestLibs(SortedMap<String, SortedMap<String, List<String>>> dicLibs, String profileName, String libDir, String libixas) {
         // Debug(dicLibs, "dicLibs");
         dicLibs.entrySet().forEach((entryLib) -> {
-            CreateUnittestLib(entryLib.getKey(), entryLib.getValue(), profileName, libDir);
+            CreateUnittestLib(entryLib.getKey(), entryLib.getValue(), profileName, libDir, libixas);
         });
     }
         
     void CreateUnittest(EloPackage[] eloPackages, String profileName) {
         SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
+        SortedMap<String, SortedMap<String, List<String>>> dicIndexServerScriptingBases = new TreeMap<>();
+        
         if (eloPackages.length == 0) {                
             dicAlls = GetLibs(new EloPackage(), "All"); 
-            dicAllRhinos = GetLibs(new EloPackage(), "All Rhino");             
+            dicAllRhinos = GetLibs(new EloPackage(), "All Rhino"); 
+            dicIndexServerScriptingBases = GetLibs(new EloPackage(), "IndexServer Scripting Base"); 
+            
         } else {
             for (EloPackage eloPackage : eloPackages) {
                 SortedMap<String, SortedMap<String, List<String>>> dicAll = GetLibs(eloPackage, "All");    
                 SortedMap<String, SortedMap<String, List<String>>> dicAllRhino = GetLibs(eloPackage, "All Rhino");    
+                SortedMap<String, SortedMap<String, List<String>>> dicIndexServerScriptingBase = GetLibs(eloPackage, "IndexServer Scripting Base");    
+                
                 dicAlls.putAll(dicAll);
                 dicAllRhinos.putAll(dicAllRhino);
+                dicIndexServerScriptingBases.putAll(dicIndexServerScriptingBase);                
             }                
         }
-        CreateUnittestLibs(dicAlls, profileName, "All");
-        CreateUnittestLibs(dicAllRhinos, profileName, "All Rhino");
+        CreateUnittestLibs(dicAlls, profileName, "All", "lib");
+        CreateUnittestLibs(dicAllRhinos, profileName, "All Rhino", "lib");
+        CreateUnittestLibs(dicIndexServerScriptingBases, profileName, "IndexServer Scripting Base", "libix");
+        
         JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
     }
 

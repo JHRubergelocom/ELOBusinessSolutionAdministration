@@ -25,7 +25,7 @@ class KnowledgeBoard {
     private Map<String, String> GetKnowledgeBoard() {
         String parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/knowledge/ELOapps/ClientInfos";
         RepoUtils rU = new RepoUtils(ixConn);
-        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false);
+        Sord[] sordELOappsClientInfo = rU.FindChildren(parentId, false, true);
         String configApp = "";
         String configId = "";
         String jsonString;

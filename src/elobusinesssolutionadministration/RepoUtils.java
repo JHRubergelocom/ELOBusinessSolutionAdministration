@@ -43,7 +43,7 @@ class RepoUtils {
         this.ixConn = ixConn;
     }
     
-    public Sord[] FindChildren(String objId, boolean references) {
+    public Sord[] FindChildren(String objId, boolean references, boolean recursive1) {
         System.out.println("FindChildren: objId " + objId + " ixConn " + ixConn);
         FindResult findResult = new FindResult();
         List<Sord> sordList = new ArrayList<>();
@@ -55,7 +55,7 @@ class RepoUtils {
             FindByIndex findByIndex = new FindByIndex();
             Boolean includeReferences = references;
             SordZ sordZ = SordC.mbAll;
-            Boolean recursive = true;
+            Boolean recursive = recursive1;
             int level = -1;
             findChildren.setParentId(objId);
             findChildren.setMainParent(!includeReferences);
@@ -175,7 +175,7 @@ class RepoUtils {
     }
     
     String[] LoadTextDocs(String parentId) throws RemoteException {
-        Sord[] sordRFInfo = FindChildren(parentId, true);
+        Sord[] sordRFInfo = FindChildren(parentId, true, true);
         List<String> docTexts = new ArrayList<>();        
         for (Sord s : sordRFInfo) {
             String docText = DownloadDocumentToString(s);
@@ -243,7 +243,7 @@ class RepoUtils {
         if (p.toString().length() > 0) {
             if (eloPackages.length == 0) {
                 parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
-                Sord[] sords = FindChildren(parentId, true);
+                Sord[] sords = FindChildren(parentId, true, true);
                 for (Sord s : sords) {
                     SordDoc sDoc = new SordDoc(s);
                     SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, p);
@@ -253,7 +253,7 @@ class RepoUtils {
                 for (EloPackage eloPackage : eloPackages) {
                     SortedMap<SordDoc, SortedMap<Integer, String>> dicEloPackageSordDocLines = new TreeMap<>(bySordDoc); 
                     parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/" + eloPackage.getFolder();
-                    Sord[] sords = FindChildren(parentId, true);
+                    Sord[] sords = FindChildren(parentId, true, true);
                     for (Sord s : sords) {
                         SordDoc sDoc = new SordDoc(s);
                         SortedMap<Integer, String> docLines = DownloadDocumentToLines(sDoc, p);
