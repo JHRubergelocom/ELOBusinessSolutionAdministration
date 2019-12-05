@@ -341,10 +341,29 @@ class Unittests {
         try {
             eloPackage = lib.split("\\.")[1];
             eloLibModul = lib.split("\\.")[2];
+            if (libixas.contains("as") || libixas.contains("ix")) {
+                eloLibModul = lib.split("\\.")[3]; 
+                switch (eloLibModul) {
+                    case "functions":
+                    case "renderer":
+                    case "actions":
+                    case "analyzers":
+                    case "collectors":
+                    case "executors":
+                        eloLibModul = eloLibModul + lib.split("\\.")[4];
+                        break;
+                }
+            }            
         } catch (Exception ex){
         }
         
-        String fileName = "[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";
+        String fileName;
+        if (libixas.contains("as")) {
+            fileName = "[" + libixas + "] sol.unittest.as.services.sol<PACKAGE><LIBMODUL>";                        
+        } else {
+            fileName = "[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>";            
+        }
+        
         fileName = fileName.replaceAll("<PACKAGE>", eloPackage);
         fileName = fileName.replaceAll("<LIBMODUL>", eloLibModul);
         
@@ -393,7 +412,7 @@ class Unittests {
         return jsScript;
     }
     
-    private String CreateUnittestLibDescribeTestLibFunctions(String lib, SortedMap<String, List<String>> dicFunctions) {
+    private String CreateUnittestLibDescribeTestLibFunctions(String lib, SortedMap<String, List<String>> dicFunctions, String libixas) {
         String jsScript = "";
         
         jsScript += "  describe(\"Test Lib Functions\", function () {\n";
@@ -407,32 +426,69 @@ class Unittests {
             jsScript += "        expect(function () {\n";
             
             jsScript = parameters.stream().filter((p) -> (p.length() > 0)).map((p) -> "          " + p + " = PVALUE;\n").reduce(jsScript, String::concat);                
-            
-            jsScript += "          test.Utils.execute(\"RF_sol_unittest_service_ExecuteLib\", {\n";
-            jsScript += "            className: \"" + lib + "\",\n";
-            jsScript += "            classConfig: {},\n";
-            jsScript += "            method: \"" + functionName + "\",\n";
-            
-            boolean firstitem = true;
-            jsScript += "            params: [";
-            for (String p : parameters) {
-                if (!firstitem) {
-                    jsScript += ", ";
+
+            if (libixas.contains("as")) {
+                jsScript += "          test.Utils.execute(\"RF_sol_common_service_ExecuteAsAction\", {\n";
+                jsScript += "            action: \"sol.unittest.as.services.ExecuteLib\",\n";
+                jsScript += "            config: {\n";                
+                jsScript += "              className: \"" + lib + "\",\n";
+                jsScript += "              classConfig: {},\n";
+                jsScript += "              method: \"" + functionName + "\",\n";
+
+                boolean firstitem = true;
+                jsScript += "              params: [";
+                for (String p : parameters) {
+                    if (!firstitem) {
+                        jsScript += ", ";
+                    }
+                    jsScript += p;
+                    firstitem = false;
                 }
-                jsScript += p;
-                firstitem = false;
+                jsScript += "]\n";
+                
+                jsScript += "            }\n";                                
+                jsScript += "          }).then(function success(jsonResult) {\n";                
+                jsScript += "            content = jsonResult.content;\n";
+                jsScript += "            if (content.indexOf(\"exception\") != -1) {\n";
+                jsScript += "              fail(jsonResult.content);\n";
+                jsScript += "            }\n";
+                jsScript += "            done();\n";
+                jsScript += "          }, function error(err) {\n";
+                jsScript += "            fail(err);\n";
+                jsScript += "            console.error(err);\n";
+                jsScript += "            done();\n";
+                jsScript += "          }\n";
+                jsScript += "          );\n";
+                jsScript += "        }).not.toThrow();\n";
+                jsScript += "      });\n";                                    
+            } else {
+                jsScript += "          test.Utils.execute(\"RF_sol_unittest_service_ExecuteLib\", {\n";
+                jsScript += "            className: \"" + lib + "\",\n";
+                jsScript += "            classConfig: {},\n";
+                jsScript += "            method: \"" + functionName + "\",\n";
+
+                boolean firstitem = true;
+                jsScript += "            params: [";
+                for (String p : parameters) {
+                    if (!firstitem) {
+                        jsScript += ", ";
+                    }
+                    jsScript += p;
+                    firstitem = false;
+                }
+                jsScript += "]\n";
+                jsScript += "          }).then(function success(jsonResult) {\n";
+                jsScript += "            done();\n";
+                jsScript += "          }, function error(err) {\n";
+                jsScript += "            fail(err);\n";
+                jsScript += "            console.error(err);\n";
+                jsScript += "            done();\n";
+                jsScript += "          }\n";
+                jsScript += "          );\n";
+                jsScript += "        }).not.toThrow();\n";
+                jsScript += "      });\n";                    
             }
-            jsScript += "]\n";
-            jsScript += "          }).then(function success(jsonResult) {\n";
-            jsScript += "            done();\n";
-            jsScript += "          }, function error(err) {\n";
-            jsScript += "            fail(err);\n";
-            jsScript += "            console.error(err);\n";
-            jsScript += "            done();\n";
-            jsScript += "          }\n";
-            jsScript += "          );\n";
-            jsScript += "        }).not.toThrow();\n";
-            jsScript += "      });\n";            
+            
         }
         jsScript += "    });\n";
         jsScript += "  });\n";
@@ -498,18 +554,42 @@ class Unittests {
         try {
             eloPackage = lib.split("\\.")[1];
             eloLibModul = lib.split("\\.")[2];
+            if (libixas.contains("as") || libixas.contains("ix")) {
+                eloLibModul = lib.split("\\.")[3];    
+                switch (eloLibModul) {
+                    case "functions":
+                    case "renderer":
+                    case "actions":
+                    case "analyzers":
+                    case "collectors":
+                    case "executors":
+                        eloLibModul = eloLibModul + lib.split("\\.")[4];
+                        break;
+                }
+            }
         } catch (Exception ex){
         }
         
         String jsScript = "";
         jsScript += "\n";        
         
-        jsScript += "describe(\"[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>\", function () {\n";
-        jsScript += "  var <LIBMODUL>Sord, userName, userInfo, originalTimeout" + varParameters + ";\n";
+        if (libixas.contains("as")) {
+            jsScript += "describe(\"[" + libixas + "] sol.unittest.as.services.sol<PACKAGE><LIBMODUL>\", function () {\n";                        
+        } else {
+            jsScript += "describe(\"[" + libixas + "] sol.unittest.ix.services.sol<PACKAGE><LIBMODUL>\", function () {\n";            
+        }
+        
+        if (libixas.contains("as")) {
+            jsScript += "  var <LIBMODUL>Sord, userName, userInfo, originalTimeout, content" + varParameters + ";\n";            
+            
+        } else {
+            jsScript += "  var <LIBMODUL>Sord, userName, userInfo, originalTimeout" + varParameters + ";\n";            
+        }
+        
         
         jsScript += "\n";        
         jsScript += CreateUnittestLibBeforeAll();
-        jsScript += CreateUnittestLibDescribeTestLibFunctions(lib, dicFunctions);
+        jsScript += CreateUnittestLibDescribeTestLibFunctions(lib, dicFunctions, libixas);
         jsScript += CreateUnittestLibAfterAll();
         jsScript += "});";
         
@@ -536,28 +616,32 @@ class Unittests {
         SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicIndexServerScriptingBases = new TreeMap<>();
+        SortedMap<String, SortedMap<String, List<String>>> dicELOasBases = new TreeMap<>();
         
         if (eloPackages.length == 0) {                
             dicAlls = GetLibs(new EloPackage(), "All"); 
             dicAllRhinos = GetLibs(new EloPackage(), "All Rhino"); 
             dicIndexServerScriptingBases = GetLibs(new EloPackage(), "IndexServer Scripting Base"); 
-            
+            dicELOasBases = GetLibs(new EloPackage(), "ELOas Base/OptionalJsLibs");             
         } else {
             for (EloPackage eloPackage : eloPackages) {
                 SortedMap<String, SortedMap<String, List<String>>> dicAll = GetLibs(eloPackage, "All");    
                 SortedMap<String, SortedMap<String, List<String>>> dicAllRhino = GetLibs(eloPackage, "All Rhino");    
                 SortedMap<String, SortedMap<String, List<String>>> dicIndexServerScriptingBase = GetLibs(eloPackage, "IndexServer Scripting Base");    
+                SortedMap<String, SortedMap<String, List<String>>> dicELOasBase = GetLibs(eloPackage, "ELOas Base/OptionalJsLibs");    
                 
                 dicAlls.putAll(dicAll);
                 dicAllRhinos.putAll(dicAllRhino);
                 dicIndexServerScriptingBases.putAll(dicIndexServerScriptingBase);                
+                dicELOasBases.putAll(dicELOasBase);                
             }                
         }
         CreateUnittestLibs(dicAlls, profileName, "All", "lib");
         CreateUnittestLibs(dicAllRhinos, profileName, "All Rhino", "lib");
         CreateUnittestLibs(dicIndexServerScriptingBases, profileName, "IndexServer Scripting Base", "libix");
+        CreateUnittestLibs(dicELOasBases, profileName, "ELOas Base/OptionalJsLibs", "libas");
         
-        JOptionPane.showMessageDialog(null, "Not supported yet.", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Unittests created", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
     }
 
 }
