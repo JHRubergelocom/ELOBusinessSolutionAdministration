@@ -215,8 +215,8 @@ class Http {
     }
     
     static void ShowReport (String htmlDoc) {
-        File dir = new File("E:\\Temp");         
-        String reportPath = "E:\\Temp\\Report.html";
+        File dir = new File("C:\\Temp");         
+        String reportPath = "C:\\Temp\\Report.html";
         File reportFile = new File(reportPath); 
         URI uri = reportFile.toURI();
         try {

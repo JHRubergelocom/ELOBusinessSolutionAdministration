@@ -56,7 +56,7 @@ class ExportElo {
 
     void StartExportElo(String name) {
         try {
-            String exportPath = "E:\\Temp\\ExportElo\\" + name;
+            String exportPath = "C:\\Temp\\ExportElo\\" + name;
             File exportDir = new File(exportPath);
             if (!exportDir.exists()) {
                 exportDir.mkdirs();

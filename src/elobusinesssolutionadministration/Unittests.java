@@ -334,7 +334,7 @@ class Unittests {
     }
     
     private void SaveUnittestLib(String lib, String jsScript, String profileName, String libDir, String libixas) {
-        String exportPath = "E:\\Temp\\Unittests\\" + profileName + "\\"  + libDir;
+        String exportPath = "C:\\Temp\\Unittests\\" + profileName + "\\"  + libDir;
         
         String eloPackage = "";
         String eloLibModul = "";        
