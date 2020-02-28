@@ -185,6 +185,17 @@ class RepoUtils {
         docArray = docTexts.toArray(docArray);
         return docArray;        
     }
+    
+    SortedMap<String, List<String>> LoadTextDocsToSortedMap(String parentId) throws RemoteException {
+        
+        Sord[] sordRFInfo = FindChildren(parentId, true, true);
+        SortedMap<String, List<String>> docTexts = new TreeMap<>();
+        for (Sord s : sordRFInfo) {
+            List<String> docTextList = DownloadDocumentToList(s);
+            docTexts.put(s.getName(), docTextList);
+        }
+        return docTexts;        
+    }    
 
     private SortedMap<Integer, String> DownloadDocumentToLines(SordDoc sDoc, Pattern p) {
         SortedMap<Integer, String> docLines = new TreeMap<>();

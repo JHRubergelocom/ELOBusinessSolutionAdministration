@@ -80,7 +80,7 @@ class Unittests {
         Http.OpenUrl(appUrl);              
     }
     
-    private String CreateReportMatchUnittest(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs) {
+    private String CreateReportMatchUnittest(SortedMap<String, Boolean> dicRFs, SortedMap<String, Boolean> dicASDirectRules, SortedMap<String, Boolean> dicActionDefs, SortedMap<String, SortedMap<String, Boolean>> dicLibAlls, SortedMap<String, SortedMap<String, Boolean>> dicLibRhinos, SortedMap<String, SortedMap<String, Boolean>> dicLibIndexServerScriptingBases, SortedMap<String, SortedMap<String, Boolean>> dicLibELOasBases ) {
         String htmlDoc = "<html>\n";
         String htmlHead = Http.CreateHtmlHead("Register Functions matching Unittest");
         String htmlStyle = Http.CreateHtmlStyle();
@@ -124,7 +124,62 @@ class Unittests {
         }
         htmlTable = Http.CreateHtmlTable("Action Definitions matching Unittest", cols, rows);
         htmlBody += htmlTable;
-
+        
+        cols = new ArrayList<>();
+        cols.add("Class");
+        cols.add("Method");
+        cols.add("Unittest");
+        rows = new ArrayList<>();        
+        for (Map.Entry<String, SortedMap<String, Boolean>> entryClass : dicLibAlls.entrySet()) {
+            for (Map.Entry<String, Boolean> entryMethod : entryClass.getValue().entrySet()) {
+                List<String> row = new ArrayList();            
+                row.add(entryClass.getKey());
+                row.add(entryMethod.getKey());
+                row.add(entryMethod.getValue().toString());
+                rows.add(row);            
+            }
+        }        
+        htmlTable = Http.CreateHtmlTable("All lib matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+        
+        rows = new ArrayList<>();        
+        for (Map.Entry<String, SortedMap<String, Boolean>> entryClass : dicLibRhinos.entrySet()) {
+            for (Map.Entry<String, Boolean> entryMethod : entryClass.getValue().entrySet()) {
+                List<String> row = new ArrayList();            
+                row.add(entryClass.getKey());
+                row.add(entryMethod.getKey());
+                row.add(entryMethod.getValue().toString());
+                rows.add(row);            
+            }
+        }        
+        htmlTable = Http.CreateHtmlTable("All Rhino lib matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+        
+        rows = new ArrayList<>();        
+        for (Map.Entry<String, SortedMap<String, Boolean>> entryClass : dicLibIndexServerScriptingBases.entrySet()) {
+            for (Map.Entry<String, Boolean> entryMethod : entryClass.getValue().entrySet()) {
+                List<String> row = new ArrayList();            
+                row.add(entryClass.getKey());
+                row.add(entryMethod.getKey());
+                row.add(entryMethod.getValue().toString());
+                rows.add(row);            
+            }
+        }        
+        htmlTable = Http.CreateHtmlTable("IndexServer Scripting Base lib matching Unittest", cols, rows);
+        htmlBody += htmlTable;
+        
+        rows = new ArrayList<>();        
+        for (Map.Entry<String, SortedMap<String, Boolean>> entryClass : dicLibELOasBases.entrySet()) {
+            for (Map.Entry<String, Boolean> entryMethod : entryClass.getValue().entrySet()) {
+                List<String> row = new ArrayList();            
+                row.add(entryClass.getKey());
+                row.add(entryMethod.getKey());
+                row.add(entryMethod.getValue().toString());
+                rows.add(row);            
+            }
+        }        
+        htmlTable = Http.CreateHtmlTable("ELOas Base/OptionalJsLibs lib matching Unittest", cols, rows);
+        htmlBody += htmlTable;        
 
         htmlBody += "</body>\n";
         htmlDoc += htmlHead;
@@ -247,26 +302,43 @@ class Unittests {
         
         try {
             String[] jsTexts = rU.LoadTextDocs("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests");   
+            SortedMap<String, List<String>> jsTextsSortedMap = rU.LoadTextDocsToSortedMap("ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions/_global/Unit Tests");   
+            
             SortedMap<String, Boolean> dicRFs = new TreeMap<>();
             SortedMap<String, Boolean> dicASDirectRules = new TreeMap<>();
             SortedMap<String, Boolean> dicActionDefs = new TreeMap<>();
+            SortedMap<String, SortedMap<String, Boolean>> dicLibAlls = new TreeMap<>();
+            SortedMap<String, SortedMap<String, Boolean>> dicLibRhinos = new TreeMap<>();
+            SortedMap<String, SortedMap<String, Boolean>> dicLibIndexServerScriptingBases = new TreeMap<>();
+            SortedMap<String, SortedMap<String, Boolean>> dicLibELOasBases = new TreeMap<>();            
             
-            if (eloPackages.length == 0) {
-                
+            if (eloPackages.length == 0) {                
                 dicRFs = GetRFs(jsTexts, new EloPackage()); 
                 dicASDirectRules = GetRules(jsTexts, new EloPackage());
-                dicActionDefs = GetActionDefs(jsTexts, new EloPackage());                
+                dicActionDefs = GetActionDefs(jsTexts, new EloPackage()); 
+                dicLibAlls = GetLibsMatch(jsTextsSortedMap, new EloPackage(), "All"); 
+                dicLibRhinos = GetLibsMatch(jsTextsSortedMap, new EloPackage(), "All Rhino"); 
+                dicLibIndexServerScriptingBases = GetLibsMatch(jsTextsSortedMap, new EloPackage(), "IndexServer Scripting Base"); 
+                dicLibELOasBases = GetLibsMatch(jsTextsSortedMap, new EloPackage(), "ELOas Base/OptionalJsLibs"); 
             } else {
                 for (EloPackage eloPackage : eloPackages) {
                     SortedMap<String, Boolean> dicRF = GetRFs(jsTexts, eloPackage);        
                     SortedMap<String, Boolean> dicASDirectRule = GetRules(jsTexts, eloPackage);
                     SortedMap<String, Boolean> dicActionDef = GetActionDefs(jsTexts, eloPackage);
+                    SortedMap<String, SortedMap<String, Boolean>> dicLibAll = GetLibsMatch(jsTextsSortedMap, eloPackage, "All");
+                    SortedMap<String, SortedMap<String, Boolean>> dicLibRhino = GetLibsMatch(jsTextsSortedMap, eloPackage, "All Rhino");
+                    SortedMap<String, SortedMap<String, Boolean>> dicLibIndexServerScriptingBase = GetLibsMatch(jsTextsSortedMap, eloPackage, "IndexServer Scripting Base");
+                    SortedMap<String, SortedMap<String, Boolean>> dicLibELOasBase = GetLibsMatch(jsTextsSortedMap, eloPackage, "ELOas Base/OptionalJsLibs");                                
                     dicRFs.putAll(dicRF);
                     dicASDirectRules.putAll(dicASDirectRule);
                     dicActionDefs.putAll(dicActionDef);
+                    dicLibAlls.putAll(dicLibAll);
+                    dicLibRhinos.putAll(dicLibRhino);
+                    dicLibIndexServerScriptingBases.putAll(dicLibIndexServerScriptingBase);
+                    dicLibELOasBases.putAll(dicLibELOasBase);                    
                 }                
             }
-            String htmlDoc = CreateReportMatchUnittest(dicRFs, dicASDirectRules, dicActionDefs);
+            String htmlDoc = CreateReportMatchUnittest(dicRFs, dicASDirectRules, dicActionDefs, dicLibAlls, dicLibRhinos, dicLibIndexServerScriptingBases, dicLibELOasBases);
             Http.ShowReport(htmlDoc);
         } catch (RemoteException ex) {
             ex.printStackTrace();
@@ -643,5 +715,79 @@ class Unittests {
         
         JOptionPane.showMessageDialog(null, "Unittests created", "CreateUnittest", JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    private SortedMap<String, SortedMap<String, Boolean>> GetLibsMatch(SortedMap<String, List<String>> jsTexts, EloPackage eloPackage, String libDir) {
+        SortedMap<String, SortedMap<String, Boolean>> dicTestedLibs = GetTestedLibs(jsTexts);
+        SortedMap<String, Boolean> dicMethods;
+        SortedMap<String, SortedMap<String, Boolean>> dicLibsMatch = new TreeMap<>();
+        SortedMap<String, Boolean> dicMethodsMatch;
+        SortedMap<String, SortedMap<String, List<String>>> dicLibs = GetLibs(eloPackage, libDir);    
+        
+        for (Map.Entry<String, SortedMap<String, List<String>>> entryClass : dicLibs.entrySet()) {
+            dicMethodsMatch = new TreeMap<>();
+            for (Map.Entry<String, List<String>> entryMethod : entryClass.getValue().entrySet()) {
+                String method = entryMethod.getKey();
+                if (!method.contains("me.$className")) {
+                    // TODO
+                    boolean match = false;
+                    if(dicTestedLibs.containsKey(entryClass.getKey())){
+                        dicMethods = dicTestedLibs.get(entryClass.getKey());
+                        if(dicMethods.containsKey(method)) {
+                            match = true;
+                        }
+                    }    
+                    // TODO
+                    dicMethodsMatch.put(method, match);                    
+                }                
+            }
+            dicLibsMatch.put(entryClass.getKey(), dicMethodsMatch);
+        }        
+        return dicLibsMatch;
+    }
 
+    private SortedMap<String, SortedMap<String, Boolean>> GetTestedLibs(SortedMap<String, List<String>> jsTexts) {
+        SortedMap<String, SortedMap<String, Boolean>> dicTestedLibs = new TreeMap<>();
+        SortedMap<String, Boolean> dicMethods = new TreeMap<>();
+        String className = "";
+        String method = "";
+        for (Map.Entry<String, List<String>> entryJsText : jsTexts.entrySet()) {
+            if (entryJsText.getKey().contains("[action]")) {
+                continue;
+            }
+            if (entryJsText.getKey().contains("[function]")) {
+                continue;
+            }
+            if (entryJsText.getKey().contains("[service]")) {
+                continue;
+            }            
+            
+            for (String line : entryJsText.getValue()) {
+                if (line.contains("className")){
+                    String[] words = line.split(":");
+                    words = words[1].split("\"");
+                    className = words[1];
+                    className = className.trim();                    
+                }
+                
+                if (line.contains("params: { method:")) {
+                    continue;
+                }
+                
+                if (line.contains("method")){
+                    String[] words = line.split(":");
+                    words = words[1].split("\"");
+                    method = words[1];
+                    method = method.trim();                                        
+                }
+                if (!dicTestedLibs.containsKey(className)) {
+                    dicTestedLibs.put(className, new TreeMap<>());                    
+                }
+                dicMethods = dicTestedLibs.get(className);
+                if (!dicMethods.containsKey(method)) {
+                    dicMethods.put(method, false);                    
+                }
+            }
+        }
+        return dicTestedLibs;
+    }
 }
