@@ -725,13 +725,40 @@ class Unittests {
         
         for (Map.Entry<String, SortedMap<String, List<String>>> entryClass : dicLibs.entrySet()) {
             dicMethodsMatch = new TreeMap<>();
+            String className = entryClass.getKey();
+            // TODO
+            if (className.equals("sol.common.ActionBase")) {
+                className = "sol.unittest.ActionBase";
+            }
+            if (className.equals("sol.common.ix.ActionBase")) {
+                className = "sol.unittest.ix.ActionBase";
+            }
+            if (className.equals("sol.common.ix.DataCollectorBase")) {
+                className = "sol.unittest.ix.DataCollectorBase";
+            }
+            if (className.equals("sol.common.ix.DynKwlSearchIterator")) {
+                className = "sol.unittest.ix.DynKwlSearchIterator";
+            }
+            if (className.equals("sol.common.ix.FunctionBase")) {
+                className = "sol.unittest.ix.FunctionBase";
+            }
+            if (className.equals("sol.common.ix.ServiceBase")) {
+                className = "sol.unittest.ix.ServiceBase";
+            }
+            if (className.equals("sol.common.as.ActionBase")) {
+                className = "sol.unittest.as.ActionBase";
+            }
+            if (className.equals("sol.common.as.FunctionBase")) {
+                className = "sol.unittest.as.FunctionBase";
+            }
+            // TODO
             for (Map.Entry<String, List<String>> entryMethod : entryClass.getValue().entrySet()) {
                 String method = entryMethod.getKey();
                 if (!method.contains("me.$className")) {
                     // TODO
                     boolean match = false;
-                    if(dicTestedLibs.containsKey(entryClass.getKey())){
-                        dicMethods = dicTestedLibs.get(entryClass.getKey());
+                    if(dicTestedLibs.containsKey(className)){
+                        dicMethods = dicTestedLibs.get(className);
                         if(dicMethods.containsKey(method)) {
                             match = true;
                         }
@@ -747,7 +774,7 @@ class Unittests {
 
     private SortedMap<String, SortedMap<String, Boolean>> GetTestedLibs(SortedMap<String, List<String>> jsTexts) {
         SortedMap<String, SortedMap<String, Boolean>> dicTestedLibs = new TreeMap<>();
-        SortedMap<String, Boolean> dicMethods = new TreeMap<>();
+        SortedMap<String, Boolean> dicMethods;
         String className = "";
         String method = "";
         for (Map.Entry<String, List<String>> entryJsText : jsTexts.entrySet()) {
