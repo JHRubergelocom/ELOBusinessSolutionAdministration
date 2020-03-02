@@ -754,18 +754,36 @@ class Unittests {
             // TODO
             for (Map.Entry<String, List<String>> entryMethod : entryClass.getValue().entrySet()) {
                 String method = entryMethod.getKey();
-                if (!method.contains("me.$className")) {
-                    // TODO
-                    boolean match = false;
-                    if(dicTestedLibs.containsKey(className)){
-                        dicMethods = dicTestedLibs.get(className);
-                        if(dicMethods.containsKey(method)) {
-                            match = true;
-                        }
-                    }    
-                    // TODO
-                    dicMethodsMatch.put(method, match);                    
+
+                if (method.contains("me.$className")) {
+                    continue;
                 }                
+
+                if (className.equals("sol.common.HttpUtils")) {
+                    if (method.contains("checkClientTrusted")) {
+                        continue;
+                    }
+                    if (method.contains("checkServerTrusted")) {
+                        continue;
+                    }
+                    if (method.contains("getAcceptedIssuers")) {
+                        continue;
+                    }
+                    if (method.contains("verify")) {
+                        continue;
+                    }                    
+                }
+                
+                // TODO
+                boolean match = false;
+                if(dicTestedLibs.containsKey(className)){
+                    dicMethods = dicTestedLibs.get(className);
+                    if(dicMethods.containsKey(method)) {
+                        match = true;
+                    }
+                }    
+                // TODO
+                dicMethodsMatch.put(method, match);                    
             }
             dicLibsMatch.put(entryClass.getKey(), dicMethodsMatch);
         }        
@@ -806,6 +824,23 @@ class Unittests {
                     method = words[1];
                     method = method.trim();                                        
                 }
+                // TODO
+                if (className.equals("sol.common.HttpUtils")) {
+                    if (method.contains("checkClientTrusted: function (chain, authType)")) {
+                        continue;
+                    }
+                    if (method.contains("checkServerTrusted: function (chain, authType)")) {
+                        continue;
+                    }
+                    if (method.contains("getAcceptedIssuers: function ()")) {
+                        continue;
+                    }
+                    if (method.contains("verify: function (hostname, session)")) {
+                        continue;
+                    }                    
+                }                
+                // TODO
+                
                 if (!dicTestedLibs.containsKey(className)) {
                     dicTestedLibs.put(className, new TreeMap<>());                    
                 }
