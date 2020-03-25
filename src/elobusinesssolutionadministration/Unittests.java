@@ -730,6 +730,9 @@ class Unittests {
             if (className.equals("sol.common.ActionBase")) {
                 className = "sol.unittest.ActionBase";
             }
+            if (className.equals("sol.common.Map")) {
+                className = "sol.unittest.Map";
+            }
             if (className.equals("sol.common.ix.ActionBase")) {
                 className = "sol.unittest.ix.ActionBase";
             }
