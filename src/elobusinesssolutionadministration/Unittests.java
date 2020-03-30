@@ -760,7 +760,11 @@ class Unittests {
 
                 if (method.contains("me.$className")) {
                     continue;
-                }                
+                } 
+                
+                if (method.trim().length() == 0) {
+                    continue;
+                }
 
                 if (className.equals("sol.common.HttpUtils")) {
                     if (method.contains("checkClientTrusted")) {
