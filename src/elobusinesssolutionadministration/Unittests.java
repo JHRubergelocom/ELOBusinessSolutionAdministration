@@ -797,6 +797,11 @@ class Unittests {
                     }                    
                 }
                 
+                if (className.equals("sol.common.WfUtils")) {
+                    if (method.equals("getTasks")) {
+                        continue;
+                    }
+                }
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
