@@ -802,6 +802,13 @@ class Unittests {
                         continue;
                     }
                 }
+                
+                if (className.equals("sol.connector_xml.Importer")) {
+                    if (method.equals("resolveEntity")) {
+                        continue;
+                    }
+                }
+                
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
