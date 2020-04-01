@@ -765,6 +765,22 @@ class Unittests {
                 if (method.trim().length() == 0) {
                     continue;
                 }
+                
+                if (method.contains("!name")) {
+                    continue;
+                }                
+
+                if (method.contains("Handlebars")) {
+                    continue;
+                }                
+
+                if (method.contains("me.handleException")) {
+                    continue;
+                }                
+
+                if (method.contains("me.logger")) {
+                    continue;
+                }                
 
                 if (className.equals("sol.common.HttpUtils")) {
                     if (method.contains("checkClientTrusted")) {
