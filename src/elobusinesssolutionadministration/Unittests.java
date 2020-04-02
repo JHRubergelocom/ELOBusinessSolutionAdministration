@@ -809,6 +809,13 @@ class Unittests {
                     }
                 }
                 
+                if (className.equals("sol.common.as.DocumentGenerator")) {
+                    if (method.equals("collect")) {
+                        continue;
+                    }
+                }
+                                
+                
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
