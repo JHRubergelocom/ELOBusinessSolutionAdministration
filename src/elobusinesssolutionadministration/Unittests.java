@@ -754,6 +754,9 @@ class Unittests {
             if (className.equals("sol.common.as.FunctionBase")) {
                 className = "sol.unittest.as.FunctionBase";
             }
+            if (className.equals("sol.common.as.OfficeDocument")) {
+                className = "sol.common.as.WordDocument";
+            }
             // TODO
             for (Map.Entry<String, List<String>> entryMethod : entryClass.getValue().entrySet()) {
                 String method = entryMethod.getKey();
@@ -814,8 +817,6 @@ class Unittests {
                         continue;
                     }
                 }
-                                
-                
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
