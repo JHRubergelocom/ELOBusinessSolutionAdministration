@@ -817,6 +817,14 @@ class Unittests {
                         continue;
                     }
                 }
+                
+                if (className.equals("sol.invoice.as.InvoiceXmlImporter")) {
+                    if (method.equals("accept")) {
+                        continue;
+                    }
+                }
+                
+                
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
