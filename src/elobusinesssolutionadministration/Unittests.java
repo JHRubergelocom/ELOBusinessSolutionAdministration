@@ -783,7 +783,11 @@ class Unittests {
 
                 if (method.contains("me.logger")) {
                     continue;
-                }                
+                }   
+                
+                if (method.contains("sol.common.IxUtils")) {
+                    continue;
+                }   
 
                 if (className.equals("sol.common.HttpUtils")) {
                     if (method.contains("checkClientTrusted")) {
