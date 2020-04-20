@@ -757,6 +757,12 @@ class Unittests {
             if (className.equals("sol.common.as.OfficeDocument")) {
                 className = "sol.common.as.WordDocument";
             }
+            
+            if (className.equals("sol.pubsec.ix.DynamicRoutine")) {
+                continue;
+            }   
+
+            
             // TODO
             for (Map.Entry<String, List<String>> entryMethod : entryClass.getValue().entrySet()) {
                 String method = entryMethod.getKey();
@@ -832,7 +838,25 @@ class Unittests {
                     if (method.equals("compareFct")) {
                         continue;
                     }
-                }                
+                }  
+                
+                if (className.equals("sol.pubsec.as.actions.CreateFileReport")) {
+                    if (method.equals("compareFct")) {
+                        continue;
+                    }
+                }  
+                
+                if (className.equals("sol.pubsec.as.actions.CreateFilingplanReport")) {
+                    if (method.equals("compareFct")) {
+                        continue;
+                    }
+                }  
+                
+                if (className.equals("sol.pubsec.as.functions.CreateFileDeletionReport")) {
+                    if (method.equals("compareFct")) {
+                        continue;
+                    }
+                }  
                 
                 // TODO
                 boolean match = false;
