@@ -828,6 +828,11 @@ class Unittests {
                     }
                 }
                 
+                if (className.equals("sol.contact.as.actions.CreateContactReport")) {
+                    if (method.equals("compareFct")) {
+                        continue;
+                    }
+                }                
                 
                 // TODO
                 boolean match = false;
