@@ -858,6 +858,12 @@ class Unittests {
                     }
                 }  
                 
+                if (className.equals("sol.visitor.as.actions.CreateVisitorList")) {
+                    if (method.equals("compareFct")) {
+                        continue;
+                    }
+                }  
+                
                 // TODO
                 boolean match = false;
                 if(dicTestedLibs.containsKey(className)){
