@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,11 +31,13 @@ class Http {
                 try {
                     desktop.browse(uri);
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                              "IOException", JOptionPane.INFORMATION_MESSAGE);                    
                 }
             }            
         } catch (URISyntaxException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.URISyntaxException message: " + ex.getMessage(), 
+                      "URISyntaxException", JOptionPane.INFORMATION_MESSAGE);                    
         } 
       }         
     }
@@ -231,14 +234,15 @@ class Http {
                 bw.write(htmlDoc);
             }                        
         } catch (IOException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                      "IOException", JOptionPane.INFORMATION_MESSAGE);                    
         }
         try {
             URL url = uri.toURL();
             Http.OpenUrl(url.toString());            
         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.MalformedURLException message: " + ex.getMessage(), 
+                      "MalformedURLException", JOptionPane.INFORMATION_MESSAGE);                    
         }
-
     }
 }

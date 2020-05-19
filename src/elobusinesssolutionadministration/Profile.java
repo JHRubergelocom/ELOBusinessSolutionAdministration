@@ -1,5 +1,7 @@
 package elobusinesssolutionadministration;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,35 +17,32 @@ import org.json.JSONObject;
  */
 public class Profile {
     private String name;
-    private EloPackage[] eloPackages;
-    private EloCommand[] eloCommands;
+    private List<EloPackage> eloPackages;
+    private List<EloCommand> eloCommands;
 
-    Profile(JSONObject[] jarray, int index) {
+    Profile(JSONObject obj) {
         name = "";
-        eloPackages = new EloPackage[]{};
-        eloCommands = new EloCommand[]{};
+        eloPackages = new ArrayList<>();
+        eloCommands = new ArrayList<>();
         try {
-            name = jarray[index].getString("name");            
+            name = obj.getString("name");            
         } catch (JSONException ex) {            
         }
         try {
-            JSONObject[] jarrayEloPackages = JsonUtils.getArray(jarray[index], "eloPackages");
-            eloPackages = new EloPackage[jarrayEloPackages.length];
-            for (int i = 0; i < jarrayEloPackages.length; i++) {
-                EloPackage ep = new EloPackage(jarrayEloPackages, i);  
-                eloPackages[i] = ep;
-            }             
+            JSONObject[] jarrayEloPackages = JsonUtils.getArray(obj, "eloPackages");
+            for(JSONObject objEloPackage: jarrayEloPackages){
+                eloPackages.add(new EloPackage(objEloPackage));
+            }
         } catch (JSONException ex) {  
-            eloPackages = new EloPackage[]{};            
+            eloPackages = new ArrayList<>();            
         }
         try {
-            JSONObject[] jarrayEloCommands = JsonUtils.getArray(jarray[index], "eloCommands");
-            eloCommands = new EloCommand[jarrayEloCommands.length];
-            for (int i = 0; i < jarrayEloCommands.length; i++) {
-                EloCommand ec = new EloCommand(jarrayEloCommands, i);  
-                eloCommands[i] = ec;
-            }             
-        } catch (JSONException ex) {            
+            JSONObject[] jarrayEloCommands = JsonUtils.getArray(obj, "eloCommands");
+            for(JSONObject objEloCommand: jarrayEloCommands){
+                eloCommands.add(new EloCommand(objEloCommand));
+            }
+        } catch (JSONException ex) {    
+            eloCommands = new ArrayList<>();
         }        
     }
     
@@ -51,11 +50,11 @@ public class Profile {
         return name;
     }
     
-    public EloPackage[] getEloPackages() {
+    public List<EloPackage> getEloPackages() {
         return eloPackages;
     }
 
-    public EloCommand[] getEloCommands() {
+    public List<EloCommand> getEloCommands() {
         return eloCommands;
     }
     

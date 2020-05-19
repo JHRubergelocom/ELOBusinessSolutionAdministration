@@ -47,26 +47,26 @@ public class EloCommand {
     private String version;
     
 
-    EloCommand(JSONObject[] jarray, int index) {
+    EloCommand(JSONObject obj) {
         name = "";
         cmd = "";
         workspace = "";
         version = "";
         
         try {
-            name = jarray[index].getString("name");            
+            name = obj.getString("name");            
         } catch (JSONException ex) {            
         }
         try {
-            cmd = jarray[index].getString("cmd");      
+            cmd = obj.getString("cmd");      
         } catch (JSONException ex) {            
         }
         try {
-            workspace = jarray[index].getString("workspace");      
+            workspace = obj.getString("workspace");      
         } catch (JSONException ex) {            
         }
         try {
-            version = jarray[index].getString("version");      
+            version = obj.getString("version");      
         } catch (JSONException ex) {            
         }
     }    
@@ -156,9 +156,8 @@ public class EloCommand {
             txtOutput.appendText("Programmende" + "\n");                
 
         } catch (IOException ex) {
-            ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
-                       "IOException", JOptionPane.INFORMATION_MESSAGE);
+                      "IOException", JOptionPane.INFORMATION_MESSAGE);
         } 
     }
 

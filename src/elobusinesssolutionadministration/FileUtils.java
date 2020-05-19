@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -41,9 +42,8 @@ class FileUtils {
             }                                    
         } catch (IOException ex) {
             System.out.println("IOException: " + ex.getMessage() + " dirName=" + dirName + " fileName=" + fileName);
-            ex.printStackTrace();
-        }
-        
-    }
-    
+            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                      "IOException", JOptionPane.INFORMATION_MESSAGE);
+        }        
+    }    
 }

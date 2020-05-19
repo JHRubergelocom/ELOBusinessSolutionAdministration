@@ -107,7 +107,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleCmbProfile(ActionEvent event) {
         int index = cmbProfile.getSelectionModel().getSelectedIndex();
-        Profile profile = profiles.getProfile(index);
+        Profile profile = profiles.getProfiles().get(index);        
         eloProperties.setSelectedProfile(profile);
         System.out.println(event.getEventType() + "Profil: " + profile.getName());
     }
@@ -170,17 +170,15 @@ public class FXMLDocumentController implements Initializable {
     private TextArea txtOutput;
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        
+    public void initialize(URL url, ResourceBundle rb) {        
         profiles = new Profiles("Profiles.json");
         eloService = new EloService(this);   
         eloProperties = new EloProperties();
         
         cmbProfile.getItems().clear();
-        for (int i = 0; i < profiles.getLength(); i++) {
-            Profile p = profiles.getProfile(i);
-            cmbProfile.getItems().add(p.getName());            
-        } 
+        profiles.getProfiles().forEach((p) -> {
+            cmbProfile.getItems().add(p.getName());
+        }); 
         
         String selectedProfileName = eloProperties.getSelectedProfile();
         if (selectedProfileName != null) {
@@ -189,8 +187,7 @@ public class FXMLDocumentController implements Initializable {
             cmbProfile.getSelectionModel().select(0);                    
         }
         txtPattern.setText(eloProperties.getPattern());
-        chkCaseSensitiv.setSelected(eloProperties.getCaseSensitiv());
-        
+        chkCaseSensitiv.setSelected(eloProperties.getCaseSensitiv());        
     }  
         
     public void setDisableControls(boolean value) {

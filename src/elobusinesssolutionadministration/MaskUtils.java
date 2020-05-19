@@ -59,14 +59,9 @@ class MaskUtils {
     }
     
     private void clearIds(AclItem[] aclItems) {
-        int i; 
-        AclItem element;
-
-        for (i = 0; i < aclItems.length; i++) {
-          element = aclItems[i];
-          element.setId(-1);
-        }
-        
+        for (AclItem aclItem: aclItems) {
+          aclItem.setId(-1);
+        }        
     }
 
     private String getUserName(int id) throws RemoteException {
@@ -77,15 +72,10 @@ class MaskUtils {
     }
     
     private void adjustAcl(AclItem[] aclItems) throws RemoteException {
-        int i; 
-        AclItem aclItem; 
         String aclName;
-
         String adminName = getUserName(UserInfoC.ID_ADMINISTRATOR);
         String everyoneName = getUserName(UserInfoC.ID_EVERYONE_GROUP);
-
-        for (i = 0; i < aclItems.length; i++) {
-          aclItem = aclItems[i];
+        for (AclItem aclItem: aclItems) {
           aclName = aclItem.getName();
           if (aclName.equals(adminName)) {
               aclItem.setId(0);
@@ -98,30 +88,22 @@ class MaskUtils {
     }
     
     private void adjustMask(DocMask dm) throws RemoteException {
-        String[] childMaskNames;
-        int i; 
-        DocMaskLine line;
-
         dm.setId(-1);
         dm.setTStamp("2018.01.01.00.00.00");
-
         adjustAcl(dm.getAclItems());
 
-        for (i = 0; i < dm.getLines().length; i++) {
-          line = dm.getLines()[i];
+        for (DocMaskLine line: dm.getLines()) {
           line.setMaskId(-1);
           adjustAcl(line.getAclItems());
         }        
     }
     
     private String ExportDocMask(DocMask dm) throws RemoteException {
-        int i;
         dm.setAcl("");
         dm.setDAcl("");
         clearIds(dm.getAclItems());
         clearIds(dm.getDocAclItems());
-        for (i = 0; i < dm.getLines().length; i++) {
-          DocMaskLine line = dm.getLines()[i];
+        for (DocMaskLine line: dm.getLines()) {
           line.setAcl("");
           clearIds(line.getAclItems());
         }
@@ -156,5 +138,4 @@ class MaskUtils {
         }
         return dicDocMaskLines;                
     }
-
 }

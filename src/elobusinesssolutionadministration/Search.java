@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -129,7 +128,7 @@ class Search {
         
     }
 
-    void ShowSearchResult(EloPackage[] eloPackages) {
+    void ShowSearchResult(List <EloPackage> eloPackages) {
         RepoUtils rU = new RepoUtils(ixConn);   
         SortedMap<SordDoc, SortedMap<Integer, String>> dicSordDocLines = rU.LoadSordDocLines(eloPackages, p);
         Comparator<WFDiagram> byName = Comparator.comparing(wf -> wf.getName());
@@ -148,7 +147,6 @@ class Search {
             dicWorkflowLines = wfU.LoadWorkflowLines(p);
             dicDocMaskLines = mU.LoadDocMaskLines(p);
         } catch (RemoteException | UnsupportedEncodingException ex) {
-            ex.printStackTrace();
         }
         
         String htmlDoc = CreateReportSearchResult(dicSordDocLines, dicWorkflowLines, dicDocMaskLines);

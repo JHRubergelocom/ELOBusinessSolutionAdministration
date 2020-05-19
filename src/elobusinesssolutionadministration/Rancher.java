@@ -5,6 +5,8 @@
  */
 package elobusinesssolutionadministration;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ruberg
@@ -16,7 +18,8 @@ class Rancher {
             String rancherUrl = "http://rancher.elo.local/env/1a81/apps/stacks?tags=" + profiles.getGitUser() + "&which=all";
             Http.OpenUrl(rancherUrl);                    
         } catch (Exception ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.Exception message: " + ex.getMessage(), 
+                      "Exception", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     

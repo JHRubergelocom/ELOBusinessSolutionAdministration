@@ -16,16 +16,16 @@ public class EloPackage {
     private String name;
     private String folder;
     
-    EloPackage(JSONObject[] jarray, int index) {
+    EloPackage(JSONObject obj) {
         name = "";
         folder = "";
         
         try {
-            name = jarray[index].getString("name");            
+            name = obj.getString("name");            
         } catch (JSONException ex) {            
         }
         try {
-            folder = jarray[index].getString("folder");      
+            folder = obj.getString("folder");      
         } catch (JSONException ex) {            
         }
     }    

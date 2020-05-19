@@ -55,13 +55,11 @@ public class WfUtils {
                 findResult = ixConn.ix().findNextWorkflows(findResult.getSearchId(), idx, max);
             }
           } catch (RemoteException ex) {
-                ex.printStackTrace();
           } finally {
             if (findResult != null) {
                 try {
                     ixConn.ix().findClose(findResult.getSearchId());
                 } catch (RemoteException ex) {
-                    ex.printStackTrace();
                 }
             }
         }        

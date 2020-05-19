@@ -7,6 +7,7 @@ package elobusinesssolutionadministration;
 
 import com.google.gson.Gson;
 import de.elo.ix.client.DocMask;
+import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +50,8 @@ public class JsonUtils {
             JSONObject obj = new JSONObject (jsonText);
             return obj.toString(2);
         } catch (JSONException ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.JSONException message: " + ex.getMessage(), 
+                      "JSONException", JOptionPane.INFORMATION_MESSAGE);            
         }
         return jsonText;
     }

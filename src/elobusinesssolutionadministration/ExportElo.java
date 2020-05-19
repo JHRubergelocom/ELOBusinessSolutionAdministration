@@ -39,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -67,7 +68,8 @@ class ExportElo {
             System.out.println("ticket=" + ixConn.getLoginResult().getClientInfo().getTicket());
             
         } catch (Exception ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.Exception message: " + ex.getMessage(), 
+                      "Exception", JOptionPane.INFORMATION_MESSAGE);            
         }
     }
     
@@ -113,7 +115,6 @@ class ExportElo {
                                     subFolderPath.mkdirs();
                                 } catch (Exception ex) {
                                     System.out.println("Exception mkdir(): " + ex.getMessage() + " " + subFolderPath);
-                                    ex.printStackTrace();
                                 }
                             }
                             FindChildren(arcPath + "/" + sord.getName(), subFolderPath, exportReferences);
@@ -133,10 +134,8 @@ class ExportElo {
                                 System.out.println("Arcpath=" + arcPath + "/" + sord.getName() + "  Maskname=" + sord.getMaskName());
                             } catch (RemoteException ex) {
                                 System.out.println("RemoteException: " + ex.getMessage() + " " + outFile);
-                                ex.printStackTrace();
                             } catch (ArrayIndexOutOfBoundsException ex) {
                                 System.out.println("ArrayIndexOutOfBoundsException: " + ex.getMessage() + " " + outFile);
-                                ex.printStackTrace();
                             }
                         }
                     }
@@ -146,13 +145,13 @@ class ExportElo {
                 fr = ixConn.ix().findNextSords(fr.getSearchId(), idx, 1000, sordZ);
             }
         } catch (RemoteException ex) {
-            ex.printStackTrace();
+            System.out.println("RemoteException: " + ex.getMessage());   
         } finally {
             if (fr != null) {
                 try {
                     ixConn.ix().findClose(fr.getSearchId());
                 } catch (RemoteException ex) {
-                    ex.printStackTrace();
+                    System.out.println("RemoteException: " + ex.getMessage());
                 }
             }            
         }
@@ -179,13 +178,14 @@ class ExportElo {
                 findResult = ixConn.ix().findNextWorkflows(findResult.getSearchId(), idx, max);
             }
           } catch (RemoteException ex) {
-                ex.printStackTrace();
+                System.out.println("RemoteException: " + ex.getMessage());                                
+
           } finally {
             if (findResult != null) {
                 try {
                     ixConn.ix().findClose(findResult.getSearchId());
                 } catch (RemoteException ex) {
-                    ex.printStackTrace();
+                    System.out.println("RemoteException: " + ex.getMessage()); 
                 }
             }
         }        
@@ -194,8 +194,7 @@ class ExportElo {
 
         for (WFDiagram wf : workflows) {
             ExportWorkflow(exportPath, wf);
-        }
-        
+        }        
     }
 
     private void ExportWorkflow(File exportPath, WFDiagram wf) {
@@ -215,23 +214,18 @@ class ExportElo {
             System.out.println("Save Workflow: '" + wf.getName() + "'");                        
         } catch (RemoteException ex) {
             System.out.println("RemoteException: " + ex.getMessage());
-            ex.printStackTrace();
+            
         } catch (UnsupportedEncodingException ex) {
             System.out.println("UnsupportedEncodingException: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-        
+            JOptionPane.showMessageDialog(null, "System.UnsupportedEncodingException message: " + ex.getMessage(), 
+                      "UnsupportedEncodingException", JOptionPane.INFORMATION_MESSAGE);                                                                                        
+        }        
     }
     
     private void clearIds(AclItem[] aclItems) {
-        int i; 
-        AclItem element;
-
-        for (i = 0; i < aclItems.length; i++) {
-          element = aclItems[i];
-          element.setId(-1);
+        for (AclItem aclItem: aclItems) {
+          aclItem.setId(-1);            
         }
-        
     }
 
     private String getUserName(int id) throws RemoteException {
@@ -242,15 +236,12 @@ class ExportElo {
     }
     
     private void adjustAcl(AclItem[] aclItems) throws RemoteException {
-        int i; 
-        AclItem aclItem; 
         String aclName;
 
         String adminName = getUserName(UserInfoC.ID_ADMINISTRATOR);
         String everyoneName = getUserName(UserInfoC.ID_EVERYONE_GROUP);
 
-        for (i = 0; i < aclItems.length; i++) {
-          aclItem = aclItems[i];
+        for (AclItem aclItem: aclItems) {
           aclName = aclItem.getName();
           if (aclName.equals(adminName)) {
               aclItem.setId(0);
@@ -263,17 +254,10 @@ class ExportElo {
     }
     
     private void adjustMask(DocMask dm) throws RemoteException {
-        String[] childMaskNames;
-        int i; 
-        DocMaskLine line;
-
         dm.setId(-1);
         dm.setTStamp("2018.01.01.00.00.00");
-
         adjustAcl(dm.getAclItems());
-
-        for (i = 0; i < dm.getLines().length; i++) {
-          line = dm.getLines()[i];
+        for (DocMaskLine line: dm.getLines()) {
           line.setMaskId(-1);
           adjustAcl(line.getAclItems());
         }        
@@ -281,13 +265,11 @@ class ExportElo {
     
     private void ExportDocMask(File exportPath, DocMask dm) {
         try {
-            int i;
             dm.setAcl("");
             dm.setDAcl("");
             clearIds(dm.getAclItems());
             clearIds(dm.getDocAclItems());
-            for (i = 0; i < dm.getLines().length; i++) {
-              DocMaskLine line = dm.getLines()[i];
+            for (DocMaskLine line: dm.getLines()) {
               line.setAcl("");
               clearIds(line.getAclItems());
             }
@@ -303,10 +285,8 @@ class ExportElo {
             
         } catch (RemoteException ex) {
             System.out.println("RemoteException: " + ex.getMessage());
-            ex.printStackTrace();
         }
     }
-
 
     private void FindDocMasks(File exportPath) {
         String arcPath = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
@@ -332,9 +312,6 @@ class ExportElo {
                 ExportDocMask(exportPath, dm);                
             }
         } catch (RemoteException ex) {
-                ex.printStackTrace();
-        }
-        
+        }        
     }
-
 }

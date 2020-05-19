@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -76,14 +77,12 @@ class RepoUtils {
             }
             
         } catch (RemoteException ex) {
-            ex.printStackTrace();
         } finally {
             if (findResult != null)
             {
                 try {
                     ixConn.ix().findClose(findResult.getSearchId());
                 } catch (RemoteException ex) {
-                    ex.printStackTrace();
                 }
             }
         }
@@ -111,15 +110,19 @@ class RepoUtils {
                         docText = docText.concat(line);
                     }                       
                 } catch (FileNotFoundException ex) {    
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.FileNotFoundException message: " + ex.getMessage(), 
+                              "FileNotFoundException", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {            
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                              "IOException", JOptionPane.INFORMATION_MESSAGE);
+                    
                 } finally {
                     if (in != null) {
                         try {
                             in.close();
                         } catch (IOException ex) {
-                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                                      "IOException", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
@@ -128,7 +131,6 @@ class RepoUtils {
                 docText = docText.replaceAll("\n", "");
             }            
         } catch (RemoteException ex) {
-            ex.printStackTrace();            
         }
         return docText;
     }
@@ -155,21 +157,23 @@ class RepoUtils {
                         docList.add(line);
                     }                       
                 } catch (FileNotFoundException ex) {    
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.FileNotFoundException message: " + ex.getMessage(), 
+                              "FileNotFoundException", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {            
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                              "IOException", JOptionPane.INFORMATION_MESSAGE);
                 } finally {
                     if (in != null) {
                         try {
                             in.close();
                         } catch (IOException ex) {
-                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                                      "IOException", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
             }            
         } catch (RemoteException ex) {
-            ex.printStackTrace();            
         }
         return docList;
     }
@@ -186,8 +190,7 @@ class RepoUtils {
         return docArray;        
     }
     
-    SortedMap<String, List<String>> LoadTextDocsToSortedMap(String parentId) throws RemoteException {
-        
+    SortedMap<String, List<String>> LoadTextDocsToSortedMap(String parentId) throws RemoteException {        
         Sord[] sordRFInfo = FindChildren(parentId, true, true);
         SortedMap<String, List<String>> docTexts = new TreeMap<>();
         for (Sord s : sordRFInfo) {
@@ -224,27 +227,29 @@ class RepoUtils {
                         linenr++;                        
                     }                       
                 } catch (FileNotFoundException ex) {    
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.FileNotFoundException message: " + ex.getMessage(), 
+                              "FileNotFoundException", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {            
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                              "IOException", JOptionPane.INFORMATION_MESSAGE);
                 } finally {
                     if (in != null) {
                         try {
                             in.close();
                         } catch (IOException ex) {
-                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                                      "IOException", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
             }            
         } catch (RemoteException ex) {
-            ex.printStackTrace();            
         }
         return docLines;
         
     }
 
-    SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(EloPackage[] eloPackages, Pattern p) {   
+    SortedMap<SordDoc, SortedMap<Integer, String>> LoadSordDocLines(List<EloPackage> eloPackages, Pattern p) {   
         Comparator<SordDoc> byName = Comparator.comparing(sd -> sd.getName());
         Comparator<SordDoc> byId = Comparator.comparingInt(sd -> sd.getId());
         Comparator<SordDoc> bySordDoc = byName.thenComparing(byId);        
@@ -252,7 +257,7 @@ class RepoUtils {
         String parentId;
         
         if (p.toString().length() > 0) {
-            if (eloPackages.length == 0) {
+            if (eloPackages.isEmpty()) {
                 parentId = "ARCPATH[(E10E1000-E100-E100-E100-E10E10E10E00)]:/Business Solutions";
                 Sord[] sords = FindChildren(parentId, true, true);
                 for (Sord s : sords) {

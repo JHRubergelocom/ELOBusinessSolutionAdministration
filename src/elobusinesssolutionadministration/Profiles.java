@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,7 +21,7 @@ import org.json.JSONObject;
  * @author ruberg
  */
 public class Profiles {
-    private Profile[] profiles;
+    private List<Profile> profiles;
     private String gitSolutionsDir;
     private String gitDevDir;
     private String gitUser;
@@ -27,7 +30,7 @@ public class Profiles {
     private String pwd;    
     
     Profiles(String jsonFile) {
-        profiles = new Profile[]{};
+        profiles = new ArrayList<>();
         gitSolutionsDir = "";
         gitDevDir = "";
         gitUser = "";
@@ -48,27 +51,27 @@ public class Profiles {
                 jsonString = jsonString.concat(line);
             }            
         } catch (FileNotFoundException ex) {    
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.FileNotFoundException message: " + ex.getMessage(), 
+                      "FileNotFoundException", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {            
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                      "IOException", JOptionPane.INFORMATION_MESSAGE);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                              "IOException", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
         jobjProfiles = new JSONObject(jsonString);        
         JSONObject[] jarrayProfiles = JsonUtils.getArray(jobjProfiles, "profiles");
+        for(JSONObject objEloProfile: jarrayProfiles){
+            profiles.add(new Profile(objEloProfile));
+        }
         
-        profiles = new Profile[jarrayProfiles.length];
-        for (int i = 0; i < jarrayProfiles.length; i++) {
-            Profile p = new Profile(jarrayProfiles, i);  
-            profiles[i] = p;
-        } 
-
         try {
             gitSolutionsDir = jobjProfiles.getString("gitSolutionsDir");            
         } catch (JSONException ex) {            
@@ -97,7 +100,7 @@ public class Profiles {
     }
 
     Profiles() {
-        profiles = new Profile[]{};
+        profiles = new ArrayList<>();
         gitSolutionsDir = "";
         gitDevDir = "";
         gitUser = "";
@@ -126,11 +129,7 @@ public class Profiles {
         return gitUser;
     }
 
-    public int getLength() {
-      return profiles.length;  
+    public List<Profile> getProfiles() {
+      return profiles;  
     } 
-
-    public Profile getProfile(int index) {
-        return profiles[index];
-    }    
 }

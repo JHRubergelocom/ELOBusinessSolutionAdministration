@@ -57,9 +57,9 @@ class Unittests {
                     configId = config.getString("id");
                 }
             }
-         }
-         dicApp.put("configApp", configApp);
-         dicApp.put("configId", configId);
+        }
+        dicApp.put("configApp", configApp);
+        dicApp.put("configId", configId);
             
         return dicApp;
     }    
@@ -238,7 +238,6 @@ class Unittests {
                 }
             } catch (XPathExpressionException ex) {
                 System.err.println("XPathExpressionException: " +  ex.getMessage()); 
-                ex.printStackTrace();
             }
         }
         return dicRules;
@@ -297,7 +296,7 @@ class Unittests {
         return false;        
     }
 
-    void ShowReportMatchUnittest(EloPackage[] eloPackages) {    
+    void ShowReportMatchUnittest(List<EloPackage> eloPackages) {    
         RepoUtils rU = new RepoUtils(ixConn);        
         
         try {
@@ -312,7 +311,7 @@ class Unittests {
             SortedMap<String, SortedMap<String, Boolean>> dicLibIndexServerScriptingBases = new TreeMap<>();
             SortedMap<String, SortedMap<String, Boolean>> dicLibELOasBases = new TreeMap<>();            
             
-            if (eloPackages.length == 0) {                
+            if (eloPackages.isEmpty()) {                
                 dicRFs = GetRFs(jsTexts, new EloPackage()); 
                 dicASDirectRules = GetRules(jsTexts, new EloPackage());
                 dicActionDefs = GetActionDefs(jsTexts, new EloPackage()); 
@@ -341,7 +340,6 @@ class Unittests {
             String htmlDoc = CreateReportMatchUnittest(dicRFs, dicASDirectRules, dicActionDefs, dicLibAlls, dicLibRhinos, dicLibIndexServerScriptingBases, dicLibELOasBases);
             Http.ShowReport(htmlDoc);
         } catch (RemoteException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -684,13 +682,13 @@ class Unittests {
         });
     }
         
-    void CreateUnittest(EloPackage[] eloPackages, String profileName) {
+    void CreateUnittest(List<EloPackage> eloPackages, String profileName) {
         SortedMap<String, SortedMap<String, List<String>>> dicAlls = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicAllRhinos = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicIndexServerScriptingBases = new TreeMap<>();
         SortedMap<String, SortedMap<String, List<String>>> dicELOasBases = new TreeMap<>();
         
-        if (eloPackages.length == 0) {                
+        if (eloPackages.isEmpty()) {                
             dicAlls = GetLibs(new EloPackage(), "All"); 
             dicAllRhinos = GetLibs(new EloPackage(), "All Rhino"); 
             dicIndexServerScriptingBases = GetLibs(new EloPackage(), "IndexServer Scripting Base"); 

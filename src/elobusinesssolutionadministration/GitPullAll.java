@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Optional;
 import javafx.scene.control.TextArea;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,7 +25,8 @@ class GitPullAll {
             txtOutput.setText("");
             SubDirectories(txtOutput, workingDir);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "System.IOException message: " + ex.getMessage(), 
+                      "IOException", JOptionPane.INFORMATION_MESSAGE);            
         }
     }
 
@@ -75,14 +77,14 @@ class GitPullAll {
         String htmlBody = "<body>\n";
 
         htmlBody += "<h1>"+ gitCommand + "</h1>";
-        
-        for (int i = 0; i < files.size(); i++) {
-            htmlBody += "<h4>"+ files.get(i).getCanonicalPath() + "</h4>";            
-            System.out.println(files.get(i).getCanonicalPath()); 
-            txtOutput.appendText(files.get(i).getCanonicalPath() + "\n");             
-            htmlBody = GitPull(txtOutput, htmlBody, files.get(i).getCanonicalPath());            
-        }    
-        
+
+        for (File file: files) {
+            htmlBody += "<h4>"+ file.getCanonicalPath() + "</h4>";            
+            System.out.println(file.getCanonicalPath()); 
+            txtOutput.appendText(file.getCanonicalPath() + "\n");             
+            htmlBody = GitPull(txtOutput, htmlBody, file.getCanonicalPath());                    
+        }
+
         htmlBody += "</body>\n";
         htmlDoc += htmlHead;
         htmlDoc += htmlStyle;
@@ -90,7 +92,6 @@ class GitPullAll {
         htmlDoc += "</html>\n";
 
         Http.ShowReport(htmlDoc);
-
 
     }
 

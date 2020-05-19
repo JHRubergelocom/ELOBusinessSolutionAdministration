@@ -6,9 +6,11 @@
 package elobusinesssolutionadministration;
 
 import de.elo.ix.client.IXConnection;
+import java.util.List;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -58,10 +60,10 @@ public class EloService extends Service<Boolean> {
                 String user = profiles.getUser();
                 String pwd = profiles.getPwd();
                 String gitSolutionsDir = profiles.getGitSolutionsDir();
-                Profile profile = profiles.getProfile(index);                
+                Profile profile = profiles.getProfiles().get(index);                
                 String workingDir = profile.getWorkingDir(gitSolutionsDir);
                 String name = profile.getName();
-                EloPackage[] eloPackages = profile.getEloPackages();
+                List<EloPackage> eloPackages = profile.getEloPackages();
                 
                 switch(typeCommand) {
                     case EloCommand.SHOWRANCHER:
@@ -74,7 +76,7 @@ public class EloService extends Service<Boolean> {
                     case EloCommand.ELO_PREPARE:
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getDevDir());
                         GitPullAll.Execute(dc.getTxtOutput(), dc.getProfiles().getGitSolutionsDir()); 
-                        ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
+                        ec = dc.getProfiles().getProfiles().get(index).getEloCommand(typeCommand);
                         ec.Execute(txtOutput, profile, workingDir, gitUser);                        
                         break;                        
                     default:
@@ -129,18 +131,17 @@ public class EloService extends Service<Boolean> {
                                 break;    
                             case EloCommand.ELO_PULL_PACKAGE:    
                             case EloCommand.ELO_PULL_UNITTEST:
-                                ec = dc.getProfiles().getProfile(index).getEloCommand(typeCommand);
+                                ec = dc.getProfiles().getProfiles().get(index).getEloCommand(typeCommand);
                                 ec.Execute(txtOutput, profile, workingDir, gitUser);                        
                                 break;
                             default:
                                 break;
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    
-                }
-                
+                        JOptionPane.showMessageDialog(null, "System.Exception message: " + ex.getMessage(), 
+                                  "Exception", JOptionPane.INFORMATION_MESSAGE);                        
+                    }                    
+                }                
                 dc.setDisableControls(false);
                 return true;
             }            
